@@ -1,0 +1,19 @@
+# Dependencies and build output
+node_modules/
+dist/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Local persistent data store — contains live user/session/audit data and
+# must never be committed or deployed as source (see Render free-tier note
+# in render.yaml: this folder is ephemeral on the free plan).
+cloud data/
+
+# Credential/export documents
+KEDCO_Login_Details.docx
+KEDCO_Login_Details_Professional.docx
+
+*.log

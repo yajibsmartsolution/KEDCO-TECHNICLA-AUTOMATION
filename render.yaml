@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: kedco-local-backend
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Comma-separated list of origins allowed to call this API (e.g. your
+      # GitHub Pages URL). Update after your first deploy once you know the
+      # public frontend origin.
+      - key: CORS_ORIGIN
+        sync: false
+      # Render free-tier disks are ephemeral: anything written under
+      # KEDCO_LOCAL_DATA_ROOT ("cloud data/") is wiped on every redeploy/restart.
+      # Treat this deployment as a demo/staging API, not durable storage.
+      - key: KEDCO_LOCAL_DATA_ROOT
+        value: ../cloud data

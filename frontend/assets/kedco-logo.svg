@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 96" role="img" aria-labelledby="title desc">
+  <title id="title">KEDCO</title>
+  <desc id="desc">KEDCO electricity distribution logo</desc>
+  <rect width="320" height="96" rx="16" fill="#fff"/>
+  <path d="M44 10 20 50h22l-9 36 42-52H53l8-24Z" fill="#d8a928"/>
+  <text x="88" y="48" fill="#082757" font-family="Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="3">KEDCO</text>
+  <text x="90" y="70" fill="#45617f" font-family="Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="2">KANO ELECTRICITY DISTRIBUTION</text>
+</svg>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KEDCO Automation Preparedness Center</title>
+<style>
+:root{
+  --navy:#071b3b;--navy2:#0b2f66;--blue:#1d6fd3;--gold:#d9aa2b;
+  --green:#16855b;--red:#a52132;--amber:#b7791f;--bg:#f4f7fb;
+  --card:#fff;--text:#172033;--muted:#6b7280;--line:#dbe4ef;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif}
+header{background:linear-gradient(135deg,#041329,#0a2c60 58%,#124d9d);color:#fff;padding:18px 24px;position:sticky;top:0;z-index:10}
+.head{max-width:1500px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#f1d36a,#b78d19);color:#071b3b;font-weight:900}
+h1{font-size:20px;margin:0}
+.sub{font-size:11px;color:#c9d8ee;margin-top:4px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button,.btn{border:0;border-radius:10px;padding:10px 13px;font-size:11px;font-weight:800;cursor:pointer;text-decoration:none}
+.primary{background:linear-gradient(135deg,var(--gold),#f1d064);color:#08224b}
+.secondary{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18)}
+main{max-width:1500px;margin:auto;padding:20px 24px 40px}
+.notice{display:none;background:#fff7dc;border:1px solid #ead17f;color:#6c5316;padding:12px 14px;border-radius:12px;font-size:11px;margin-bottom:14px}
+.toolbar{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;display:grid;grid-template-columns:1.6fr .8fr .8fr auto;gap:10px;box-shadow:0 10px 28px rgba(13,44,82,.07)}
+label{display:block;font-size:9px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+input,select{width:100%;padding:10px 11px;border:1px solid #cfd9e5;border-radius:9px;font-size:11px;background:#fff}
+.cards{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:12px;margin:15px 0}
+.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:0 10px 28px rgba(13,44,82,.07)}
+.score{display:flex;align-items:center;gap:14px}
+.ring{width:82px;height:82px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) 0deg,#e5eaf1 0deg);position:relative}
+.ring:after{content:"";position:absolute;width:62px;height:62px;border-radius:50%;background:white}
+.ring b{position:relative;z-index:1;color:#0b2f66;font-size:17px}
+.metric small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;font-weight:900;letter-spacing:.07em}
+.metric strong{display:block;color:#0b2f66;font-size:25px;margin-top:5px}
+.metric span{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 10px 28px rgba(13,44,82,.07)}
+.panel-head{padding:14px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.panel-head h2{margin:0;color:#0b2f66;font-size:14px}
+.panel-head p{margin:4px 0 0;color:var(--muted);font-size:10px}
+.legend{display:flex;gap:6px;flex-wrap:wrap}
+.legend span,.status{font-size:9px;font-weight:900;padding:5px 8px;border-radius:999px}
+.connected{background:#edf9f3;color:#0d754c}
+.unconnected{background:#fff0f1;color:#9d2030}
+.pending{background:#fff8e7;color:#8e6717}
+.error{background:#f5efff;color:#6f48a5}
+.checking{background:#eef5ff;color:#225f9f}
+.wrap{overflow:auto;max-height:68vh}
+table{width:100%;border-collapse:collapse;min-width:1050px}
+th{position:sticky;top:0;background:#f7f9fc;color:#53657a;text-transform:uppercase;font-size:9px;letter-spacing:.06em;text-align:left;padding:10px;border-bottom:1px solid var(--line);z-index:2}
+td{padding:10px;border-bottom:1px solid #edf1f5;font-size:10px;vertical-align:middle}
+.route{font-family:Consolas,monospace;color:#355777}
+.role{display:inline-block;padding:3px 6px;margin:1px;border-radius:999px;background:#eef4fb;color:#2c5687;font-size:8px;font-weight:900}
+.row-actions{display:flex;gap:5px}
+.row-actions a,.row-actions button{border:1px solid #d4deea;background:#fff;color:#2a5485;padding:6px 8px;border-radius:7px;font-size:8px;font-weight:900;text-decoration:none;cursor:pointer}
+.empty{display:none;text-align:center;padding:30px;color:var(--muted);font-size:11px}
+footer{text-align:center;color:#7b8795;font-size:9px;margin-top:14px}
+@media(max-width:1000px){.toolbar{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr 1fr}.score{grid-column:1/-1}}
+@media(max-width:620px){.head{flex-direction:column;align-items:flex-start}.toolbar,.cards{grid-template-columns:1fr}.score{grid-column:auto}main{padding:14px}.actions{width:100%}.actions>*{flex:1;text-align:center}}
+</style>
+
+<!-- KEDCO Local Storage shared bootstrap v3 -->
+<script src="../../supabase-config.js"></script>
+<script src="../../assets/supabase.js"></script>
+<script src="../../kedco-page-routes.js"></script>
+<script src="../../kedco-cloud-backup.js"></script>
+<script src="../../kedco-global-ui.js" defer></script>
+</head>
+<body>
+<header>
+  <div class="head">
+    <div class="brand">
+      <div class="logo">KED</div>
+      <div>
+        <h1>KEDCO Automation Preparedness Center</h1>
+        <div class="sub">Connected / Unconnected links • page readiness • backend availability</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="secondary" id="testAllBtn">↻ Re-test All</button>
+      <button class="secondary" id="exportBtn">⇩ Export CSV</button>
+      <a class="btn primary" href="dev.html">⚙ Developer Center</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="fileNotice" class="notice">
+    This page is opened with <b>file://</b>. Enter your running KEDCO base URL below, for example
+    <b>http://localhost:3000/</b>, then click <b>Check Links</b>.
+  </div>
+
+  <section class="toolbar">
+    <div>
+      <label>Application Base URL</label>
+      <input id="baseUrl" placeholder="http://localhost:3000/">
+    </div>
+    <div>
+      <label>Status Filter</label>
+      <select id="statusFilter">
+        <option value="">All statuses</option>
+        <option value="connected">Connected</option>
+        <option value="unconnected">Unconnected</option>
+        <option value="pending">Pending</option>
+        <option value="error">Error</option>
+      </select>
+    </div>
+    <div>
+      <label>Search</label>
+      <input id="searchBox" placeholder="Page, role, route...">
+    </div>
+    <button class="primary" id="checkBtn">Check Links</button>
+  </section>
+
+  <section class="cards">
+    <div class="card score">
+      <div class="ring" id="ring"><b id="pct">0%</b></div>
+      <div class="metric">
+        <small>Overall Preparedness</small>
+        <strong id="readiness">Pending</strong>
+        <span>Reachable configured links</span>
+      </div>
+    </div>
+    <div class="card metric"><small>Total Links</small><strong id="total">0</strong><span>Pages + services</span></div>
+    <div class="card metric"><small>Connected</small><strong id="connected">0</strong><span>Reachable now</span></div>
+    <div class="card metric"><small>Unconnected</small><strong id="unconnected">0</strong><span>Missing / unreachable</span></div>
+    <div class="card metric"><small>Pending / Error</small><strong id="pending">0</strong><span>Not ready yet</span></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>KEDCO Connectivity & Route Matrix</h2>
+        <p>Shows application pages, assigned roles, routes/endpoints, HTTP status and last check time.</p>
+      </div>
+      <div class="legend">
+        <span class="connected">Connected</span>
+        <span class="unconnected">Unconnected</span>
+        <span class="pending">Pending</span>
+        <span class="error">Error</span>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Module / Page</th><th>Role / Owner</th><th>Route / Endpoint</th>
+            <th>Type</th><th>Status</th><th>HTTP</th><th>Last Checked</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="empty" id="empty">No links match the current filter.</div>
+    </div>
+  </section>
+
+  <footer>KEDCO Technical Automation • Preparedness & Link Connectivity Monitor • No service-role/secret key stored in this page.</footer>
+</main>
+
+<script>
+const ROUTES = [
+{name:"Home / Login",roles:["ALL USERS"],path:"index.html",type:"PAGE"},
+{name:"Developer Control Center",roles:["SUPER_ADMIN","DEVELOPER"],path:"pages/developer/dev.html",type:"PAGE"},
+{name:"Preparedness Center",roles:["SUPER_ADMIN","DEVELOPER"],path:"pages/developer/preparedness.html",type:"PAGE"},
+{name:"CTO Executive",roles:["CTO"],path:"pages/executive/cto.html",type:"PAGE"},
+{name:"Technical Assistant to CTO",roles:["TA_CTO"],path:"pages/executive/ta.html",type:"PAGE"},
+{name:"Head System Operations",roles:["HEAD_SO"],path:"pages/system-operations/headso.html",type:"PAGE"},
+{name:"Central Dispatch",roles:["DISPATCH","DISPATCH_SUPERVISOR"],path:"pages/system-operations/dispatch.html",type:"PAGE"},
+{name:"System Operator",roles:["OPERATOR"],path:"pages/system-operations/operator.html",type:"PAGE"},
+{name:"Station Operator / Operator",roles:["OPERATOR"],path:"pages/system-operations/operator.html",type:"PAGE"},
+{name:"Head O&M",roles:["HEAD_OM"],path:"pages/operations-maintenance/headom.html",type:"PAGE"},
+{name:"Regional Electrical Fault",roles:["REGIONAL_EF","REGIONAL_EF_LEAD"],path:"pages/operations-maintenance/regionalef.html",type:"PAGE"},
+{name:"Regional Civil / Jointing",roles:["REGIONAL_CJ","REGIONAL_CJ_LEAD"],path:"pages/operations-maintenance/regionalcj.html",type:"PAGE"},
+{name:"RE / TE Operations",roles:["RE","TE"],path:"pages/operations-maintenance/re_te.html",type:"PAGE"},
+{name:"Head PC&M",roles:["HEAD_PCM"],path:"pages/pcm/headpcm.html",type:"PAGE"},
+{name:"Regional PC&M",roles:["REGIONAL_PCM_COORD","PROTECTION_ENGINEER","CONTROL_SCADA_ENGINEER","METERING_ENGINEER","TEST_ENGINEER"],path:"pages/pcm/regionalpcm.html",type:"PAGE"},
+{name:"Head Planning & Investment",roles:["HEAD_PI"],path:"pages/planning-investment/headpi.html",type:"PAGE"},
+{name:"Regional Planning & Investment",roles:["REGIONAL_PI_COORD","PLANNING_ENGINEER","PROJECT_ENGINEER"],path:"pages/planning-investment/regionalpi.html",type:"PAGE"},
+{name:"Head HSE",roles:["HEAD_HSE"],path:"pages/hse/headhse.html",type:"PAGE"},
+{name:"Regional HSE",roles:["REGIONAL_HSE_OFFICER","HSE_OFFICER"],path:"pages/hse/regionalhse.html",type:"PAGE"},
+{name:"Head MIS",roles:["HEAD_MIS"],path:"pages/mis/mis.html",type:"PAGE"},
+{name:"MIS Team Lead / Data",roles:["MIS_TEAM_LEAD","DATA_ANALYST"],path:"pages/mis/teamleaddata.html",type:"PAGE"},
+{name:"MIS Operations Team Lead",roles:["MIS_TEAM_LEAD"],path:"pages/mis/teamlead_operatiom_mis.html",type:"PAGE"},
+{name:"TMO",roles:["TMO"],path:"pages/tmo/tmo.html",type:"PAGE"},
+{name:"Feeder Performance Analyzer",roles:["ANALYZER","TMO","DATA_ANALYST"],path:"pages/tmo/analyzer.html",type:"PAGE"},
+{name:"Transmission Interface",roles:["TRANSMISSION","TCN_INTERFACE"],path:"pages/tmo/trans.html",type:"PAGE"},
+{name:"Stores & Inventory",roles:["STORE_MANAGER","STORE_OFFICER"],path:"pages/stores/store-inventory.html",type:"PAGE"},
+{name:"Contractor Portal",roles:["CONTRACTOR_PM","CONTRACTOR_USER"],path:"pages/contractors/contractors.html",type:"PAGE"},
+{name:"Backend Health",roles:["SYSTEM"],path:"health",type:"API"},
+{name:"Admin API",roles:["SUPER_ADMIN","DEVELOPER"],path:"api/admin/health",type:"API"}
+];
+
+const rows = ROUTES.map((r,i)=>({...r,id:i+1,status:"pending",http:"—",checked:"Not checked",detail:""}));
+const $ = id => document.getElementById(id);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+
+function normalizeBase(v){
+  v=(v||"").trim();
+  if(!v) return "";
+  if(!/^https?:\/\//i.test(v)) v="http://"+v;
+  return v.endsWith("/")?v:v+"/";
+}
+function urlFor(path){return normalizeBase($("baseUrl").value)+String(path).replace(/^\/+/, "");}
+
+function render(){
+  const sf=$("statusFilter").value;
+  const q=$("searchBox").value.trim().toLowerCase();
+  const visible=rows.filter(r=>{
+    if(sf && r.status!==sf) return false;
+    if(q && !`${r.name} ${r.roles.join(" ")} ${r.path} ${r.type}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  $("tbody").innerHTML=visible.map(r=>`
+  <tr>
+    <td>${r.id}</td>
+    <td><b>${esc(r.name)}</b>${r.detail?`<div style="color:#7b8796;margin-top:3px">${esc(r.detail)}</div>`:""}</td>
+    <td>${r.roles.map(x=>`<span class="role">${esc(x)}</span>`).join("")}</td>
+    <td class="route">${esc(r.path)}</td>
+    <td>${esc(r.type)}</td>
+    <td><span class="status ${esc(r.status)}">${esc(r.status)}</span></td>
+    <td>${esc(r.http)}</td>
+    <td>${esc(r.checked)}</td>
+    <td><div class="row-actions">
+      <button onclick="checkOne(${r.id})">Test</button>
+      ${r.type==="PAGE"?`<a target="_blank" rel="noopener" href="${esc(urlFor(r.path))}">Open</a>`:""}
+    </div></td>
+  </tr>`).join("");
+
+  $("empty").style.display=visible.length?"none":"block";
+  metrics();
+}
+
+function metrics(){
+  const total=rows.length;
+  const connected=rows.filter(r=>r.status==="connected").length;
+  const unconnected=rows.filter(r=>r.status==="unconnected").length;
+  const pending=rows.filter(r=>["pending","checking","error"].includes(r.status)).length;
+  const pct=total?Math.round(connected/total*100):0;
+  $("total").textContent=total;
+  $("connected").textContent=connected;
+  $("unconnected").textContent=unconnected;
+  $("pending").textContent=pending;
+  $("pct").textContent=pct+"%";
+  $("readiness").textContent=pct>=90?"Ready":pct>=70?"Mostly Ready":pct>=40?"Partially Ready":"Needs Connection";
+  $("ring").style.background=`conic-gradient(var(--green) ${pct*3.6}deg,#e5eaf1 0deg)`;
+}
+
+async function testRoute(item){
+  item.status="checking"; item.http="…"; item.detail=""; render();
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),6500);
+  try{
+    const res=await fetch(urlFor(item.path),{
+      method:"GET",cache:"no-store",credentials:"same-origin",signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    item.http=String(res.status);
+    item.checked=new Date().toLocaleTimeString();
+
+    if(res.ok){
+      if(item.type==="PAGE"){
+        const ct=(res.headers.get("content-type")||"").toLowerCase();
+        if(ct && !ct.includes("text/html")){
+          item.status="error"; item.detail="Reachable, but response is not HTML.";
+        } else {
+          item.status="connected"; item.detail="Route reachable.";
+        }
+      } else {
+        item.status="connected"; item.detail="Endpoint reachable.";
+      }
+    } else if(res.status===401 || res.status===403){
+      item.status="connected"; item.detail=`Protected endpoint reachable (${res.status}).`;
+    } else if(res.status===404){
+      item.status="unconnected"; item.detail="Route/file not found.";
+    } else {
+      item.status="error"; item.detail=`HTTP ${res.status}.`;
+    }
+  }catch(err){
+    clearTimeout(timer);
+    item.http="—"; item.checked=new Date().toLocaleTimeString();
+    if(err && err.name==="AbortError"){item.status="unconnected";item.detail="Connection timed out.";}
+    else {item.status="unconnected";item.detail=(err&&err.message)||"Connection failed.";}
+  }
+  render();
+}
+
+window.checkOne = function(id){
+  const item=rows.find(r=>r.id===id);
+  if(item) testRoute(item);
+};
+
+async function checkAll(){
+  const base=normalizeBase($("baseUrl").value);
+  if(!base){alert("Enter your running KEDCO base URL first.");return;}
+  localStorage.setItem("KEDCO_PREPAREDNESS_BASE_URL",base);
+  const queue=[...rows];
+  const workers=Array.from({length:5},async()=>{
+    while(queue.length){
+      const item=queue.shift();
+      if(item) await testRoute(item);
+    }
+  });
+  await Promise.all(workers);
+}
+
+function exportCsv(){
+  const data=[["No","Module/Page","Roles","Route","Type","Status","HTTP","Last Checked","Detail"]];
+  rows.forEach(r=>data.push([r.id,r.name,r.roles.join(" | "),r.path,r.type,r.status,r.http,r.checked,r.detail]));
+  const csv=data.map(row=>row.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`KEDCO_Preparedness_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function init(){
+  if(location.protocol==="file:") $("fileNotice").style.display="block";
+  const saved=localStorage.getItem("KEDCO_PREPAREDNESS_BASE_URL");
+  const def=(location.protocol==="http:"||location.protocol==="https:")?`${location.origin}/`:"http://localhost:3000/";
+  $("baseUrl").value=saved||def;
+  $("testAllBtn").addEventListener("click",checkAll);
+  $("checkBtn").addEventListener("click",checkAll);
+  $("exportBtn").addEventListener("click",exportCsv);
+  $("statusFilter").addEventListener("change",render);
+  $("searchBox").addEventListener("input",render);
+  render();
+}
+document.addEventListener("DOMContentLoaded",init);
+</script>
+
+<script src="/frontend/kedco-account-controls.js?v=20260912-system-v5" defer></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+KEDCO HEAD PC&M — CORRECTION / VALIDATION REPORT
+Date: 2026-09-19
+
+PASS  HTML document opens/closes once
+PASS  Professional storage-health UI installed
+PASS  Safe PC&M storage writer installed
+PASS  Native save/send workflow event installed
+PASS  Workflow enhancer v2 linked
+PASS  Enhancer v2 marker installed
+PASS  Duplicate sent-record suppression installed
+PASS  Received route-message dedupe installed
+PASS  Route record snapshot installed
+PASS  Deterministic native-save handler installed
+PASS  Workflow health API installed
+PASS  No duplicate static HTML IDs
+
+headpcm.html SHA256: 546351162caaed39eeb09308323e82eba9dc28dd05b202552af05101d83f6480
+workflow enhancer SHA256: 91dedf56f8171cdb7a82841e4d002435215b33c3c983f89ab2b714b7bac0737b
+
+Node syntax validation was completed on the workflow enhancer and both inline JavaScript blocks before packaging.

@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>KEDCO Chief Technical Officer | Technical Directorate Executive Dashboard</title>
+<style>
+:root{--navy:#061b3d;--navy2:#0a326f;--blue:#0f5db7;--blue2:#1779d8;--gold:#d7a72b;--red:#9f1f2e;--green:#087747;--purple:#5b2b91;--orange:#d96b00;--bg:#f3f7fc;--card:#fff;--ink:#172033;--muted:#65758a;--line:#d9e3ef;--soft:#eef4fa;--shadow:0 14px 38px rgba(7,36,78,.08);--radius:18px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 90% -10%,rgba(23,121,216,.12),transparent 32%),radial-gradient(circle at 8% 6%,rgba(215,167,43,.08),transparent 24%),var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}[hidden]{display:none!important}
+.shell{min-height:100vh;display:grid;grid-template-columns:275px 1fr}.sidebar{position:sticky;top:0;height:100vh;padding:18px 14px;background:linear-gradient(180deg,#061d40 0%,#041226 58%,#020a16 100%);color:#fff;display:flex;flex-direction:column;z-index:40;box-shadow:16px 0 45px rgba(4,24,54,.08)}
+.brand{display:flex;align-items:center;gap:12px;padding:10px 10px 16px;border:1px solid rgba(255,255,255,.11);border-radius:17px;background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}.brand img{width:58px;height:58px;object-fit:contain;background:#fff;border-radius:13px;padding:4px}.brand strong{display:block;font-size:17px;letter-spacing:.04em}.brand span{display:block;margin-top:3px;font-size:9px;color:#b9cbe5;line-height:1.45}
+.nav{display:grid;gap:6px;margin:18px 0}.nav button{width:100%;border:1px solid transparent;background:transparent;color:#c8d7ee;text-align:left;padding:11px 12px;border-radius:11px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:10px;transition:.18s}.nav button:hover{transform:translateX(2px);background:rgba(255,255,255,.06);color:#fff}.nav button.active{background:linear-gradient(90deg,rgba(23,121,216,.28),rgba(255,255,255,.07));color:#fff;border-color:rgba(255,255,255,.09);box-shadow:inset 3px 0 0 var(--gold)}.nav i{width:22px;text-align:center;font-style:normal;font-size:15px}.side-note{margin-top:auto;padding:14px 10px;border-top:1px solid rgba(255,255,255,.12);font-size:9px;color:#aebfda;line-height:1.6}.side-note b{color:#ffe39a}
+.main{min-width:0}.topbar{height:78px;position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 5px 25px rgba(16,39,75,.04)}.topbar h1{margin:0;color:#082757;font-size:21px;letter-spacing:-.02em}.topbar p{margin:4px 0 0;font-size:10px;color:var(--muted)}.top-actions{display:flex;align-items:center;gap:9px}.usercard{display:flex;align-items:center;gap:9px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff}.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#0a397a,#1779d8);color:#fff;font-weight:1000;font-size:10px}.usercard input{border:0;outline:0;width:160px;font-size:11px;font-weight:800;color:#0b356f}.clock{display:grid;line-height:1.15;text-align:right}.clock b{font-size:11px;color:#0b356f}.clock small{font-size:8px;color:var(--muted)}.home{text-decoration:none;padding:8px 11px;border:1px solid var(--line);border-radius:10px;color:#173d68;font-size:10px;font-weight:900;background:#fff}
+.view{display:none;padding:22px 24px 40px}.view.active{display:block}.hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.6fr);gap:22px;align-items:center;padding:28px 30px;margin-bottom:17px;border-radius:24px;color:#fff;background:radial-gradient(circle at 90% 5%,rgba(255,220,110,.26),transparent 23%),linear-gradient(125deg,#061b3d 0%,#0a3677 55%,#0f64bc 100%);box-shadow:0 22px 55px rgba(7,35,76,.18)}.hero:after{content:"";position:absolute;width:360px;height:360px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:-130px;bottom:-250px}.hero>*{position:relative;z-index:1}.eyebrow{font-size:9px;font-weight:1000;letter-spacing:.15em;color:#ffe39a}.hero h2{font-size:29px;margin:8px 0 9px;letter-spacing:-.03em;line-height:1.1}.hero p{font-size:11px;line-height:1.7;color:#dce9fb;margin:0;max-width:760px}.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.hero-stats div{padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(255,255,255,.08)}.hero-stats strong{display:block;font-size:24px;color:#ffe49a}.hero-stats span{font-size:8px;color:#e5effd;font-weight:800}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:16px}.kpi,.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.kpi{padding:16px;position:relative;overflow:hidden}.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--blue2),var(--gold))}.kpi small{font-size:8px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.kpi strong{display:block;font-size:26px;color:#0b356f;margin:6px 0}.kpi span{font-size:9px;color:var(--muted)}
+.grid{display:grid;gap:14px}.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}.panel{padding:17px;min-width:0}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}.panel-head h3{margin:0;font-size:15px;color:#082757}.panel-head p{margin:4px 0 0;font-size:9px;color:var(--muted)}.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:8px;font-weight:1000;letter-spacing:.04em}.badge.blue{background:#e7f1ff;color:#0f55a5}.badge.green{background:#e9f8f0;color:#087044}.badge.gold{background:#fff3cc;color:#825900}
+.formcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.formcard{position:relative;overflow:hidden;padding:16px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(180deg,#fff,#f8fbff);min-height:142px;transition:.18s;cursor:pointer}.formcard:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(14,62,120,.11);border-color:#afc9ea}.formcard .icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#eaf3ff,#fff7d9);font-size:20px}.formcard h4{margin:10px 0 5px;font-size:12px;color:#0a3874}.formcard p{margin:0;font-size:9px;line-height:1.55;color:var(--muted)}.formcard:after{content:"";position:absolute;width:85px;height:85px;border-radius:50%;right:-42px;top:-46px;background:rgba(23,121,216,.06)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.btn{border:1px solid transparent;border-radius:10px;padding:9px 12px;font-size:10px;font-weight:900}.btn.primary{background:linear-gradient(180deg,#176dca,#0e4f9e);color:#fff}.btn.ghost{background:#fff;border-color:var(--line);color:#173d68}.btn.success{background:#087747;color:#fff}.btn.danger{background:#a82a33;color:#fff}.btn.gold{background:#d7a72b;color:#092348}
+.forms-layout{display:grid;grid-template-columns:245px 1fr;gap:14px}.form-picker{position:sticky;top:96px;height:max-content;padding:9px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);border-top:4px solid var(--gold)}.form-picker button{width:100%;border:1px solid transparent;border-radius:9px;background:transparent;text-align:left;padding:10px;font-size:9.5px;font-weight:850;color:#44546a}.form-picker button:hover,.form-picker button.active{background:linear-gradient(90deg,#eaf3ff,#fbfdff);color:#0b4b99;border-color:#c6d8ef;box-shadow:inset 3px 0 0 var(--gold)}
+.form-workspace{min-width:0}.paper-shell{padding:15px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.4),transparent),#e4ebf4;border:1px solid #d2dde9;overflow:auto}.paper{width:min(1120px,100%);margin:auto;background:#fff;color:#111;padding:25px;border-radius:6px;border-top:7px solid var(--form,#174f8d);box-shadow:0 18px 52px rgba(7,31,68,.17)}.paper.landscape{width:min(1320px,100%)}.form-head{display:grid;grid-template-columns:88px 1fr 160px;gap:15px;align-items:center;border-bottom:2px solid var(--form,#174f8d);padding-bottom:10px;margin-bottom:11px}.form-head img{width:76px;height:76px;object-fit:contain}.form-head h2{margin:0;text-align:center;font-size:21px;color:var(--form,#174f8d)}.form-head p{margin:4px 0 0;text-align:center;font-size:8px;font-weight:850;color:#53657a}.form-ref{text-align:right;font-size:8px;color:#5a6878}.form-ref input{width:100%;margin-top:4px}
+.smart-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 10px;padding:10px;margin:9px 0 11px;border-radius:9px;background:#f6f9fd;border:1px solid #d8e3ef}.field{display:grid;gap:4px;min-width:0}.field.w2{grid-column:span 2}.field.w4{grid-column:1/-1}.field label,.label{font-size:7.5px;font-weight:1000;text-transform:uppercase;letter-spacing:.035em;color:var(--form,#174f8d)}input,select,textarea{width:100%;border:1px solid #b9c7d6;border-radius:6px;padding:7px 8px;background:#fff;color:#172033;outline:none;font-size:9px}textarea{min-height:65px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:#1765bb;box-shadow:0 0 0 2px rgba(23,101,187,.11)}.section-title{margin:13px 0 7px;padding:7px 9px;border-radius:5px;background:linear-gradient(90deg,var(--form,#174f8d),color-mix(in srgb,var(--form,#174f8d) 78%,#fff));color:#fff;font-size:9px;font-weight:1000;letter-spacing:.04em}.note{padding:8px 10px;border-left:4px solid var(--gold);background:#fff9e8;color:#665116;font-size:8px;line-height:1.5;margin:8px 0}
+.ftable{width:100%;border-collapse:collapse;font-size:8px}.ftable th,.ftable td{border:1px solid #9eabb9;padding:5px;vertical-align:top}.ftable th{background:var(--form,#174f8d);color:#fff;font-weight:900}.ftable input,.ftable select,.ftable textarea{font-size:7.5px;padding:4px;border-radius:3px}.ftable textarea{min-height:40px}.test-result{font-weight:1000}.pass{background:#e7f7ef!important;color:#087044!important}.attention{background:#fff4d6!important;color:#8a5d00!important}.fail{background:#ffe8ea!important;color:#971d2e!important}
+.checkgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.checkitem{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid #d9e3ef;border-radius:8px;background:#fafcff;font-size:8px}.checkitem input{width:auto}.sign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}.signbox{padding:9px;border:1px solid #c3cfdd;border-radius:8px;background:#fbfdff}.signbox b{display:block;font-size:8px;color:var(--form,#174f8d);margin-bottom:6px}.sig-wrap{border:1px dashed #9fb1c5;border-radius:6px;background:#fff;overflow:hidden}.sig-canvas{display:block;width:100%;height:86px;touch-action:none;cursor:crosshair}.sig-tools{display:flex;gap:4px;padding:5px;border-top:1px solid #e0e8f1;background:#f7f9fc}.sig-tools button,.sig-tools label{border:1px solid #cbd6e2;background:#fff;border-radius:5px;padding:4px 6px;font-size:7px;font-weight:850;color:#31506f;cursor:pointer}.sig-tools input{display:none}.dispatch{margin-top:13px;padding:11px;border:1px solid #c4d5e8;border-radius:10px;background:linear-gradient(90deg,#f3f8ff,#fffaf0)}.dispatch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.dispatch h4{margin:0 0 8px;font-size:10px;color:#0b3f7b}.dispatch p{margin:0 0 8px;font-size:8px;color:var(--muted)}.actionbar{display:flex;justify-content:flex-end;gap:7px;flex-wrap:wrap;margin-top:11px}.status-banner{margin-top:8px;padding:7px 9px;border-radius:7px;background:#eef4fa;color:#53657a;font-size:8px}.status-banner.ok{background:#eaf8f0;color:#087044}.status-banner.warn{background:#fff6dc;color:#7c5900}
+.records-table{width:100%;border-collapse:collapse;font-size:9px}.records-table th{background:#0a326f;color:#fff;text-align:left;padding:8px;position:sticky;top:0}.records-table td{padding:8px;border-bottom:1px solid var(--line)}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}.empty{padding:30px;text-align:center;color:var(--muted);font-size:10px}
+.ref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.ref-card{padding:15px;border:1px solid var(--line);border-radius:14px;background:#fff}.ref-card h4{margin:0 0 7px;color:#0a3979;font-size:11px}.ref-card p{margin:0;color:var(--muted);font-size:8px;line-height:1.6}.ref-card b{color:#172033}
+.mobile{display:none}
+@media(max-width:1150px){.hero{grid-template-columns:1fr}.formcards{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:1fr 1fr}.smart-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.shell{grid-template-columns:1fr}.sidebar{position:fixed;left:-290px;width:275px;transition:.2s}.sidebar.open{left:0}.mobile{display:block}.topbar{padding:0 12px}.topbar p,.clock{display:none}.view{padding:15px}.forms-layout{grid-template-columns:1fr}.form-picker{position:static;display:flex;overflow:auto}.form-picker button{min-width:190px}.formcards,.grid.two,.grid.three,.sign-grid,.dispatch-grid{grid-template-columns:1fr}.paper{padding:13px}.form-head{grid-template-columns:55px 1fr}.form-head img{width:50px;height:50px}.form-ref{grid-column:1/-1;text-align:left}}
+@media(max-width:540px){.hero-stats,.kpis,.smart-grid,.checkgrid{grid-template-columns:1fr}.formcards{grid-template-columns:1fr}.field.w2{grid-column:span 1}.usercard input{width:110px}}
+@media print{body{background:#fff}.sidebar,.topbar,.hero,.form-picker,.dispatch,.actionbar,.no-print{display:none!important}.shell{display:block}.view{display:none!important;padding:0}#formsView.active{display:block!important}.forms-layout{display:block}.paper-shell{padding:0;border:0;background:#fff}.paper{box-shadow:none;width:100%!important;max-width:none!important;margin:0;padding:8mm;border-top-width:4px}.sig-tools{display:none}.sig-wrap{border:0}@page{margin:6mm;size:A4 landscape}}
+
+/* Regional HSE premium accent */
+.formcard:nth-child(4n+1) .icon{background:linear-gradient(145deg,#e8f2ff,#fff5ce)}
+.formcard:nth-child(4n+2) .icon{background:linear-gradient(145deg,#e9f8f0,#eef5ff)}
+.formcard:nth-child(4n+3) .icon{background:linear-gradient(145deg,#f2eafe,#fff)}
+.formcard:nth-child(4n) .icon{background:linear-gradient(145deg,#fff0e4,#fff8da)}
+.formcard h4{font-size:12.5px}.panel{backdrop-filter:saturate(1.04)}
+</style>
+<style id="regional-cj-premium-accent">
+:root{--cj-copper:#c56b2c;--cj-copper2:#e28b42;--cj-teal:#0a6d72;--cj-ink:#082757}
+.hero{
+  background:
+    radial-gradient(circle at 88% 7%,rgba(255,205,116,.31),transparent 24%),
+    radial-gradient(circle at 68% 110%,rgba(8,126,135,.22),transparent 32%),
+    linear-gradient(125deg,#05182f 0%,#082f68 53%,#0a5e8a 100%);
+}
+.hero:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(#f3b35e,#c56b2c,#0a8087)}
+.kpi:before{background:linear-gradient(var(--cj-teal),var(--cj-copper2))}
+.form-picker{border-top-color:var(--cj-copper2)}
+.form-picker button:hover,.form-picker button.active{box-shadow:inset 3px 0 0 var(--cj-copper2)}
+.formcard{border-top:2px solid rgba(10,109,114,.12)}
+.formcard:hover{border-color:#9fc9d0;box-shadow:0 18px 38px rgba(8,70,105,.13)}
+.formcard .icon{background:linear-gradient(145deg,#e9f9f8,#fff2da)}
+.formcard:nth-child(4n+2) .icon{background:linear-gradient(145deg,#eaf3ff,#fff2db)}
+.formcard:nth-child(4n+3) .icon{background:linear-gradient(145deg,#eefbf6,#f7efff)}
+.formcard:nth-child(4n) .icon{background:linear-gradient(145deg,#fff0e4,#eaf8f9)}
+.paper{box-shadow:0 20px 58px rgba(4,42,78,.18)}
+.section-title{box-shadow:inset 0 -1px 0 rgba(255,255,255,.15)}
+.cable-quality-note{margin:9px 0;padding:9px 11px;border-radius:8px;border:1px solid #d8e7ea;background:linear-gradient(90deg,#eefafa,#fff8ec);font-size:8px;line-height:1.55;color:#34505a}
+.cable-quality-note b{color:#075f66}
+</style>
+
+<style id="regional-hse-premium-accent">
+:root{
+  --hse-green:#087747;
+  --hse-green2:#0f9a5c;
+  --hse-gold:#d9a928;
+  --hse-red:#a91d2d;
+  --hse-navy:#071f45;
+  --hse-teal:#087f83;
+}
+.hero{
+  background:
+    radial-gradient(circle at 88% 8%,rgba(255,220,112,.32),transparent 24%),
+    radial-gradient(circle at 72% 112%,rgba(17,167,105,.22),transparent 34%),
+    linear-gradient(126deg,#04172d 0%,#07386a 48%,#0b6d63 100%);
+}
+.hero:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:linear-gradient(#f1c45b,#10a56b,#0c7f83);
+}
+.kpi:before{background:linear-gradient(var(--hse-green2),var(--hse-gold))}
+.form-picker{border-top-color:var(--hse-gold)}
+.form-picker button:hover,.form-picker button.active{box-shadow:inset 3px 0 0 var(--hse-gold)}
+.formcard{border-top:2px solid rgba(8,119,71,.12)}
+.formcard:hover{border-color:#a8d9ba;box-shadow:0 18px 38px rgba(7,87,58,.12)}
+.formcard .icon{background:linear-gradient(145deg,#e9fbf2,#fff5dc)}
+.formcard:nth-child(4n+2) .icon{background:linear-gradient(145deg,#eaf3ff,#eefbf4)}
+.formcard:nth-child(4n+3) .icon{background:linear-gradient(145deg,#fff0f0,#fff8df)}
+.formcard:nth-child(4n) .icon{background:linear-gradient(145deg,#e9f8f8,#f7efff)}
+.paper{box-shadow:0 20px 58px rgba(3,49,52,.18)}
+.hse-note{
+  margin:9px 0;padding:10px 12px;border-radius:9px;
+  border:1px solid #cae2d5;
+  background:linear-gradient(90deg,#eefbf4,#fff9e7);
+  color:#395349;font-size:8px;line-height:1.6
+}
+.hse-note b{color:#087747}
+.hazard-high{background:#fff0f0!important;color:#8e1c1c!important;font-weight:900}
+.hazard-medium{background:#fff7da!important;color:#775600!important;font-weight:900}
+.hazard-low{background:#ecf9f1!important;color:#087747!important;font-weight:900}
+.mini-signature{padding:4px!important;min-width:170px}
+.mini-signature .sig-canvas{height:58px!important;min-height:58px!important}
+.mini-signature .sig-tools{gap:3px!important}
+.mini-signature .sig-tools button,.mini-signature .sig-tools label{padding:3px 5px!important;font-size:7px!important}
+.hse-matrix textarea{min-height:46px}
+@media(max-width:800px){
+  .mini-signature{min-width:150px}
+}
+</style>
+
+<style id="head-hse-executive-ui">
+:root{
+  --hhse-green:#087747;--hhse-green2:#10a56b;--hhse-navy:#041a39;
+  --hhse-blue:#0c4f9d;--hhse-gold:#d9a928;--hhse-red:#a91d2d;--hhse-amber:#d77800
+}
+.sidebar{background:
+  radial-gradient(circle at 80% 8%,rgba(217,169,40,.13),transparent 22%),
+  linear-gradient(180deg,#031b3a 0%,#04152e 52%,#020a16 100%)}
+.hero{
+  background:
+    radial-gradient(circle at 88% 5%,rgba(255,217,99,.31),transparent 23%),
+    radial-gradient(circle at 70% 120%,rgba(10,166,107,.24),transparent 35%),
+    linear-gradient(125deg,#031832 0%,#063c72 51%,#08755f 100%)
+}
+.hero:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(#e7b83a,#10a56b,#0e7ca0)}
+.kpi:before{background:linear-gradient(var(--hhse-green2),var(--hhse-gold))}
+.exec-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;margin-bottom:14px}
+.exec-alerts{display:grid;gap:8px}
+.exec-alert{padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:#f8fbff;font-size:9px;line-height:1.5}
+.exec-alert strong{display:block;color:#082757;font-size:10px;margin-bottom:3px}
+.exec-alert.critical{background:#fff0f0;border-color:#efb4b4}.exec-alert.critical strong{color:#8f1d26}
+.exec-alert.warn{background:#fff8e6;border-color:#ead48d}.exec-alert.warn strong{color:#795700}
+.exec-alert.ok{background:#eefbf4;border-color:#a8d9ba}.exec-alert.ok strong{color:#087747}
+.region-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.region-card{position:relative;overflow:hidden;padding:13px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.region-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#0d6d72}
+.region-card h4{margin:0 0 6px;color:#082757;font-size:11px}.region-card small{color:var(--muted);font-size:7px}
+.region-card .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}.region-card .nums div{padding:6px;border-radius:7px;background:#edf4fb;text-align:center}
+.region-card .nums b{display:block;color:#0a4e98;font-size:12px}.region-card .nums span{font-size:6px;color:#687a8f;font-weight:900}
+.region-card.no-data:before{background:#a9b4c1}.region-card.incident:before{background:#a91d2d}
+.exec-table{width:100%;border-collapse:collapse;font-size:9px}.exec-table th,.exec-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.exec-table th{background:#082f67;color:#fff;font-size:7px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+.exec-table tr:hover td{background:#f5f9fd}
+.score-chip{display:inline-flex;min-width:58px;justify-content:center;padding:4px 6px;border-radius:999px;font-size:7px;font-weight:1000}
+.score-good{background:#e9f8f0;color:#087747}.score-watch{background:#fff4d4;color:#7d5900}.score-risk{background:#fff0f0;color:#9d1e2b}.score-none{background:#edf1f5;color:#64748b}
+.mgmt-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;margin-bottom:12px}
+.mgmt-toolbar select,.mgmt-toolbar input{background:#fff}
+.metric-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.metric-box{padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.metric-box small{display:block;font-size:7px;font-weight:900;color:var(--muted);text-transform:uppercase}.metric-box b{display:block;margin-top:5px;color:#0b356f;font-size:19px}
+.action-status{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:7px;font-weight:1000}
+.action-open{background:#fff0f0;color:#9f1f2e}.action-progress{background:#fff5d9;color:#805d00}.action-closed{background:#e8f8ef;color:#087747}
+.formcard .icon{background:linear-gradient(145deg,#e8faf1,#fff3d4)}
+.form-picker{border-top-color:var(--hhse-gold)}.form-picker button:hover,.form-picker button.active{box-shadow:inset 3px 0 0 var(--hhse-gold)}
+.management-note{padding:9px 11px;margin:9px 0;border:1px solid #cce0d5;border-left:4px solid #087747;border-radius:8px;background:linear-gradient(90deg,#eefbf4,#fff9e7);font-size:8px;line-height:1.6;color:#42554d}
+.management-note b{color:#087747}
+.score-table select{min-width:105px}
+@media(max-width:1200px){.region-grid{grid-template-columns:repeat(3,1fr)}.metric-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.exec-grid{grid-template-columns:1fr}.region-grid{grid-template-columns:repeat(2,1fr)}.mgmt-toolbar{grid-template-columns:1fr 1fr}.metric-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.region-grid,.metric-strip,.mgmt-toolbar{grid-template-columns:1fr}}
+</style>
+
+<style id="kedco-contractor-dashboard-ui">
+:root{
+  --kc-navy:#041a39;--kc-blue:#0b4e9d;--kc-blue2:#1265c8;
+  --kc-gold:#d9a928;--kc-green:#087747;--kc-red:#a91d2d;--kc-orange:#d77800;
+}
+.sidebar{
+  background:
+    radial-gradient(circle at 80% 8%,rgba(217,169,40,.14),transparent 22%),
+    linear-gradient(180deg,#031a39 0%,#04132a 54%,#020914 100%)
+}
+.hero{
+  background:
+    radial-gradient(circle at 88% 5%,rgba(255,217,99,.31),transparent 23%),
+    radial-gradient(circle at 70% 120%,rgba(18,101,200,.25),transparent 36%),
+    linear-gradient(125deg,#031832 0%,#08376f 52%,#0a588c 100%)
+}
+.hero:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(#e5b433,#1265c8,#087747)}
+.kpi:before{background:linear-gradient(var(--kc-blue2),var(--kc-gold))}
+.contract-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.contract-card{position:relative;overflow:hidden;padding:14px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.contract-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#1265c8}
+.contract-card.active:before{background:#087747}.contract-card.hold:before{background:#d77800}.contract-card.risk:before{background:#a91d2d}
+.contract-card h4{margin:0 0 5px;font-size:11px;color:#082757}.contract-card small{font-size:7px;color:var(--muted)}
+.contract-card .contract-meta{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
+.contract-card .contract-meta div{padding:7px;border-radius:7px;background:#edf4fb}
+.contract-card .contract-meta b{display:block;font-size:11px;color:#0a4e98}.contract-card .contract-meta span{font-size:6px;color:#65768b;font-weight:900}
+.progress-bar{height:7px;border-radius:999px;background:#e5ebf3;overflow:hidden;margin-top:9px}
+.progress-bar i{display:block;height:100%;background:linear-gradient(90deg,#1265c8,#087747);border-radius:999px}
+.exec-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;margin-bottom:14px}
+.exec-alerts{display:grid;gap:8px}.exec-alert{padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:#f8fbff;font-size:9px;line-height:1.5}
+.exec-alert strong{display:block;color:#082757;font-size:10px;margin-bottom:3px}
+.exec-alert.critical{background:#fff0f0;border-color:#efb4b4}.exec-alert.critical strong{color:#8f1d26}
+.exec-alert.warn{background:#fff8e6;border-color:#ead48d}.exec-alert.warn strong{color:#795700}
+.exec-alert.ok{background:#eefbf4;border-color:#a8d9ba}.exec-alert.ok strong{color:#087747}
+.metric-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.metric-box{padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}.metric-box small{display:block;font-size:7px;font-weight:900;color:var(--muted);text-transform:uppercase}.metric-box b{display:block;margin-top:5px;color:#0b356f;font-size:19px}
+.management-note{padding:9px 11px;margin:9px 0;border:1px solid #cfddeb;border-left:4px solid #1265c8;border-radius:8px;background:linear-gradient(90deg,#eef5ff,#fff9e7);font-size:8px;line-height:1.6;color:#42536b}.management-note b{color:#0b4e9d}
+.contractor-profile-strip{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.contractor-profile-strip .metric-box b{font-size:13px}
+.formcard .icon{background:linear-gradient(145deg,#eaf3ff,#fff3d4)}
+.form-picker{border-top-color:var(--kc-gold)}.form-picker button:hover,.form-picker button.active{box-shadow:inset 3px 0 0 var(--kc-gold)}
+.status-chip{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:7px;font-weight:1000}
+.sc-open{background:#eaf3ff;color:#0b4e9d}.sc-progress{background:#eefbf4;color:#087747}.sc-hold{background:#fff5d9;color:#805d00}.sc-risk{background:#fff0f0;color:#9f1f2e}.sc-closed{background:#edf1f5;color:#64748b}
+.mgmt-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;margin-bottom:12px}
+.mgmt-toolbar select,.mgmt-toolbar input{background:#fff}
+.exec-table{width:100%;border-collapse:collapse;font-size:9px}.exec-table th,.exec-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.exec-table th{background:#082f67;color:#fff;font-size:7px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}.exec-table tr:hover td{background:#f5f9fd}
+.qa-pass{background:#e9f8f0!important;color:#087747!important;font-weight:900}.qa-attn{background:#fff4d4!important;color:#7d5900!important;font-weight:900}.qa-fail{background:#fff0f0!important;color:#9d1e2b!important;font-weight:900}
+@media(max-width:1200px){.contract-grid{grid-template-columns:repeat(3,1fr)}.metric-strip{grid-template-columns:repeat(3,1fr)}.contractor-profile-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.exec-grid{grid-template-columns:1fr}.contract-grid{grid-template-columns:repeat(2,1fr)}.mgmt-toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.contract-grid,.metric-strip,.mgmt-toolbar,.contractor-profile-strip{grid-template-columns:1fr}}
+</style>
+
+<style id="head-pi-executive-ui">
+:root{
+  --pi-navy:#041a39;--pi-blue:#0b4e9d;--pi-blue2:#1265c8;--pi-gold:#d9a928;
+  --pi-green:#087747;--pi-red:#a91d2d;--pi-purple:#5a2d91;--pi-teal:#0a6f74;
+}
+.sidebar{
+  background:
+    radial-gradient(circle at 80% 7%,rgba(217,169,40,.14),transparent 23%),
+    linear-gradient(180deg,#031a39 0%,#041329 54%,#020914 100%)
+}
+.hero{
+  background:
+    radial-gradient(circle at 88% 5%,rgba(255,217,99,.31),transparent 23%),
+    radial-gradient(circle at 70% 120%,rgba(90,45,145,.22),transparent 35%),
+    linear-gradient(125deg,#031832 0%,#08376f 52%,#0a5d86 100%)
+}
+.hero:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(#e5b433,#1265c8,#5a2d91)}
+.kpi:before{background:linear-gradient(var(--pi-blue2),var(--pi-gold))}
+.exec-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;margin-bottom:14px}
+.exec-alerts{display:grid;gap:8px}
+.exec-alert{padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:#f8fbff;font-size:9px;line-height:1.5}
+.exec-alert strong{display:block;color:#082757;font-size:10px;margin-bottom:3px}
+.exec-alert.critical{background:#fff0f0;border-color:#efb4b4}.exec-alert.critical strong{color:#8f1d26}
+.exec-alert.warn{background:#fff8e6;border-color:#ead48d}.exec-alert.warn strong{color:#795700}
+.exec-alert.ok{background:#eefbf4;border-color:#a8d9ba}.exec-alert.ok strong{color:#087747}
+.project-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.project-card{position:relative;overflow:hidden;padding:14px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.project-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#1265c8}
+.project-card.active:before{background:#087747}.project-card.hold:before{background:#d77800}.project-card.risk:before{background:#a91d2d}
+.project-card h4{margin:0 0 5px;font-size:11px;color:#082757}.project-card small{font-size:7px;color:var(--muted)}
+.project-card .project-meta{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
+.project-card .project-meta div{padding:7px;border-radius:7px;background:#edf4fb}
+.project-card .project-meta b{display:block;font-size:11px;color:#0a4e98}.project-card .project-meta span{font-size:6px;color:#65768b;font-weight:900}
+.progress-bar{height:7px;border-radius:999px;background:#e5ebf3;overflow:hidden;margin-top:9px}
+.progress-bar i{display:block;height:100%;background:linear-gradient(90deg,#1265c8,#087747);border-radius:999px}
+.metric-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.metric-box{padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.metric-box small{display:block;font-size:7px;font-weight:900;color:var(--muted);text-transform:uppercase}
+.metric-box b{display:block;margin-top:5px;color:#0b356f;font-size:19px}
+.management-note{padding:9px 11px;margin:9px 0;border:1px solid #cfddeb;border-left:4px solid #1265c8;border-radius:8px;background:linear-gradient(90deg,#eef5ff,#fff9e7);font-size:8px;line-height:1.6;color:#42536b}
+.management-note b{color:#0b4e9d}
+.mgmt-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;margin-bottom:12px}
+.mgmt-toolbar select,.mgmt-toolbar input{background:#fff}
+.exec-table{width:100%;border-collapse:collapse;font-size:9px}
+.exec-table th,.exec-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.exec-table th{background:#082f67;color:#fff;font-size:7px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+.exec-table tr:hover td{background:#f5f9fd}
+.status-chip{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:7px;font-weight:1000}
+.sc-open{background:#eaf3ff;color:#0b4e9d}.sc-progress{background:#eefbf4;color:#087747}.sc-hold{background:#fff5d9;color:#805d00}.sc-risk{background:#fff0f0;color:#9f1f2e}.sc-closed{background:#edf1f5;color:#64748b}
+.formcard .icon{background:linear-gradient(145deg,#eaf3ff,#f3ecff)}
+.form-picker{border-top-color:var(--pi-gold)}
+.form-picker button:hover,.form-picker button.active{box-shadow:inset 3px 0 0 var(--pi-gold)}
+@media(max-width:1200px){.project-grid{grid-template-columns:repeat(3,1fr)}.metric-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.exec-grid{grid-template-columns:1fr}.project-grid{grid-template-columns:repeat(2,1fr)}.mgmt-toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.project-grid,.metric-strip,.mgmt-toolbar{grid-template-columns:1fr}}
+</style>
+
+<style id="head-pcm-executive-ui">
+:root{
+  --pcm-navy:#041a39;--pcm-blue:#0b4e9d;--pcm-blue2:#1265c8;
+  --pcm-teal:#087c82;--pcm-green:#087747;--pcm-gold:#d9a928;
+  --pcm-red:#a91d2d;--pcm-purple:#5a2d91;--pcm-orange:#d77800;
+}
+.sidebar{
+  background:
+    radial-gradient(circle at 80% 7%,rgba(217,169,40,.14),transparent 23%),
+    linear-gradient(180deg,#031a39 0%,#041329 54%,#020914 100%)
+}
+.hero{
+  background:
+    radial-gradient(circle at 88% 5%,rgba(255,217,99,.31),transparent 23%),
+    radial-gradient(circle at 70% 120%,rgba(8,124,130,.24),transparent 35%),
+    linear-gradient(125deg,#031832 0%,#08376f 51%,#0a6276 100%)
+}
+.hero:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:linear-gradient(#e5b433,#1265c8,#087c82)
+}
+.kpi:before{background:linear-gradient(var(--pcm-teal),var(--pcm-gold))}
+.exec-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;margin-bottom:14px}
+.exec-alerts{display:grid;gap:8px}
+.exec-alert{padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:#f8fbff;font-size:9px;line-height:1.5}
+.exec-alert strong{display:block;color:#082757;font-size:10px;margin-bottom:3px}
+.exec-alert.critical{background:#fff0f0;border-color:#efb4b4}.exec-alert.critical strong{color:#8f1d26}
+.exec-alert.warn{background:#fff8e6;border-color:#ead48d}.exec-alert.warn strong{color:#795700}
+.exec-alert.ok{background:#eefbf4;border-color:#a8d9ba}.exec-alert.ok strong{color:#087747}
+.region-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.region-card{position:relative;overflow:hidden;padding:13px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.region-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#087c82}
+.region-card.no-data:before{background:#a9b4c1}.region-card.attention:before{background:#d77800}.region-card.risk:before{background:#a91d2d}
+.region-card h4{margin:0 0 6px;color:#082757;font-size:11px}.region-card small{color:var(--muted);font-size:7px}
+.region-card .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}
+.region-card .nums div{padding:6px;border-radius:7px;background:#edf4fb;text-align:center}
+.region-card .nums b{display:block;color:#0a4e98;font-size:12px}.region-card .nums span{font-size:6px;color:#687a8f;font-weight:900}
+.metric-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.metric-box{padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.metric-box small{display:block;font-size:7px;font-weight:900;color:var(--muted);text-transform:uppercase}
+.metric-box b{display:block;margin-top:5px;color:#0b356f;font-size:19px}
+.management-note{
+  padding:9px 11px;margin:9px 0;border:1px solid #cfe2e2;border-left:4px solid #087c82;
+  border-radius:8px;background:linear-gradient(90deg,#eefafa,#fff9e7);font-size:8px;line-height:1.6;color:#40565a
+}
+.management-note b{color:#087c82}
+.mgmt-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;margin-bottom:12px}
+.mgmt-toolbar select,.mgmt-toolbar input{background:#fff}
+.exec-table{width:100%;border-collapse:collapse;font-size:9px}
+.exec-table th,.exec-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.exec-table th{background:#082f67;color:#fff;font-size:7px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+.exec-table tr:hover td{background:#f5f9fd}
+.status-chip{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:7px;font-weight:1000}
+.sc-open{background:#eaf3ff;color:#0b4e9d}.sc-progress{background:#eefbf4;color:#087747}
+.sc-attn{background:#fff5d9;color:#805d00}.sc-risk{background:#fff0f0;color:#9f1f2e}.sc-closed{background:#edf1f5;color:#64748b}
+.formcard .icon{background:linear-gradient(145deg,#e9f8f8,#edf3ff)}
+.form-picker{border-top-color:var(--pcm-gold)}
+.form-picker button:hover,.form-picker button.active{box-shadow:inset 3px 0 0 var(--pcm-gold)}
+.score-table select{min-width:110px}
+@media(max-width:1200px){.region-grid{grid-template-columns:repeat(3,1fr)}.metric-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.exec-grid{grid-template-columns:1fr}.region-grid{grid-template-columns:repeat(2,1fr)}.mgmt-toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.region-grid,.metric-strip,.mgmt-toolbar{grid-template-columns:1fr}}
+</style>
+
+<style id="head-so-executive-ui">
+:root{
+  --so-navy:#03162f;--so-blue:#0a4f9c;--so-blue2:#1265c8;--so-cyan:#087c9b;
+  --so-green:#087747;--so-gold:#d9a928;--so-red:#a91d2d;--so-orange:#d77800;
+}
+.sidebar{
+  background:
+    radial-gradient(circle at 80% 7%,rgba(217,169,40,.14),transparent 23%),
+    linear-gradient(180deg,#02172f 0%,#041329 54%,#020914 100%)
+}
+.hero{
+  background:
+    radial-gradient(circle at 88% 5%,rgba(255,217,99,.31),transparent 23%),
+    radial-gradient(circle at 72% 120%,rgba(8,124,155,.24),transparent 35%),
+    linear-gradient(125deg,#02162f 0%,#08366e 49%,#08667d 100%)
+}
+.hero:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:linear-gradient(#e5b433,#1265c8,#087c9b)
+}
+.kpi:before{background:linear-gradient(var(--so-cyan),var(--so-gold))}
+.exec-grid{display:grid;grid-template-columns:1.28fr .72fr;gap:14px;margin-bottom:14px}
+.exec-alerts{display:grid;gap:8px}
+.exec-alert{padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:#f8fbff;font-size:9px;line-height:1.5}
+.exec-alert strong{display:block;color:#082757;font-size:10px;margin-bottom:3px}
+.exec-alert.critical{background:#fff0f0;border-color:#efb4b4}.exec-alert.critical strong{color:#8f1d26}
+.exec-alert.warn{background:#fff8e6;border-color:#ead48d}.exec-alert.warn strong{color:#795700}
+.exec-alert.ok{background:#eefbf4;border-color:#a8d9ba}.exec-alert.ok strong{color:#087747}
+.metric-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.metric-box{padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.metric-box small{display:block;font-size:7px;font-weight:900;color:var(--muted);text-transform:uppercase}
+.metric-box b{display:block;margin-top:5px;color:#0b356f;font-size:19px}
+.system-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.system-card{position:relative;overflow:hidden;padding:13px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.system-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#087c9b}
+.system-card.warn:before{background:#d77800}.system-card.risk:before{background:#a91d2d}.system-card.ok:before{background:#087747}
+.system-card h4{margin:0 0 6px;color:#082757;font-size:11px}.system-card small{color:var(--muted);font-size:7px}
+.system-card .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}
+.system-card .nums div{padding:6px;border-radius:7px;background:#edf4fb;text-align:center}
+.system-card .nums b{display:block;color:#0a4e98;font-size:12px}.system-card .nums span{font-size:6px;color:#687a8f;font-weight:900}
+.management-note{
+  padding:9px 11px;margin:9px 0;border:1px solid #cbdfe8;border-left:4px solid #087c9b;
+  border-radius:8px;background:linear-gradient(90deg,#eef9fc,#fff9e7);font-size:8px;line-height:1.6;color:#40545b
+}
+.management-note b{color:#087c9b}
+.mgmt-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;margin-bottom:12px}
+.mgmt-toolbar select,.mgmt-toolbar input{background:#fff}
+.exec-table{width:100%;border-collapse:collapse;font-size:9px}
+.exec-table th,.exec-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.exec-table th{background:#082f67;color:#fff;font-size:7px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+.exec-table tr:hover td{background:#f5f9fd}
+.status-chip{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:7px;font-weight:1000}
+.sc-open{background:#eaf3ff;color:#0b4e9d}.sc-progress{background:#eefbf4;color:#087747}
+.sc-attn{background:#fff5d9;color:#805d00}.sc-risk{background:#fff0f0;color:#9f1f2e}.sc-closed{background:#edf1f5;color:#64748b}
+.formcard .icon{background:linear-gradient(145deg,#e9f7fb,#edf3ff)}
+.form-picker{border-top-color:var(--so-gold)}
+.form-picker button:hover,.form-picker button.active{box-shadow:inset 3px 0 0 var(--so-gold)}
+.shift-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}
+.shift-card{border:1px solid var(--line);border-radius:11px;background:#fff;padding:11px}
+.shift-card small{display:block;font-size:7px;color:var(--muted);font-weight:900;text-transform:uppercase}
+.shift-card b{display:block;font-size:17px;color:#0b356f;margin:4px 0}.shift-card span{font-size:7px;color:#617286}
+@media(max-width:1200px){.system-grid{grid-template-columns:repeat(3,1fr)}.metric-strip,.shift-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.exec-grid{grid-template-columns:1fr}.system-grid{grid-template-columns:repeat(2,1fr)}.mgmt-toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.system-grid,.metric-strip,.mgmt-toolbar,.shift-strip{grid-template-columns:1fr}}
+</style>
+
+<style id="cto-executive-ui">
+:root{
+  --cto-navy:#02142c;--cto-blue:#0a4f9c;--cto-blue2:#1265c8;--cto-cyan:#087c9b;
+  --cto-green:#087747;--cto-gold:#d9a928;--cto-red:#a91d2d;--cto-orange:#d77800;--cto-purple:#5a2d91;
+}
+.sidebar{
+  background:
+    radial-gradient(circle at 80% 7%,rgba(217,169,40,.16),transparent 24%),
+    linear-gradient(180deg,#02152f 0%,#03142a 54%,#010811 100%)
+}
+.hero{
+  background:
+    radial-gradient(circle at 88% 5%,rgba(255,217,99,.34),transparent 24%),
+    radial-gradient(circle at 68% 120%,rgba(18,101,200,.22),transparent 35%),
+    linear-gradient(125deg,#02142d 0%,#082f65 47%,#07596f 100%)
+}
+.hero:before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:linear-gradient(#e7b93c,#1265c8,#087747,#5a2d91)
+}
+.kpi:before{background:linear-gradient(var(--cto-blue2),var(--cto-gold))}
+.exec-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-bottom:14px}
+.exec-alerts{display:grid;gap:8px}
+.exec-alert{padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:#f8fbff;font-size:9px;line-height:1.5}
+.exec-alert strong{display:block;color:#082757;font-size:10px;margin-bottom:3px}
+.exec-alert.critical{background:#fff0f0;border-color:#efb4b4}.exec-alert.critical strong{color:#8f1d26}
+.exec-alert.warn{background:#fff8e6;border-color:#ead48d}.exec-alert.warn strong{color:#795700}
+.exec-alert.ok{background:#eefbf4;border-color:#a8d9ba}.exec-alert.ok strong{color:#087747}
+.head-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.head-card{position:relative;overflow:hidden;padding:13px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.head-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#1265c8}
+.head-card.attention:before{background:#d77800}.head-card.risk:before{background:#a91d2d}.head-card.ok:before{background:#087747}
+.head-card h4{margin:0 0 6px;color:#082757;font-size:10px}.head-card small{color:var(--muted);font-size:6.5px}
+.head-card .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}
+.head-card .nums div{padding:6px;border-radius:7px;background:#edf4fb;text-align:center}
+.head-card .nums b{display:block;color:#0a4e98;font-size:12px}.head-card .nums span{font-size:5.7px;color:#687a8f;font-weight:900}
+.metric-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.metric-box{padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.metric-box small{display:block;font-size:7px;font-weight:900;color:var(--muted);text-transform:uppercase}
+.metric-box b{display:block;margin-top:5px;color:#0b356f;font-size:19px}
+.management-note{
+  padding:9px 11px;margin:9px 0;border:1px solid #cbdce9;border-left:4px solid #1265c8;
+  border-radius:8px;background:linear-gradient(90deg,#edf5ff,#fff9e7);font-size:8px;line-height:1.6;color:#40545b
+}
+.management-note b{color:#0b4e9d}
+.mgmt-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;margin-bottom:12px}
+.mgmt-toolbar select,.mgmt-toolbar input{background:#fff}
+.exec-table{width:100%;border-collapse:collapse;font-size:9px}
+.exec-table th,.exec-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.exec-table th{background:#082f67;color:#fff;font-size:7px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+.exec-table tr:hover td{background:#f5f9fd}
+.status-chip{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:7px;font-weight:1000}
+.sc-pending{background:#fff5d9;color:#805d00}.sc-approved{background:#e9f8f0;color:#087747}
+.sc-conditional{background:#eaf3ff;color:#0b4e9d}.sc-returned{background:#fff0f0;color:#9f1f2e}.sc-rejected{background:#f6e9ec;color:#771723}
+.formcard .icon{background:linear-gradient(145deg,#eef4ff,#fff4d7)}
+.form-picker{border-top-color:var(--cto-gold)}
+.form-picker button:hover,.form-picker button.active{box-shadow:inset 3px 0 0 var(--cto-gold)}
+.approval-actions{display:flex;gap:5px;flex-wrap:wrap}
+.approval-actions button{font-size:7px;padding:5px 7px}
+.quick-links{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.quick-link{display:block;text-decoration:none;border:1px solid var(--line);border-radius:11px;background:#fff;padding:10px 11px;color:#082757}
+.quick-link b{display:block;font-size:9px;margin-bottom:3px}.quick-link span{font-size:6.5px;color:#64758b}
+.quick-link:hover{border-color:#9ebadb;box-shadow:0 5px 18px rgba(6,42,85,.08)}
+@media(max-width:1250px){.head-grid{grid-template-columns:repeat(3,1fr)}.quick-links{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1000px){.head-grid{grid-template-columns:repeat(2,1fr)}.metric-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.exec-grid{grid-template-columns:1fr}.mgmt-toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.head-grid,.metric-strip,.mgmt-toolbar,.quick-links{grid-template-columns:1fr}}
+</style>
+<style id="cto-readable-font-override">
+html{font-size:16px}
+body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.shell{grid-template-columns:305px 1fr}.sidebar{padding:20px 16px}.brand strong{font-size:13.5px!important;line-height:1.25}.brand span{font-size:10px!important;line-height:1.5}.nav{gap:7px}.nav button{padding:13px 13px;font-size:12.5px;line-height:1.35}.nav i{font-size:17px}.side-note{font-size:10.5px;line-height:1.65;padding:15px 11px}
+.topbar{height:88px;padding:0 26px}.topbar h1{font-size:23px;line-height:1.2}.topbar p{font-size:11.5px;line-height:1.4}.usercard input{font-size:12.5px;width:190px}.avatar{width:38px;height:38px;font-size:11.5px}.clock b{font-size:12.5px}.clock small{font-size:9.5px}.home{font-size:11px;padding:9px 12px}
+.view{padding:25px 27px 42px}.eyebrow{font-size:10.5px;line-height:1.4}.hero h2{font-size:31px;line-height:1.12}.hero p{font-size:13px;line-height:1.7}.hero-stats strong{font-size:27px}.hero-stats span{font-size:9.5px;line-height:1.35}
+.kpi{padding:18px}.kpi small{font-size:9.5px;line-height:1.35}.kpi strong{font-size:29px}.kpi span{font-size:10.5px;line-height:1.45}.panel-head h3{font-size:15px!important;line-height:1.3}.panel-head p{font-size:10.5px!important;line-height:1.55}.badge{font-size:9px!important}.btn{font-size:10.5px!important;line-height:1.25;padding:8px 11px}.toolbar input,.toolbar select{font-size:11px!important}
+.head-card{padding:15px}.head-card h4{font-size:12.5px;line-height:1.35}.head-card small{font-size:8.5px;line-height:1.4}.head-card .nums b{font-size:15px}.head-card .nums span{font-size:7.5px;line-height:1.3}
+.quick-link{padding:12px 13px}.quick-link b{font-size:11px;line-height:1.35}.quick-link span{font-size:8.5px;line-height:1.45}
+.exec-alert{font-size:10.5px;line-height:1.6;padding:13px 14px}.exec-alert strong{font-size:12px;line-height:1.35}
+.formcard{min-height:162px;padding:18px}.formcard .icon{width:44px;height:44px;font-size:22px}.formcard h4{font-size:14px!important;line-height:1.35;margin:11px 0 6px}.formcard p{font-size:10.5px;line-height:1.6}
+.mgmt-toolbar input,.mgmt-toolbar select{font-size:11.5px;padding:9px 10px}.exec-table{font-size:10.5px}.exec-table th{font-size:8.5px;line-height:1.35;padding:9px}.exec-table td{font-size:10.5px;line-height:1.5;padding:9px}.exec-table small{font-size:8.5px}.status-chip{font-size:8.5px;padding:5px 8px}.approval-actions button{font-size:8.5px!important;padding:6px 8px!important}
+.metric-box small{font-size:8.5px;line-height:1.35}.metric-box b{font-size:22px}.form-picker button{font-size:11px!important;line-height:1.4;padding:10px 10px!important}
+.paper{padding:28px}.form-head{grid-template-columns:94px 1fr 185px}.form-head img{width:82px;height:82px}.form-head h2{font-size:23px;line-height:1.25}.form-head p{font-size:9.5px;line-height:1.45}.form-ref{font-size:9.5px;line-height:1.5}.form-ref input{font-size:10.5px}.smart-grid{gap:10px 12px;padding:12px}.field{gap:5px}.field label,.label{font-size:9px;line-height:1.35;letter-spacing:.03em}input,select,textarea{font-size:11px;line-height:1.4;padding:8px 9px}textarea{min-height:76px}.section-title{font-size:11px;line-height:1.35;padding:9px 11px;margin:15px 0 9px}.note,.management-note{font-size:9.5px;line-height:1.6;padding:10px 12px}
+.ftable{font-size:9.5px}.ftable th,.ftable td{padding:6.5px;line-height:1.4}.ftable th{font-size:9px}.ftable input,.ftable select,.ftable textarea{font-size:9.5px;line-height:1.35;padding:5px 6px}.ftable textarea{min-height:50px}.signbox>b{font-size:10.5px!important}.sig-tools button,.sig-tools label{font-size:9px!important}.dispatch h4{font-size:13px!important}.dispatch p{font-size:10px!important;line-height:1.55}.status-banner{font-size:10px!important}.ref-card h4{font-size:13px!important}.ref-card p{font-size:10.5px!important;line-height:1.6}.records-table{font-size:10.5px!important}.records-table th{font-size:8.5px!important}.records-table td{font-size:10.5px!important}.records-table small{font-size:8.5px!important}
+@media(max-width:1000px){.shell{grid-template-columns:290px 1fr}.sidebar{width:auto}.topbar h1{font-size:20px}.hero h2{font-size:27px}}
+@media(max-width:800px){.shell{grid-template-columns:1fr}.sidebar{left:-315px;width:305px}.topbar{height:78px}.view{padding:17px}.form-picker button{min-width:220px}.paper{padding:16px}.form-head{grid-template-columns:60px 1fr}.form-head img{width:55px;height:55px}.form-head h2{font-size:19px}}
+@media(max-width:540px){body{font-size:13px}.topbar h1{font-size:18px}.hero h2{font-size:24px}.hero p{font-size:12px}.kpi strong{font-size:25px}}
+@media print{body{font-size:10pt}.form-head h2{font-size:15pt}.form-head p,.form-ref{font-size:7.5pt}.field label,.label{font-size:7pt}input,select,textarea{font-size:8pt;padding:4px 5px}.section-title{font-size:8.5pt;padding:5px 7px}.ftable{font-size:7pt}.ftable th{font-size:6.8pt}.ftable input,.ftable select,.ftable textarea{font-size:6.7pt;padding:2px 3px}}
+
+/* ===== CTO ENTERPRISE NETWORK & RESPONSIBILITY INTELLIGENCE ===== */
+.network-exec-strip{display:grid;grid-template-columns:repeat(7,minmax(110px,1fr));gap:8px;margin:12px 0}
+.network-exec-strip .net-kpi{background:linear-gradient(180deg,#fff,#f5f9fd);border:1px solid var(--line);border-radius:13px;padding:11px 12px;box-shadow:0 5px 16px rgba(4,30,65,.06)}
+.net-kpi small{display:block;color:var(--muted);font-size:7px;font-weight:900;letter-spacing:.55px;text-transform:uppercase}.net-kpi strong{display:block;font-size:23px;line-height:1.05;color:var(--navy);margin:5px 0}.net-kpi span{font-size:7.5px;color:#667b91}.net-kpi.attn strong{color:var(--red)}
+.network-statusbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:9px 0 12px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#f8fbfe;font-size:8px;color:#587087}.network-statusbar b{color:var(--navy)}
+.net-tools{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1.4fr auto;gap:7px;margin:9px 0 11px}.net-tools select,.net-tools input{width:100%;padding:8px 9px;border:1px solid #cdd9e6;border-radius:8px;background:#fff;color:var(--ink);font-size:8.5px}
+.net-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}.net-tabs button{border:1px solid #cbd8e5;background:#fff;color:#2b4868;border-radius:8px;padding:7px 10px;font-size:8px;font-weight:900;cursor:pointer}.net-tabs button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.net-table-wrap{overflow:auto;max-height:560px;border:1px solid var(--line);border-radius:11px;background:#fff}.net-table{width:100%;border-collapse:collapse;min-width:1180px}.net-table th{position:sticky;top:0;z-index:2;background:#0b2f58;color:#fff;font-size:7.3px;letter-spacing:.35px;text-transform:uppercase;padding:8px 7px;text-align:left;white-space:nowrap}.net-table td{font-size:8px;padding:7px;border-bottom:1px solid #e4ebf2;vertical-align:top}.net-table tbody tr:hover{background:#f3f8fd}.net-feeder{font-size:9px;font-weight:950;color:#063f83}.net-office{font-weight:900;color:#7f1d2d}.net-report{font-weight:800;color:#305777}.net-muted{color:#7b8d9f}.net-unassigned{font-weight:950;color:#9f1f2e}.net-assigned{font-weight:900;color:#087747}
+.network-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.net-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.net-summary-card{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px}.net-summary-card h4{margin:0 0 7px;color:var(--navy);font-size:10px}.net-summary-card p{margin:2px 0;font-size:8px;color:#5b6f83}.net-summary-card strong{color:var(--navy)}
+.personnel-empty{padding:22px;text-align:center;color:#6f8092;font-size:9px}.network-note-cto{margin-top:10px;padding:9px 10px;border-left:4px solid var(--gold);background:#fffaf0;border-radius:8px;color:#70591d;font-size:8px;line-height:1.45}
+@media(max-width:1200px){.network-exec-strip{grid-template-columns:repeat(4,1fr)}.net-tools{grid-template-columns:repeat(3,1fr)}.network-grid-2{grid-template-columns:1fr}}
+@media(max-width:700px){.network-exec-strip{grid-template-columns:repeat(2,1fr)}.net-tools{grid-template-columns:1fr 1fr}.net-summary-grid{grid-template-columns:1fr}.net-table{min-width:980px}}
+.nav a.dispatch-overview-menu{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:11px 12px;border:1px solid transparent;border-radius:11px;color:#c8d7ee;font-size:11px;font-weight:800;text-decoration:none;transition:.18s}.nav a.dispatch-overview-menu:hover{transform:translateX(2px);background:rgba(255,255,255,.06);color:#fff}
+
+.sidebar{overflow:hidden}.nav{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:4px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent}.nav::-webkit-scrollbar{width:6px}.nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.25);border-radius:99px}.nav::-webkit-scrollbar-track{background:transparent}
+/* Complete Central Dispatch Overview host */
+.nav button.dispatch-overview-menu,.nav a.dispatch-overview-menu{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:linear-gradient(90deg,rgba(18,77,168,.22),rgba(255,255,255,.025))}.nav .dispatch-overview-menu:after{content:"";position:absolute;right:-20px;top:-20px;width:58px;height:58px;border-radius:50%;background:rgba(215,167,43,.1)}.nav .dispatch-overview-menu.active{background:linear-gradient(90deg,rgba(26,115,232,.4),rgba(215,167,43,.12));border-color:rgba(215,167,43,.4)}.dispatch-overview-icon{display:grid;place-items:center;min-width:30px;height:28px;border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-size:8px;font-weight:1000;letter-spacing:.05em}.nav .dispatch-overview-menu em{margin-left:auto;padding:3px 5px;border-radius:999px;background:rgba(255,255,255,.12);color:#ffe39a;font-size:6px;font-style:normal;font-weight:1000;letter-spacing:.04em}
+.dispatch-overview-view{padding:0!important;background:#020916}.dispatch-overview-host{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:linear-gradient(90deg,#061b3d,#0a326f);color:#fff;border-bottom:1px solid rgba(255,255,255,.14)}.dispatch-overview-host b{display:block;font-size:12px}.dispatch-overview-host span{display:block;margin-top:3px;color:#cfe1f7;font-size:8px}.dispatch-overview-host .toolbar{justify-content:flex-end}.dispatch-overview-host .live{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:#e9f8f0;color:#087747;font-size:7px;font-weight:1000}.dispatch-overview-host .live:before{content:"";width:7px;height:7px;border-radius:50%;background:#10a56b}.dispatch-overview-host .live.module-error{background:#fff0f0;color:#9f1f2e}.dispatch-overview-host .live.module-loading{background:#fff4d4;color:#7d5900}.dispatch-overview-frame{display:block;width:100%;height:calc(100vh - 164px);min-height:760px;border:0;background:#020916}
+@media(max-width:800px){.dispatch-overview-host{align-items:flex-start;flex-direction:column}.dispatch-overview-host .toolbar{justify-content:flex-start}.dispatch-overview-frame{height:calc(100vh - 220px);min-height:680px}}
+</style>
+
+<!-- KEDCO Local Storage shared bootstrap v3 -->
+<script src="../../supabase-config.js"></script>
+<script src="../../assets/supabase.js"></script>
+<script src="/frontend/kedco-central-eform-workflow.js?v=20260920-global-region-routing-v1"></script>
+<script src="../../kedco-page-routes.js"></script>
+<script src="../../kedco-cloud-backup.js"></script>
+<script src="../../kedco-global-ui.js" defer></script>
+</head><body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <img src="data:image/png;base64,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" alt="KEDCO logo">
+      <div><strong>CHIEF TECHNICAL OFFICER</strong><span>Technical Directorate<br>Oversight • Review • Approval</span></div>
+    </div>
+    <nav class="nav">
+      <a class="dispatch-overview-menu" href="../system-operations/dispatch.html?context=executive" data-route="dispatch"><span class="dispatch-overview-icon">OV</span><span>Dispatch Overview</span><em>SCADA</em></a>
+      
+      
+      
+      <button class="active" data-view="dashboard"><i>▦</i>Executive Dashboard</button>
+      <button data-view="heads"><i>◫</i>Head of Units Oversight</button>
+      <button data-view="network"><i>⌁</i>Network &amp; RE/TE Intelligence</button>
+      <button data-view="approvals"><i>✓</i>CTO Approval Queue</button>
+      <button data-view="risks"><i>⚠</i>Critical Technical Risks</button>
+      <button data-view="performance"><i>↗</i>Directorate Performance</button>
+      <button data-view="forms"><i>☷</i>CTO Executive Forms</button>
+      <button data-view="records"><i>◎</i>Saved / Sent CTO Records</button>
+      <button data-view="reference"><i>?</i>CTO Governance Reference</button>
+    </nav>
+    <div class="side-note">
+      <b>TECHNICAL DIRECTORATE COMMAND &amp; ASSURANCE CENTRE</b><br>
+      Executive command centre for technical performance, network reliability,
+      asset stewardship, investment delivery, operational safety and coordinated
+      decision-making across KEDCO’s technical directorate.
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:9px">
+        <button class="btn ghost mobile" id="mobileMenu">☰</button>
+        <div><h1 id="pageTitle">Chief Technical Officer Executive Dashboard</h1><p>Technical directorate • enterprise network • RE/TE accountability • heads of unit • approvals • risks • performance</p></div>
+      </div>
+      <div class="top-actions">
+        <div class="usercard"><div class="avatar" id="avatar">CT</div><input id="userName" placeholder="Chief Technical Officer / authorised officer"></div>
+        <div class="clock"><b id="nowTime">—</b><small id="nowDate">—</small></div>
+        <a class="home" href="../../../index.html">Home</a>
+      </div>
+    </header>
+
+    <section class="view active" id="dashboardView">
+      <div class="hero">
+        <div>
+          <span class="eyebrow">KEDCO CHIEF TECHNICAL OFFICER • TECHNICAL DIRECTORATE</span>
+          <h2>Enterprise Technical Performance, Reliability &amp; Investment Leadership</h2>
+          <p>Unify system operations, asset reliability, protection and metering assurance, network investment and HSE performance into one executive view—turning technical intelligence into clear priorities, accountable actions and timely management decisions.</p>
+        </div>
+        <div class="hero-stats">
+          <div><strong>5</strong><span>HEAD UNITS</span></div>
+          <div><strong id="heroSubmissions">0</strong><span>HEAD-UNIT RECORDS</span></div>
+          <div><strong id="heroPending">0</strong><span>PENDING CTO DECISIONS</span></div>
+          <div><strong id="heroApproved">0</strong><span>CTO APPROVALS</span></div>
+        </div>
+      </div>
+
+      <div class="quick-links">
+        <a class="quick-link" href="../system-operations/headso.html"><b>Head System Operations</b><span>Dispatch • switching • load • outages • restoration</span></a>
+        <a class="quick-link" href="../operations-maintenance/headom.html"><b>Head O&amp;M</b><span>RE/TE • maintenance • faults • field teams</span></a>
+        <a class="quick-link" href="../pcm/headpcm.html"><b>Head PC&amp;M</b><span>Protection • control • metering • testing</span></a>
+        <a class="quick-link" href="../planning-investment/headpi.html"><b>Head Planning &amp; Investment</b><span>Planning • projects • investment • construction delivery</span></a>
+        <a class="quick-link" href="../hse/headhse.html"><b>Head HSE</b><span>Safety • incidents • corrective actions • governance</span></a>
+        <button class="quick-link" style="text-align:left;border:0;cursor:pointer" data-go-view="network"><b>Network &amp; RE/TE Intelligence</b><span>All 33kV / 11kV feeders • states • regions • RE/TE responsibility</span></button>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><small>Total Head-Unit Records</small><strong id="kpiAll">0</strong><span>Available submissions from all five heads</span></div>
+        <div class="kpi"><small>Submitted / Sent</small><strong id="kpiSent">0</strong><span>Head-unit records routed/sent locally</span></div>
+        <div class="kpi"><small>Pending CTO Approval</small><strong id="kpiPending">0</strong><span>Head-unit submissions without CTO decision</span></div>
+        <div class="kpi"><small>Critical / Escalation Signals</small><strong id="kpiRisk">0</strong><span>Fault, outage, incident, escalation and critical-risk records</span></div>
+      </div>
+
+      <div class="exec-grid">
+        <article class="panel">
+          <div class="panel-head"><div><h3>Head of Units Executive Snapshot</h3><p>Summarised from each head dashboard's browser-local records when hosted on the same website/origin.</p></div><button class="btn ghost" data-go-view="heads">Full Oversight</button></div>
+          <div class="head-grid" id="headGrid"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><h3>CTO Executive Attention</h3><p>Automatic technical-governance signals from available records.</p></div><span class="badge gold">CTO</span></div>
+          <div class="exec-alerts" id="executiveAlerts"></div>
+        </article>
+      </div>
+
+      <article class="panel">
+        <div class="panel-head"><div><h3>Priority CTO Forms</h3><p>Fast access to executive review and approval workflows.</p></div><button class="btn primary" data-go-view="forms">View All CTO Forms</button></div>
+        <div class="formcards" id="formCards"></div>
+      </article>
+    </section>
+
+<section class="view dispatch-overview-view" id="dispatchView">
+      <div class="dispatch-overview-host">
+        <div><b>Central Dispatch / Dispatch Overview</b><span>Complete KEDCO system operations, SCADA overview, load, alarms, outages, restoration and dispatch intelligence.</span></div>
+        <div class="toolbar">
+          <span class="live" id="ctoDispatchOverviewStatus">READY TO LOAD</span>
+          <button class="btn ghost small" type="button" data-reload-dispatch-overview="cto">Reload Overview</button>
+          <button class="btn ghost small" type="button" data-fullscreen-dispatch-overview="cto">Full Screen</button>
+        </div>
+      </div>
+      <iframe id="ctoDispatchOverviewFrame" class="dispatch-overview-frame" title="KEDCO Central Dispatch Overview" loading="eager" allow="fullscreen" allowfullscreen></iframe>
+    </section>
+    <section class="view" id="headsView">
+      <div class="hero">
+        <div><span class="eyebrow">TECHNICAL DIRECTORATE • ALL HEADS OF UNITS</span><h2>Head of Units Oversight</h2><p>Review System Operations, O&amp;M, PC&amp;M, Planning &amp; Investment and HSE records from one executive register.</p></div>
+        <div class="hero-stats"><div><strong id="headsVisible">0</strong><span>VISIBLE RECORDS</span></div><div><strong id="headsCovered">0/5</strong><span>HEAD UNITS WITH DATA</span></div></div>
+      </div>
+      <article class="panel">
+        <div class="mgmt-toolbar">
+          <select id="headUnitFilter"><option value="">All Head Units</option></select>
+          <select id="headStatusFilter"><option value="">All Source Status</option><option value="SENT">SENT / ROUTED</option><option value="SAVED">SAVED</option></select>
+          <select id="headDecisionFilter"><option value="">All CTO Decisions</option><option value="PENDING">PENDING</option><option value="APPROVED">APPROVED</option><option value="APPROVED WITH CONDITIONS">APPROVED WITH CONDITIONS</option><option value="RETURNED">RETURNED</option><option value="REJECTED">REJECTED</option></select>
+          <input id="headSearch" placeholder="Search form / region / station / project / issue...">
+          <button class="btn ghost" id="headReset">Reset</button>
+        </div>
+        <div class="table-wrap"><table class="exec-table" id="headsTable"></table></div>
+      </article>
+    </section>
+
+    <section class="view" id="approvalsView">
+      <div class="hero">
+        <div><span class="eyebrow">CTO REVIEW • DECISION • EXECUTIVE APPROVAL</span><h2>CTO Approval Queue</h2><p>Review submitted records from all technical heads and record CTO approval, conditional approval, return or rejection with comments and electronic approval evidence.</p></div>
+        <div class="hero-stats"><div><strong id="approvalPending">0</strong><span>PENDING</span></div><div><strong id="approvalCompleted">0</strong><span>DECIDED</span></div></div>
+      </div>
+      <article class="panel">
+        <div class="mgmt-toolbar">
+          <select id="approvalUnit"><option value="">All Head Units</option></select>
+          <select id="approvalDecision"><option value="PENDING">Pending Only</option><option value="">All Decisions</option><option value="APPROVED">Approved</option><option value="APPROVED WITH CONDITIONS">Approved with Conditions</option><option value="RETURNED">Returned</option><option value="REJECTED">Rejected</option></select>
+          <input id="approvalSearch" placeholder="Search approval queue...">
+          <span></span>
+          <button class="btn primary" data-open-form-direct="submissionApproval">Open CTO Approval Form</button>
+        </div>
+        <div class="table-wrap"><table class="exec-table" id="approvalTable"></table></div>
+      </article>
+    </section>
+
+    <section class="view" id="risksView">
+      <div class="hero">
+        <div><span class="eyebrow">CRITICAL TECHNICAL RISK • ESCALATION • ACTION</span><h2>Critical Technical Risks</h2><p>Surface critical outages, faults, HSE incidents, repeated failures, protection issues, project constraints and executive escalations from all head units.</p></div>
+        <div class="hero-stats"><div><strong id="riskCount">0</strong><span>VISIBLE RISK SIGNALS</span></div><div><strong id="riskUnits">0</strong><span>AFFECTED HEAD UNITS</span></div></div>
+      </div>
+      <article class="panel">
+        <div class="mgmt-toolbar">
+          <select id="riskUnit"><option value="">All Head Units</option></select>
+          <select id="riskDecision"><option value="">All CTO Decisions</option><option value="PENDING">Pending CTO Decision</option><option value="APPROVED">Approved</option><option value="APPROVED WITH CONDITIONS">Approved with Conditions</option><option value="RETURNED">Returned</option><option value="REJECTED">Rejected</option></select>
+          <input id="riskSearch" placeholder="Search outage / incident / fault / constraint / escalation...">
+          <span></span>
+          <button class="btn primary" data-open-form-direct="criticalRisk">New CTO Risk Review</button>
+        </div>
+        <div class="table-wrap"><table class="exec-table" id="riskTable"></table></div>
+      </article>
+    </section>
+
+    <section class="view" id="performanceView">
+      <div class="hero">
+        <div><span class="eyebrow">TECHNICAL DIRECTORATE PERFORMANCE • CROSS-FUNCTIONAL DELIVERY</span><h2>Directorate Performance</h2><p>Compare records, approval workload, critical signals and current CTO decisions across the five technical head units.</p></div>
+        <div class="hero-stats"><div><strong id="perfRecords">0</strong><span>TOTAL RECORDS</span></div><div><strong id="perfDecisions">0</strong><span>CTO DECISIONS</span></div></div>
+      </div>
+      <article class="panel">
+        <div class="table-wrap"><table class="exec-table" id="performanceTable"></table></div>
+      </article>
+    </section>
+
+    <section class="view" id="formsView">
+      <div class="hero">
+        <div><span class="eyebrow">CHIEF TECHNICAL OFFICER • DIGITAL EXECUTIVE GOVERNANCE</span><h2 id="formsHeroTitle">CTO Executive Forms</h2><p>Complete, electronically sign, save, route and print executive technical review, approval, risk and directorate-management forms.</p></div>
+        <div class="hero-stats"><div><strong>e-SIGN</strong><span>MOUSE • PEN • TOUCH</span></div><div><strong>20</strong><span>CTO FORMS</span></div></div>
+      </div>
+      <div class="forms-layout"><aside class="form-picker" id="formPicker"></aside><div class="form-workspace"><div class="paper-shell" id="formWorkspace"></div></div></div>
+    </section>
+
+    <section class="view" id="recordsView">
+      <div class="hero">
+        <div><span class="eyebrow">CTO AUDIT TRAIL</span><h2>Saved / Sent CTO Records</h2><p>Review, reopen and print CTO executive reviews, approvals and technical-directorate records.</p></div>
+        <div class="hero-stats"><div><strong id="recordsSaved">0</strong><span>SAVED</span></div><div><strong id="recordsSent">0</strong><span>SENT / ROUTED</span></div></div>
+      </div>
+      <article class="panel">
+        <div class="panel-head"><div><h3>CTO Executive Record Register</h3><p>Search by reference, form, head unit, region, station, project or decision.</p></div><div class="toolbar"><input id="recordSearch" placeholder="Search CTO records..."><button class="btn danger" id="clearRecords">Clear CTO Records</button></div></div>
+        <div class="table-wrap"><table class="records-table" id="recordsTable"></table></div>
+      </article>
+    </section>
+
+
+    <section class="view" id="networkView">
+      <div class="hero">
+        <div>
+          <span class="eyebrow">CTO ENTERPRISE NETWORK &amp; ACCOUNTABILITY INTELLIGENCE</span>
+          <h2>Complete KEDCO Network, Region, RE &amp; TE Responsibility View</h2>
+          <p>Executive visibility across source stations, 33 kV feeders, injection substations, 11 kV feeders, states, regions and confirmed RE/TE responsibility. The CTO sees the full technical network rather than a single unit or regional slice.</p>
+        </div>
+        <div class="hero-stats">
+          <div><strong id="netHero33">—</strong><span>33KV FEEDERS</span></div>
+          <div><strong id="netHero11">—</strong><span>11KV FEEDERS</span></div>
+          <div><strong id="netHeroUnassigned">—</strong><span>RESPONSIBILITY GAPS</span></div>
+        </div>
+      </div>
+
+      <div class="network-exec-strip">
+        <div class="net-kpi"><small>Source Stations</small><strong id="netSources">—</strong><span>132/33 kV and 330/132/33 kV sources</span></div>
+        <div class="net-kpi"><small>33 kV Feeders</small><strong id="net33">—</strong><span>Enterprise 33 kV network master</span></div>
+        <div class="net-kpi"><small>Injection Substations</small><strong id="netStations">—</strong><span>11 kV injection points</span></div>
+        <div class="net-kpi"><small>11 kV Feeders</small><strong id="net11">—</strong><span>Enterprise 11 kV feeder master</span></div>
+        <div class="net-kpi"><small>33 kV Assigned</small><strong id="net33Assigned">—</strong><span>Confirmed RE responsibility</span></div>
+        <div class="net-kpi"><small>11 kV Assigned</small><strong id="net11Assigned">—</strong><span>Confirmed TE responsibility</span></div>
+        <div class="net-kpi attn"><small>Unassigned</small><strong id="netUnassigned">—</strong><span>Needs confirmed responsibility</span></div>
+      </div>
+
+      <div class="network-statusbar">
+        <span><b>Data source:</b> <span id="netDataSource">Waiting for network source…</span></span>
+        <span><b>Last refresh:</b> <span id="netLastRefresh">—</span></span>
+        <button class="btn ghost" id="netRefresh">Refresh Network Data</button>
+      </div>
+
+      <article class="panel">
+        <div class="panel-head"><div><h3>Complete Feeder Responsibility Matrix</h3><p>Search and filter the full technical network by voltage, state, region, feeder and assignment status.</p></div><span class="badge blue" id="netVisibleCount">0 rows</span></div>
+        <div class="net-tools">
+          <select id="netVoltageFilter"><option value="">All Voltages</option><option value="33KV">33 kV</option><option value="11KV">11 kV</option></select>
+          <select id="netStateFilter"><option value="">All States</option></select>
+          <select id="netRegionFilter"><option value="">All Regions</option></select>
+          <select id="netAssignmentFilter"><option value="">All Assignment Status</option><option value="ASSIGNED">Assigned</option><option value="UNASSIGNED">Unassigned</option></select>
+          <input id="netSearch" placeholder="Search feeder, station, source, RE or TE…">
+          <button class="btn ghost" id="netReset">Reset</button>
+        </div>
+        <div class="net-table-wrap"><table class="net-table" id="netFeederTable"></table></div>
+      </article>
+
+      <div class="network-grid-2" style="margin-top:12px">
+        <article class="panel">
+          <div class="panel-head"><div><h3>RE / TE Responsibility Offices</h3><p>Accountability groups derived from confirmed feeder responsibility assignments.</p></div><span class="badge gold" id="netOfficeCount">0 offices</span></div>
+          <div class="net-table-wrap" style="max-height:430px"><table class="net-table" id="netOfficeTable" style="min-width:760px"></table></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><h3>Responsibility Gaps Requiring CTO Attention</h3><p>Feeders in the network master without confirmed RE or TE allocation. No responsibility is invented.</p></div><span class="badge red" id="netGapCount">0 gaps</span></div>
+          <div class="net-table-wrap" style="max-height:430px"><table class="net-table" id="netGapTable" style="min-width:720px"></table></div>
+        </article>
+      </div>
+
+      <div class="network-grid-2" style="margin-top:12px">
+        <article class="panel">
+          <div class="panel-head"><div><h3>State Network Summary</h3><p>Enterprise network footprint and confirmed responsibility by state.</p></div></div>
+          <div class="net-summary-grid" id="netStateSummary"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><h3>Registered RE / TE Personnel Accounts</h3><p>Named KEDCO user profiles where the account role is RE or TE.</p></div><span class="badge blue" id="netPersonnelCount">0 users</span></div>
+          <div class="net-table-wrap" style="max-height:330px"><table class="net-table" id="netPersonnelTable" style="min-width:650px"></table></div>
+        </article>
+      </div>
+
+      <div class="network-note-cto"><b>CTO control principle:</b> this page provides enterprise technical oversight and accountability visibility. It does not itself create switching, energisation, protection-setting, procurement, financial or statutory authority. Unconfirmed feeder responsibility remains visibly unassigned until an authorised source confirms it.</div>
+    </section>
+
+    <section class="view" id="referenceView">
+      <div class="hero">
+        <div><span class="eyebrow">CTO TECHNICAL GOVERNANCE REFERENCE</span><h2>Technical Directorate Review &amp; Approval Reference</h2><p>CTO decisions should be based on verified head-unit submissions, authorised technical procedures, approved designs/settings, operational and HSE requirements, applicable project/maintenance records and traceable technical evidence.</p></div>
+        <div class="hero-stats"><div><strong>REVIEW</strong><span>DECIDE</span></div><div><strong>ASSURE</strong><span>ESCALATE</span></div></div>
+      </div>
+      <div class="ref-grid" id="referenceCards"></div>
+    </section>
+  </main>
+</div>
+
+
+
+<script>
+const LOGO=document.querySelector('.brand img').src;
+const STATES={
+  "Kano":["Kano Central","Kano City","Kano East","Kano Industrial","Kano North","Kano Northwest","Kano South","Kano Southwest","Kano West"],
+  "Katsina":["Katsina Central","Katsina North","Katsina South","Katsina West"],
+  "Jigawa":["Jigawa North","Jigawa South","Jigawa West"]
+};
+const HEAD_UNITS=[
+  {id:'SYSTEM OPERATIONS',name:'Head System Operations',records:'KEDCO_HEAD_SO_RECORDS_V1',sent:'KEDCO_HEAD_SO_SENT_V1',page:'../system-operations/headso.html'},
+  {id:'O&M',name:'Head O&M',records:'KEDCO_HEAD_OM_RECORDS_V1',sent:'KEDCO_HEAD_OM_SENT_V1',page:'../operations-maintenance/headom.html'},
+  {id:'PC&M',name:'Head PC&M',records:'KEDCO_HEAD_PCM_RECORDS_V1',sent:'KEDCO_HEAD_PCM_SENT_V1',page:'../pcm/headpcm.html'},
+  {id:'PLANNING & INVESTMENT',name:'Head Planning & Investment',records:'KEDCO_HEAD_PI_RECORDS_V1',sent:'KEDCO_HEAD_PI_SENT_V1',page:'../planning-investment/headpi.html'},
+  {id:'HSE',name:'Head HSE',records:'KEDCO_HEAD_HSE_RECORDS_V1',sent:'KEDCO_HEAD_HSE_SENT_V1',page:'../hse/headhse.html'}
+];
+const ROLES=["Chief Technical Officer","Deputy / Assistant CTO","Head System Operations","Head O & M","Head PC & M","Head Planning & Investment","Head HSE","Technical Directorate Engineer","Executive Management Representative","Other"];
+const DISPATCH=["MD/CEO / Executive Management","Head System Operations","Head O & M","Head PC & M","Head Planning & Investment","Head HSE","Finance / Accounts","Procurement / Contracts","Legal / Compliance","Corporate Communications","Other"];
+const STORE_KEY='KEDCO_CTO_RECORDS_V1';
+const SENT_KEY='KEDCO_CTO_SENT_V1';
+const APPROVAL_KEY='KEDCO_CTO_APPROVALS_V1';
+const USER_KEY='KEDCO_CTO_USER';
+let activeForm='submissionApproval';
+let selectedSubmission=null;
+
+const FORM_META=[
+{id:'submissionApproval',icon:'✓',name:'Head Unit Submission Approval',desc:'Formal CTO review, decision, comments, conditions and executive approval of a selected Head-of-Unit submission.'},
+{id:'dailyPosition',icon:'☀',name:'CTO Daily Technical Position',desc:'Daily executive technical position covering operations, maintenance, PC&M, projects/investment, HSE and critical actions.'},
+{id:'weeklyReview',icon:'📊',name:'Weekly Head of Units Review',desc:'Cross-functional weekly review of all five technical heads, issues, decisions, owners and deadlines.'},
+{id:'monthlyPerformance',icon:'↗',name:'Monthly Technical Directorate Performance',desc:'Monthly executive performance report across all technical units and major KPI/risk areas.'},
+{id:'systemOpsReview',icon:'⚡',name:'System Operations Executive Review',desc:'CTO review of outages, switching, load, restoration, constraints and system-operations performance.'},
+{id:'omReview',icon:'⚙',name:'O&M Reliability & Restoration Review',desc:'CTO review of RE/TE performance, maintenance, field teams, faults, restoration and asset reliability.'},
+{id:'pcmReview',icon:'🛡',name:'PC&M Technical Assurance Review',desc:'CTO review of protection, control, metering, testing, settings, commissioning and calibration.'},
+{id:'piReview',icon:'📐',name:'Planning & Investment Portfolio Review',desc:'CTO review of network planning, projects, investment priorities, design, budget and delivery.'},
+{id:'hseReview',icon:'🦺',name:'HSE Technical Safety Review',desc:'CTO review of technical safety, incidents, high-risk actions, audits, contractor HSE and close-out.'},
+{id:'crossFunctional',icon:'⇄',name:'Cross-Functional Technical Coordination',desc:'Coordinate System Ops, O&M, PC&M, Planning & Investment and HSE on shared technical work and constraints.'},
+{id:'criticalRisk',icon:'🚨',name:'Critical Technical Risk Escalation',desc:'Executive review of critical outage, protection, asset, project, safety or operational risks.'},
+{id:'majorEvent',icon:'⚠',name:'Major Fault / Disturbance Executive Review',desc:'CTO review of major system events, fault investigations, restoration and permanent corrective actions.'},
+{id:'capitalApproval',icon:'₦',name:'Capital Project Technical Approval',desc:'CTO technical approval of major network development, reinforcement, project scope and technical basis.'},
+{id:'variationApproval',icon:'±',name:'Technical Variation / Change Approval',desc:'CTO review of significant design, scope, technical or operational changes with impact and justification.'},
+{id:'sparesApproval',icon:'▤',name:'Critical Spares / Procurement Technical Approval',desc:'Executive technical approval of high-priority spares, equipment, test tools, vehicles and materials.'},
+{id:'procedureApproval',icon:'📑',name:'Technical Standard / Procedure Approval',desc:'CTO review and approval of controlled technical procedures, operating/maintenance instructions and standards.'},
+{id:'commissioningReview',icon:'◆',name:'Commissioning / Energisation Governance Review',desc:'Cross-functional CTO review of readiness evidence before authorised operational energisation processes.'},
+{id:'contractorReview',icon:'👷',name:'Contractor / Vendor Technical Performance Review',desc:'Executive review of contractor technical delivery, quality, HSE, progress, defects and close-out.'},
+{id:'annualPlan',icon:'🗓',name:'Annual Technical Directorate Plan & Budget',desc:'Consolidated annual plan for operations, maintenance, PC&M, projects, HSE, training, spares and budget.'},
+{id:'executiveBrief',icon:'🏛',name:'CTO Executive Technical Brief / Management Review',desc:'Executive technical brief for MD/CEO and management on system status, risk, delivery, investment and decisions.'}
+];
+
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const uniq=a=>[...new Set(a.filter(Boolean))], today=()=>new Date().toISOString().slice(0,10), nowISO=()=>new Date().toISOString();
+const refNo=(p='CTO')=>p+'-'+new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,14);
+function safeLoad(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return []}}
+function opts(a,p='Select'){return `<option value="">${esc(p)}</option>`+a.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}
+function field(n,l,t='text',x='',w=''){return `<div class="field ${w}"><label>${l}</label><input name="${n}" type="${t}" ${x}></div>`}
+function selectF(n,l,a,p='Select',x='',w=''){return `<div class="field ${w}"><label>${l}</label><select name="${n}" ${x}>${opts(a,p)}</select></div>`}
+function textF(n,l,p='',w='w4'){return `<div class="field ${w}"><label>${l}</label><textarea name="${n}" placeholder="${esc(p)}"></textarea></div>`}
+function head(t){return `<div class="form-head"><img src="${LOGO}" alt="KEDCO logo"><div><h2>${t}</h2><p>KANO ELECTRICITY DISTRIBUTION PLC<br>CHIEF TECHNICAL OFFICER / TECHNICAL DIRECTORATE</p></div><div class="form-ref"><b>Reference No.</b><input name="reference" placeholder="Auto-generated if blank"><br><b>Date</b><input name="date" type="date"></div></div>`}
+function context(){return `<div class="smart-grid">${selectF('headUnit','Head Unit',HEAD_UNITS.map(x=>x.name),'Select Head Unit')}${selectF('state','State',Object.keys(STATES),'Select State','data-state')}${selectF('region','Region',[],'Select Region','data-region')}${field('sourceReference','Head-Unit Submission / Event Ref')}${field('subject','Technical Subject / Project / Event')}${field('station','Station / Site / Asset')}${field('feeder','Feeder / Circuit / Project')}${selectF('priority','Priority',['CRITICAL','HIGH','MEDIUM','ROUTINE'],'Select Priority')}</div>`}
+function sigBox(t,n){return `<div class="signbox"><b>${t}</b><div class="field"><label>Name / Officer</label><input name="${n}Name"></div><div class="field"><label>Role</label><select name="${n}Role">${opts(ROLES,'Select Role')}</select></div><div class="sig-wrap" data-signature="${n}Signature"><canvas class="sig-canvas" width="480" height="150"></canvas><input type="hidden" name="${n}Signature"><div class="sig-tools"><button type="button" data-sig-clear>Clear</button><label>Upload<input type="file" accept="image/*" data-sig-file></label><label>Camera<input type="file" accept="image/*" capture="environment" data-sig-file></label></div></div><div class="field"><label>Date</label><input name="${n}Date" type="date"></div></div>`}
+function signs(a=[['Prepared / Directorate Reviewer','prepared'],['Technical / Management Review','checked'],['Chief Technical Officer / Final Decision','approved']]){return `<div class="sign-grid">${a.map(([t,n])=>sigBox(t,n)).join('')}</div>`}
+function note(){return `<div class="management-note"><b>CTO governance note:</b> CTO approval is based on the submitted technical evidence and does not replace any separate safety, switching, procurement, financial, statutory, project or executive approval required by KEDCO procedures. Actual field/operational authority remains with the authorised role for that activity.</div>`}
+function scoreTable(items,p='sc'){return `<table class="ftable"><thead><tr><th style="width:27%">Review Area</th><th>Rating</th><th>Evidence / Position</th><th>Required Action / Decision</th><th>Owner / Target</th></tr></thead><tbody>${items.map((x,i)=>`<tr><td><b>${esc(x)}</b></td><td><select name="${p}${i}_score">${opts(['5 — Excellent','4 — Good','3 — Satisfactory','2 — Attention Required','1 — Unsatisfactory','N/A'],'Select')}</select></td><td><textarea name="${p}${i}_evidence"></textarea></td><td><textarea name="${p}${i}_action"></textarea></td><td><input name="${p}${i}_owner"></td></tr>`).join('')}</tbody></table>`}
+function actionTable(rows=7,p='ac'){let s='';for(let i=0;i<rows;i++)s+=`<tr><td>${i+1}</td><td><textarea name="${p}${i}_issue"></textarea></td><td><select name="${p}${i}_priority">${opts(['CRITICAL','HIGH','MEDIUM','LOW'],'Priority')}</select></td><td><textarea name="${p}${i}_action"></textarea></td><td><input name="${p}${i}_owner"></td><td><input type="date" name="${p}${i}_due"></td><td><select name="${p}${i}_status">${opts(['OPEN','IN PROGRESS','AWAITING EVIDENCE','AWAITING OTHER APPROVAL','CLOSED','OVERDUE'],'Status')}</select></td><td><textarea name="${p}${i}_evidence"></textarea></td></tr>`;return `<table class="ftable"><thead><tr><th>#</th><th>Issue / Risk</th><th>Priority</th><th>Action / Decision</th><th>Owner</th><th>Due</th><th>Status</th><th>Evidence / Close-Out</th></tr></thead><tbody>${s}</tbody></table>`}
+function dispatch(){return `<div class="dispatch no-print"><h4>CTO Digital Dispatch</h4><p>Select the office/person to receive this completed CTO technical-governance form.</p><div class="dispatch-grid">${selectF('dispatchTo','Send To',DISPATCH,'Select recipient')}${selectF('dispatchRegion','Recipient Region',Object.values(STATES).flat(),'Select region')}${field('dispatchNote','Dispatch / Executive Note')}</div><div class="actionbar"><button type="button" class="btn ghost" data-save>Save Record</button><button type="button" class="btn primary" data-send>Send / Route Form</button><button type="button" class="btn gold" data-print>Print Form</button><button type="reset" class="btn ghost">Clear Form</button></div><div class="status-banner" data-status>Ready.</div></div>`}
+function wrap(type,title,body,color='#1265c8'){return `<form class="pcm-form" data-form="${type}" style="--form:${color}"><div class="paper landscape">${head(title)}${context()}${body}${dispatch()}</div></form>`}
+
+function submissionApproval(){
+ let body=`<div class="section-title">Head Unit Submission Review & CTO Decision</div><div class="smart-grid">${field('submissionId','Selected Submission ID / Reference')}${field('submissionForm','Head-Unit Form / Record')}${field('submissionSaved','Submission Date / Time')}${field('submissionStatus','Head-Unit Source Status')}${field('submissionOfficer','Submitting / Responsible Officer')}${field('submissionPage','Source Dashboard')}</div>${textF('submissionSummary','Submission Summary / Key Technical Position')}${textF('reviewEvidence','CTO Technical Review / Evidence Considered')}${textF('reviewRisk','Risk / Impact / Cross-Functional Implications')}${selectF('ctoDecision','CTO Decision',['APPROVED','APPROVED WITH CONDITIONS','RETURNED','REJECTED'],'Select Decision')}${textF('ctoConditions','CTO Conditions / Comments / Required Actions')}${textF('ctoEscalation','Further Executive / Financial / Procurement / Safety / Operational Approval Required')}${note()}${signs([['Technical Directorate Review / Prepared','prepared'],['Cross-Functional / Management Review','checked'],['Chief Technical Officer / Final Decision','approved']])}`;
+ return wrap('submissionApproval','HEAD UNIT SUBMISSION APPROVAL',body,'#082757')
+}
+function dailyPosition(){let body=`<div class="section-title">Daily Technical Directorate Position</div><div class="smart-grid">${field('dpDate','Operational / Review Date','date')}${selectF('dpPosition','Overall Technical Position',['GREEN — STABLE','AMBER — MANAGEMENT ATTENTION','RED — CRITICAL ACTION'],'Select Position')}${field('dpPending','Pending Head-Unit Approvals','number','min="0"')}${field('dpCritical','Critical Risks / Escalations','number','min="0"')}</div>${textF('dpSystem','System Operations Position / Outages / Load / Switching')}${textF('dpOM','O&M Position / Restoration / Maintenance / RE-TE')}${textF('dpPCM','PC&M Position / Protection / Metering / Commissioning')}${textF('dpPI','Planning & Investment / Projects / Capital Delivery')}${textF('dpHSE','HSE Position / Incidents / Critical Safety Actions')}${textF('dpDecision','CTO Decisions / Priority Actions / Management Support Required')}${signs()}`;return wrap('dailyPosition','CTO DAILY TECHNICAL POSITION',body,'#082757')}
+function weeklyReview(){let body=`<div class="section-title">Weekly Head of Units Review</div><div class="smart-grid">${field('wrFrom','Week From','date')}${field('wrTo','Week To','date')}${field('wrChair','Chair / CTO')}${field('wrAttendance','Heads / Attendees')}</div>${scoreTable(['Head System Operations delivery / risks','Head O&M maintenance / restoration / RE-TE delivery','Head PC&M protection / metering / testing assurance','Head Planning & Investment portfolio / project delivery','Head HSE technical safety / corrective actions','Cross-functional coordination / outage / commissioning / project interfaces','Critical spares / procurement / resources','Previous CTO actions / closure discipline'],'wr')}${textF('wrDecisions','CTO Decisions / Direction')}${actionTable(6,'wrA')}${signs()}`;return wrap('weeklyReview','WEEKLY HEAD OF UNITS REVIEW',body,'#145db2')}
+function monthlyPerformance(){let body=`<div class="section-title">Monthly Technical Directorate Performance</div><div class="smart-grid">${field('mpMonth','Reporting Month','month')}${selectF('mpRating','Overall Directorate Rating',['EXCELLENT','GOOD','SATISFACTORY','IMPROVEMENT REQUIRED','CRITICAL ATTENTION'],'Select Rating')}${field('mpApprovals','CTO Decisions / Approvals','number','min="0"')}${field('mpRisks','Critical Risks / Escalations','number','min="0"')}</div>${scoreTable(['System Operations performance','O&M reliability / maintenance performance','PC&M technical assurance performance','Planning & Investment portfolio performance','HSE technical-safety performance','Head-unit reporting / governance','Cross-functional action closure','Resource / budget / procurement alignment'],'mp')}${textF('mpAchievements','Major Directorate Achievements')}${textF('mpFailures','Critical Failures / Constraints / Delays')}${textF('mpManagement','Management / Board-Level Decisions Required')}${signs()}`;return wrap('monthlyPerformance','MONTHLY TECHNICAL DIRECTORATE PERFORMANCE',body,'#087747')}
+function systemOpsReview(){let body=`<div class="section-title">System Operations CTO Review</div>${scoreTable(['Supply / system stability','Trips / outages / restoration performance','Switching / safety-document discipline','Load / voltage / constraint management','SCADA / communication availability','TCN / regional coordination','Operator / shift performance','Critical operational risks / actions'],'so')}${textF('soDirection','CTO Direction / Required Technical Actions')}${selectF('soDecision','CTO Review Decision',['ACCEPTED','ACCEPTED WITH ACTIONS','MANAGEMENT ATTENTION REQUIRED','CRITICAL ESCALATION'],'Select Decision')}${signs()}`;return wrap('systemOpsReview','SYSTEM OPERATIONS EXECUTIVE REVIEW',body,'#1265c8')}
+function omReview(){let body=`<div class="section-title">O&M Reliability & Restoration CTO Review</div>${scoreTable(['RE / TE regional performance','Fault response / restoration','Preventive / corrective maintenance','Transformer / switchgear / feeder asset condition','Electrical fitter / cable jointer delivery','Critical spares / tools / vehicles','Repeat failures / chronic defects','O&M HSE / permit discipline'],'om')}${textF('omDirection','CTO Direction / Reliability Improvement Actions')}${selectF('omDecision','CTO Review Decision',['ACCEPTED','ACCEPTED WITH ACTIONS','IMPROVEMENT PLAN REQUIRED','CRITICAL ESCALATION'],'Select Decision')}${signs()}`;return wrap('omReview','O&M RELIABILITY & RESTORATION REVIEW',body,'#087747')}
+function pcmReview(){let body=`<div class="section-title">PC&M Technical Assurance CTO Review</div>${scoreTable(['Protection relay testing / settings control','Breaker / switchgear technical assurance','Metering / CT-VT integrity','Transformer / cable / earthing testing','Commissioning / pre-energisation readiness','Preventive-maintenance delivery','Test equipment / calibration control','Critical PC&M faults / spares / actions'],'pc')}${textF('pcDirection','CTO Technical Direction / Actions')}${selectF('pcDecision','CTO Review Decision',['ACCEPTED','ACCEPTED WITH ACTIONS','TECHNICAL IMPROVEMENT REQUIRED','CRITICAL ESCALATION'],'Select Decision')}${signs()}`;return wrap('pcmReview','PC&M TECHNICAL ASSURANCE REVIEW',body,'#5a2d91')}
+function piReview(){let body=`<div class="section-title">Planning & Investment Portfolio CTO Review</div>${scoreTable(['Network planning / demand / reinforcement priorities','Project initiation / technical basis','Design / BOQ / cost review quality','Capital programme / investment prioritisation','Construction / contractor progress','Wayleave / site / stakeholder constraints','Testing / commissioning / handover readiness','Budget / procurement / delivery risks'],'pi')}${textF('piDirection','CTO Portfolio Direction / Priority Decisions')}${selectF('piDecision','CTO Review Decision',['ACCEPTED','ACCEPTED WITH ACTIONS','REPRIORITISE / REVISE','CRITICAL ESCALATION'],'Select Decision')}${signs()}`;return wrap('piReview','PLANNING & INVESTMENT PORTFOLIO REVIEW',body,'#8a6512')}
+function hseReview(){let body=`<div class="section-title">HSE Technical Safety CTO Review</div>${scoreTable(['Serious incident / high-potential event management','Corrective action closure','Permit / isolation / technical safety compliance','Contractor technical HSE performance','PPE / tools / first-aid / emergency readiness','Fire / environmental / statutory readiness','Regional HSE performance / audit status','Critical technical safety risks / stop-work actions'],'hs')}${textF('hsDirection','CTO Safety / Technical Direction')}${selectF('hsDecision','CTO Review Decision',['ACCEPTED','ACCEPTED WITH ACTIONS','IMPROVEMENT PLAN REQUIRED','CRITICAL SAFETY ESCALATION'],'Select Decision')}${signs()}`;return wrap('hseReview','HSE TECHNICAL SAFETY REVIEW',body,'#a91d2d')}
+function crossFunctional(){let body=`<div class="section-title">Cross-Functional Technical Coordination</div><div class="smart-grid">${field('cfSubject','Coordination Subject / Project / Outage / Event')}${field('cfLead','Lead Head Unit')}${field('cfUnits','Participating Head Units')}${field('cfTarget','Target Date / Window')}</div>${textF('cfNeed','Technical Need / Problem / Shared Interface')}${textF('cfOps','System Operations Requirements / Constraints')}${textF('cfOM','O&M Requirements / Maintenance / Field Teams')}${textF('cfPCM','PC&M Protection / Metering / Testing Requirements')}${textF('cfPI','Planning & Investment / Project / Design Requirements')}${textF('cfHSE','HSE / Permit / Risk Requirements')}${textF('cfDecision','CTO Coordination Decision / Agreed Sequence')}${actionTable(6,'cfA')}${signs()}`;return wrap('crossFunctional','CROSS-FUNCTIONAL TECHNICAL COORDINATION',body,'#315f87')}
+function criticalRisk(){let body=`<div class="section-title">Critical Technical Risk CTO Review</div><div class="smart-grid">${selectF('crCategory','Risk Category',['SYSTEM / SUPPLY','ASSET / RELIABILITY','PROTECTION / CONTROL','METERING / ENERGY','PROJECT / INVESTMENT','HSE / SAFETY','CONTRACTOR / DELIVERY','RESOURCE / SPARES','OTHER'],'Select Category')}${selectF('crSeverity','Severity',['CRITICAL','HIGH','MEDIUM'],'Select Severity')}${field('crOwner','Responsible Head / Owner')}${field('crRef','Source Submission / Event Ref')}</div>${textF('crDescription','Verified Technical Risk / Condition')}${textF('crImpact','System / Customer / Asset / Safety / Financial Impact')}${textF('crInterim','Current Interim Control / Mitigation')}${textF('crPermanent','Permanent Corrective / Technical / Investment Action')}${textF('crDecision','CTO Direction / Escalation / Approval')}${actionTable(6,'crA')}${signs()}`;return wrap('criticalRisk','CRITICAL TECHNICAL RISK ESCALATION',body,'#a91d2d')}
+function majorEvent(){let body=`<div class="section-title">Major Fault / Disturbance Executive Review</div><div class="smart-grid">${field('meEvent','Major Event / Fault Ref')}${field('meWhen','Occurrence Date & Time','datetime-local')}${field('meRestored','Restoration / Normalisation Time')}${field('meLead','Lead Investigating Head Unit')}${field('meUnits','Participating Units')}</div>${textF('meChronology','Verified Event Chronology')}${textF('meCause','Immediate / Underlying / Contributing Causes')}${textF('meResponse','Operations / Maintenance / PC&M / HSE Response')}${textF('meImpact','Customer / System / Asset / Safety Impact')}${textF('mePermanent','Permanent Corrective / Reinforcement / Procedure Actions')}${actionTable(7,'meA')}${signs()}`;return wrap('majorEvent','MAJOR FAULT / DISTURBANCE EXECUTIVE REVIEW',body,'#d05a00')}
+function capitalApproval(){let body=`<div class="section-title">Capital Project Technical Approval</div><div class="smart-grid">${field('caProject','Project / Investment Title')}${field('caRef','Project / Budget / Proposal Ref')}${field('caBudget','Indicative / Approved Budget')}${field('caRegion','Affected Region / Area')}${field('caSponsor','Sponsoring Head Unit')}</div>${textF('caNeed','Network / Technical / Reliability Need')}${textF('caScope','Proposed Technical Scope')}${textF('caEvidence','Planning / Load / Fault / Asset / Customer Evidence')}${textF('caInterfaces','O&M / PC&M / System Ops / HSE / Construction Interfaces')}${textF('caRisk','Technical / Delivery / Procurement / Safety Risks')}${selectF('caDecision','CTO Technical Decision',['TECHNICALLY APPROVED','APPROVED WITH CONDITIONS','RETURN FOR TECHNICAL REVISION','NOT TECHNICALLY APPROVED'],'Select Decision')}${textF('caConditions','Conditions / Required Revisions / Next Approval')}${note()}${signs()}`;return wrap('capitalApproval','CAPITAL PROJECT TECHNICAL APPROVAL',body,'#8a6512')}
+function variationApproval(){let body=`<div class="section-title">Technical Variation / Change Approval</div><div class="smart-grid">${field('vaOriginal','Original Scope / Design / Setting / Requirement')}${field('vaChange','Proposed Change / Variation')}${field('vaRef','Instruction / Variation / Design Ref')}${field('vaImpact','Cost / Time / Operational Impact')}</div>${textF('vaReason','Technical Justification / Site / System Basis')}${textF('vaRisk','Protection / O&M / HSE / System / Project Risk')}${textF('vaReview','Head-Unit / Cross-Functional Reviews Obtained')}${selectF('vaDecision','CTO Technical Decision',['APPROVED','APPROVED WITH CONDITIONS','RETURN FOR REVISION','REJECTED'],'Select Decision')}${textF('vaConditions','Conditions / Implementation / Verification Requirements')}${signs()}`;return wrap('variationApproval','TECHNICAL VARIATION / CHANGE APPROVAL',body,'#6b4d8a')}
+function sparesApproval(){let rows='';for(let i=0;i<8;i++)rows+=`<tr><td>${i+1}</td><td><select name="sp${i}_unit">${opts(HEAD_UNITS.map(x=>x.name),'Head Unit')}</select></td><td><input name="sp${i}_item"></td><td><input name="sp${i}_spec"></td><td><input name="sp${i}_qty"></td><td><input name="sp${i}_reason"></td><td><select name="sp${i}_priority">${opts(['CRITICAL','HIGH','MEDIUM','ROUTINE'],'Priority')}</select></td></tr>`;let body=`<div class="section-title">Critical Spares / Procurement Technical Approval</div><table class="ftable"><thead><tr><th>#</th><th>Head Unit</th><th>Item / Equipment</th><th>Specification / Rating</th><th>Qty</th><th>Technical Justification</th><th>Priority</th></tr></thead><tbody>${rows}</tbody></table>${textF('spRisk','Operational / Project / Safety / Reliability Risk if Not Provided')}${selectF('spDecision','CTO Technical Decision',['TECHNICALLY APPROVED','APPROVED WITH ADJUSTMENT','RETURN FOR CLARIFICATION','NOT APPROVED'],'Select Decision')}${textF('spComments','Technical Comments / Alternatives / Procurement Direction')}${signs()}`;return wrap('sparesApproval','CRITICAL SPARES / PROCUREMENT TECHNICAL APPROVAL',body,'#8a6512')}
+function procedureApproval(){let body=`<div class="section-title">Technical Standard / Procedure Approval</div><div class="smart-grid">${field('prTitle','Procedure / Standard / Instruction Title')}${field('prDoc','Document No. / Revision')}${field('prOwner','Document Owner / Head Unit')}${field('prEffective','Proposed Effective Date','date')}</div>${scoreTable(['Technical content / engineering basis','Operational practicality','Maintenance / asset impact','Protection / metering / control implications','HSE / safety requirements','Roles / responsibilities / authority clear','Records / evidence / audit trail defined','Training / competency / implementation readiness'],'pr')}${textF('prComments','CTO Review Comments / Required Changes')}${selectF('prDecision','CTO Approval Decision',['APPROVED','APPROVED WITH CONDITIONS','REVISE & RESUBMIT','NOT APPROVED'],'Select Decision')}${signs()}`;return wrap('procedureApproval','TECHNICAL STANDARD / PROCEDURE APPROVAL',body,'#315f87')}
+function commissioningReview(){let body=`<div class="section-title">Commissioning / Energisation Governance Review</div>${scoreTable(['Project / construction completion evidence','O&M asset / maintenance handover readiness','PC&M protection / control / metering tests complete','System Operations switching / outage / control coordination complete','HSE / permit / isolation / safety readiness complete','Defects / punch items controlled','As-built / manuals / settings / test records available','Responsible operational / maintenance ownership confirmed'],'cm')}${textF('cmOutstanding','Outstanding Technical / Operational / HSE Conditions')}${selectF('cmDecision','CTO Governance Decision',['TECHNICAL GOVERNANCE ACCEPTED','ACCEPTED WITH CONDITIONS','NOT READY / RETURN FOR ACTION','EXECUTIVE ESCALATION REQUIRED'],'Select Decision')}${note()}${signs()}`;return wrap('commissioningReview','COMMISSIONING / ENERGISATION GOVERNANCE REVIEW',body,'#5a2d91')}
+function contractorReview(){let body=`<div class="section-title">Contractor / Vendor Technical Performance</div><div class="smart-grid">${field('ctCompany','Contractor / Vendor')}${field('ctProject','Contract / Project / Work Order')}${field('ctLead','Supervising Head Unit')}${field('ctPeriod','Review Period')}</div>${scoreTable(['Technical quality / workmanship','Approved specification / material compliance','Progress / response / delivery','Testing / inspection / documentation','HSE / permit / site compliance','Defect / non-conformance close-out','Resource / supervision / competency','Handover / warranty / support performance'],'ct')}${textF('ctRisk','Critical Technical / Delivery Risks')}${selectF('ctOutcome','CTO Outcome',['SATISFACTORY','SATISFACTORY WITH ACTIONS','CLOSE MONITORING REQUIRED','UNSATISFACTORY / ESCALATE'],'Select Outcome')}${signs()}`;return wrap('contractorReview','CONTRACTOR / VENDOR TECHNICAL PERFORMANCE REVIEW',body,'#087747')}
+function annualPlan(){let rows='';for(let i=0;i<10;i++)rows+=`<tr><td>${i+1}</td><td><select name="ap${i}_unit">${opts(HEAD_UNITS.map(x=>x.name),'Head Unit')}</select></td><td><input name="ap${i}_objective"></td><td><input name="ap${i}_kpi"></td><td><input name="ap${i}_owner"></td><td><input name="ap${i}_timeline"></td><td><input name="ap${i}_budget"></td><td><select name="ap${i}_priority">${opts(['CRITICAL','HIGH','MEDIUM','ROUTINE'],'Priority')}</select></td></tr>`;let body=`<div class="section-title">Annual Technical Directorate Plan & Budget</div><div class="smart-grid">${field('apYear','Plan Year','number','min="2020" max="2100"')}${field('apEnvelope','Total Technical Budget / Resource Envelope')}${selectF('apStatus','Plan Status',['DRAFT','UNDER REVIEW','CTO ENDORSED','EXECUTIVE APPROVAL PENDING','APPROVED','REVISED'],'Select Status')}</div><table class="ftable"><thead><tr><th>#</th><th>Head Unit</th><th>Objective / Programme</th><th>KPI / Target</th><th>Owner</th><th>Timeline</th><th>Budget / Resource</th><th>Priority</th></tr></thead><tbody>${rows}</tbody></table>${textF('apCross','Cross-Functional Priorities / Shared Resources')}${textF('apCapital','Major Capital / Reliability / Safety Investments')}${textF('apRisks','Budget / Procurement / Manpower / Delivery Risks')}${signs()}`;return wrap('annualPlan','ANNUAL TECHNICAL DIRECTORATE PLAN & BUDGET',body,'#8a6512')}
+function executiveBrief(){let body=`<div class="section-title">CTO Executive Technical Position</div><div class="smart-grid">${selectF('ebPeriod','Briefing Period',['DAILY','WEEKLY','MONTHLY','QUARTERLY','SPECIAL / EMERGENCY'],'Select Period')}${selectF('ebPosition','Overall Technical Position',['GREEN — STABLE','AMBER — MANAGEMENT ATTENTION','RED — CRITICAL EXECUTIVE ACTION'],'Select Position')}${field('ebPrepared','Prepared By')}${field('ebAudience','Executive Audience')}</div>${textF('ebSummary','Executive Technical Summary')}${textF('ebSystem','System Operations / Supply / Outages / Constraints')}${textF('ebOM','O&M / Reliability / Maintenance / Restoration')}${textF('ebPCM','PC&M / Protection / Metering / Commissioning')}${textF('ebPI','Planning & Investment / Projects / Capital Delivery')}${textF('ebHSE','HSE / Incidents / Critical Safety Issues')}${textF('ebDecision','CTO Decisions / Executive Management Support Required')}${note()}${signs([['Prepared / Technical Directorate','prepared'],['Executive / Cross-Functional Review','checked'],['Chief Technical Officer / Issue Authorisation','approved']])}`;return wrap('executiveBrief','CTO EXECUTIVE TECHNICAL BRIEF / MANAGEMENT REVIEW',body,'#082757')}
+
+const RENDER={submissionApproval,dailyPosition,weeklyReview,monthlyPerformance,systemOpsReview,omReview,pcmReview,piReview,hseReview,crossFunctional,criticalRisk,majorEvent,capitalApproval,variationApproval,sparesApproval,procedureApproval,commissioningReview,contractorReview,annualPlan,executiveBrief};
+
+function unitRecords(unit){
+  const sentIds=new Set(safeLoad(unit.sent).map(r=>r.id||r.reference).filter(Boolean));
+  return safeLoad(unit.records).map(r=>{
+    const id=String(r.id||r.reference||'');
+    return {...r,id,headUnit:unit.id,headUnitName:unit.name,sourcePage:unit.page,sourceStatus:(r.status||'').toUpperCase()||(sentIds.has(id)?'SENT':'SAVED')};
+  });
+}
+function allHeadRecords(){return HEAD_UNITS.flatMap(unitRecords)}
+function approvals(){return safeLoad(APPROVAL_KEY)}
+function approvalKey(r){return `${r.headUnit}::${r.id}`}
+function getDecision(r){const a=approvals().find(x=>x.key===approvalKey(r));return a||{decision:'PENDING'}}
+function saveDecision(r,decision,comment=''){
+  let a=approvals(),key=approvalKey(r),obj={key,headUnit:r.headUnit,headUnitName:r.headUnitName,recordId:r.id,recordName:r.name||r.type||'Head Unit Record',decision,comment,decidedAt:nowISO(),decidedBy:$('#userName').value.trim()||'Chief Technical Officer'};
+  const ix=a.findIndex(x=>x.key===key);if(ix>=0)a[ix]=obj;else a.unshift(obj);localStorage.setItem(APPROVAL_KEY,JSON.stringify(a));updateDashboard();return obj
+}
+function recText(r){try{return JSON.stringify(r).toLowerCase()}catch(e){return''}}
+function isRisk(r){return /critical|fault|outage|trip|incident|near miss|escalation|defect|overload|constraint|risk|emergency|disturbance|repeat failure|not ready|unsatisfactory/i.test(recText(r))}
+function statusClass(d){return d==='APPROVED'?'sc-approved':d==='APPROVED WITH CONDITIONS'?'sc-conditional':d==='RETURNED'?'sc-returned':d==='REJECTED'?'sc-rejected':'sc-pending'}
+
+function formData(f){const o={};new FormData(f).forEach((v,k)=>o[k]=v);f.querySelectorAll('input[type=checkbox]').forEach(x=>o[x.name]=x.checked);return o}
+function initSignatures(form){form.querySelectorAll('[data-signature]').forEach(w=>{const c=$('canvas',w),ctx=c.getContext('2d'),h=$('input[type=hidden]',w);ctx.lineWidth=2.2;ctx.lineCap='round';ctx.strokeStyle='#0a2e5d';let d=false;const p=e=>{const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height}};c.onpointerdown=e=>{e.preventDefault();d=true;const a=p(e);ctx.beginPath();ctx.moveTo(a.x,a.y)};c.onpointermove=e=>{if(!d)return;e.preventDefault();const a=p(e);ctx.lineTo(a.x,a.y);ctx.stroke()};const end=()=>{if(!d)return;d=false;h.value=c.toDataURL('image/png')};c.onpointerup=end;c.onpointerleave=end;$('[data-sig-clear]',w).onclick=()=>{ctx.clearRect(0,0,c.width,c.height);h.value=''};$$('[data-sig-file]',w).forEach(inp=>inp.onchange=e=>{const f=e.target.files?.[0];if(!f)return;const im=new Image();im.onload=()=>{ctx.clearRect(0,0,c.width,c.height);const s=Math.min(c.width/im.width,c.height/im.height),dw=im.width*s,dh=im.height*s;ctx.drawImage(im,(c.width-dw)/2,(c.height-dh)/2,dw,dh);h.value=c.toDataURL('image/png');URL.revokeObjectURL(im.src)};im.src=URL.createObjectURL(f)})})}
+function initForm(form){
+  if(form.elements.date&&!form.elements.date.value)form.elements.date.value=today();
+  const st=form.querySelector('[data-state]'),rg=form.querySelector('[data-region]');
+  function sync(){const vals=STATES[st?.value]||[],old=rg?.value;if(rg){rg.innerHTML=opts(vals,'Select Region');if(vals.includes(old))rg.value=old}}
+  if(st&&rg){st.addEventListener('change',sync);sync()}
+  initSignatures(form);
+  const u=$('#userName').value.trim();if(u&&form.elements.approvedName&&!form.elements.approvedName.value)form.elements.approvedName.value=u;
+  form.querySelector('[data-save]').onclick=()=>saveForm(form,false);
+  form.querySelector('[data-send]').onclick=()=>sendForm(form);
+  form.querySelector('[data-print]').onclick=()=>printForm();
+  if(activeForm==='submissionApproval'&&selectedSubmission)prefillSubmission(form,selectedSubmission);
+}
+function prefillSubmission(form,r){
+  const d=r.data||{};
+  const dec=getDecision(r);
+  if(form.elements.headUnit)form.elements.headUnit.value=r.headUnitName||'';
+  if(form.elements.state)form.elements.state.value=r.state||d.state||'';
+  if(form.elements.region){form.elements.region.innerHTML=opts(STATES[form.elements.state.value]||[],'Select Region');form.elements.region.value=r.region||d.region||''}
+  const set=(n,v)=>{if(form.elements[n])form.elements[n].value=v??''};
+  set('sourceReference',r.id);set('submissionId',r.id);set('submissionForm',r.name||r.type);set('submissionSaved',r.savedAt||'');set('submissionStatus',r.sourceStatus||r.status||'');set('submissionOfficer',r.officer||d.preparedName||d.role||'');set('submissionPage',r.sourcePage||'');
+  set('station',r.station||d.station||'');set('feeder',r.feeder||d.feeder||d.projectTitle||'');set('subject',r.name||d.subject||d.projectTitle||d.project||'');
+  if(dec.decision&&dec.decision!=='PENDING')set('ctoDecision',dec.decision);
+  if(dec.comment)set('ctoConditions',dec.comment);
+}
+function restoreData(form,data){Object.entries(data||{}).forEach(([k,v])=>{const e=form.elements[k];if(!e)return;if(e.type==='checkbox')e.checked=!!v;else e.value=v??''});const st=form.querySelector('[data-state]'),rg=form.querySelector('[data-region]');if(st&&rg){rg.innerHTML=opts(STATES[st.value]||[],'Select Region');rg.value=data?.region||''}form.querySelectorAll('[data-signature]').forEach(w=>{const h=$('input[type=hidden]',w);if(h.value){const c=$('canvas',w),ctx=c.getContext('2d'),im=new Image();im.onload=()=>{ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height)};im.src=h.value}})}
+function saveForm(form,isSent=false){
+  let d=formData(form);if(!d.reference){d.reference=refNo('CTO');form.elements.reference.value=d.reference}
+  const rec={id:d.reference,type:activeForm,name:FORM_META.find(x=>x.id===activeForm)?.name||activeForm,headUnit:d.headUnit||'',state:d.state||'',region:d.region||'',station:d.station||'',subject:d.subject||'',officer:d.approvedName||d.preparedName||d.role||'',decision:d.ctoDecision||'',status:isSent?'SENT':'SAVED',savedAt:nowISO(),data:d};
+  let a=safeLoad(STORE_KEY),ix=a.findIndex(x=>x.id===rec.id);if(ix>=0)a[ix]=rec;else a.unshift(rec);localStorage.setItem(STORE_KEY,JSON.stringify(a));
+  if(isSent){let q=safeLoad(SENT_KEY);q.unshift(rec);localStorage.setItem(SENT_KEY,JSON.stringify(q))}
+  if(activeForm==='submissionApproval'&&selectedSubmission&&d.ctoDecision)saveDecision(selectedSubmission,d.ctoDecision,d.ctoConditions||d.reviewEvidence||'');
+  const s=form.querySelector('[data-status]');s.className='status-banner ok';s.textContent=`${isSent?'SENT / ROUTED':'SAVED'} • ${rec.id}`;updateDashboard();return rec
+}
+function sendForm(f){const to=f.elements.dispatchTo?.value;if(!to){const s=f.querySelector('[data-status]');s.className='status-banner warn';s.textContent='Select a dispatch recipient before sending.';return}const r=saveForm(f,true);f.querySelector('[data-status]').textContent=`SENT / ROUTED • ${r.id} • To: ${to}`}
+function printForm(){document.body.classList.add('print-landscape');window.print();setTimeout(()=>document.body.classList.remove('print-landscape'),500)}
+
+function renderPicker(){$('#formPicker').innerHTML=FORM_META.map(f=>`<button class="${f.id===activeForm?'active':''}" data-form-tab="${f.id}">${f.icon} ${esc(f.name)}</button>`).join('');$$('[data-form-tab]').forEach(x=>x.onclick=()=>openForm(x.dataset.formTab))}
+function renderCards(){const ids=['submissionApproval','dailyPosition','criticalRisk','capitalApproval','weeklyReview','executiveBrief'];$('#formCards').innerHTML=ids.map(id=>FORM_META.find(f=>f.id===id)).map(f=>`<div class="formcard" data-open-form="${f.id}"><div class="icon">${f.icon}</div><h4>${esc(f.name)}</h4><p>${esc(f.desc)}</p></div>`).join('');$$('[data-open-form]').forEach(x=>x.onclick=()=>openForm(x.dataset.openForm))}
+function openForm(id,submission=null){activeForm=id;if(submission)selectedSubmission=submission;switchView('forms');renderPicker();$('#formWorkspace').innerHTML=RENDER[id]();initForm($('.pcm-form'));$('#formsHeroTitle').textContent=FORM_META.find(x=>x.id===id)?.name||'CTO Form'}
+function switchView(v){$$('.view').forEach(x=>x.classList.remove('active'));$('#'+v+'View').classList.add('active');
+$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));const t={dashboard:'Chief Technical Officer Executive Dashboard',heads:'Head of Units Oversight',network:'Network & RE/TE Intelligence',approvals:'CTO Approval Queue',risks:'Critical Technical Risks',performance:'Directorate Performance',forms:'CTO Executive Forms',records:'Saved / Sent CTO Records',reference:'CTO Governance Reference'};$('#pageTitle').textContent=t[v]||'Chief Technical Officer';if(v==='dashboard')renderDashboard();if(v==='heads')renderHeads();if(v==='network')renderNetworkGovernance();if(v==='approvals')renderApprovals();if(v==='risks')renderRisks();if(v==='performance')renderPerformance();if(v==='records')renderRecords();if(innerWidth<801)$('#sidebar').classList.remove('open')}
+const CTO_DISPATCH_OVERVIEW={frameId:'ctoDispatchOverviewFrame',statusId:'ctoDispatchOverviewStatus',loading:null};
+function setCtoDispatchOverviewStatus(text,mode='ready'){const el=document.getElementById(CTO_DISPATCH_OVERVIEW.statusId);if(!el)return;el.textContent=text;el.classList.remove('module-error','module-loading');if(mode==='error')el.classList.add('module-error');if(mode==='loading')el.classList.add('module-loading')}
+async function bootCtoDispatchOverview(force=false){const cfg=CTO_DISPATCH_OVERVIEW,frame=document.getElementById(cfg.frameId);if(!frame)return;if(force){cfg.loading=null;frame.dataset.loaded='';frame.onload=null;frame.removeAttribute('src')}if(frame.dataset.loaded==='1'){try{if(frame.contentDocument?.getElementById('view-overview')){setCtoDispatchOverviewStatus('MODULE READY');return}}catch(_){ }frame.dataset.loaded=''}if(cfg.loading)return cfg.loading;setCtoDispatchOverviewStatus('LOADING MODULE','loading');cfg.loading=new Promise(resolve=>{frame.onload=()=>setTimeout(()=>{try{frame.contentWindow?.showView?.('overview');const ok=!!frame.contentDocument?.getElementById('view-overview');setCtoDispatchOverviewStatus(ok?'MODULE READY':'LOAD INCOMPLETE',ok?'ready':'error');if(!ok)frame.dataset.loaded=''}catch(error){console.error('CTO dispatch overview health check failed',error);setCtoDispatchOverviewStatus('RELOAD REQUIRED','error');frame.dataset.loaded=''}cfg.loading=null;resolve()},100);frame.dataset.loaded='1';frame.src=new URL('../system-operations/dispatch.html?context=executive',location.href).href});return cfg.loading}
+function reloadCtoDispatchOverview(){return bootCtoDispatchOverview(true)}
+async function fullscreenCtoDispatchOverview(){const frame=document.getElementById(CTO_DISPATCH_OVERVIEW.frameId);if(!frame)return;try{if(frame.requestFullscreen)await frame.requestFullscreen();else if(frame.webkitRequestFullscreen)frame.webkitRequestFullscreen()}catch(error){console.warn('CTO dispatch overview fullscreen failed',error);setCtoDispatchOverviewStatus('FULLSCREEN BLOCKED','error')}}
+const CTO_VIEW_KEYS=new Set(['dashboard','heads','network','approvals','risks','performance','forms','records','reference','dispatch']);
+function ctoViewFromLocation(){const value=new URLSearchParams(location.hash.replace(/^#/,'')).get('view');return CTO_VIEW_KEYS.has(value)?value:''}
+let ctoApplyingRoute=false;
+const ctoSwitchView=switchView;
+switchView=function(v){ctoSwitchView(v);if(v==='dispatch'){$('#pageTitle').textContent='Dispatch Overview';bootCtoDispatchOverview()}if(!ctoApplyingRoute&&CTO_VIEW_KEYS.has(v)){const u=new URL(location.href);u.hash='view='+encodeURIComponent(v);history.replaceState({},'',u.href)}}
+window.addEventListener('hashchange',()=>{const v=ctoViewFromLocation();if(!v)return;ctoApplyingRoute=true;switchView(v);ctoApplyingRoute=false})
+const ctoInitialRoute=ctoViewFromLocation();
+
+function updateDashboard(){
+  const all=allHeadRecords(),ap=approvals(),cto=safeLoad(STORE_KEY),sent=safeLoad(SENT_KEY);
+  const pending=all.filter(r=>getDecision(r).decision==='PENDING').length;
+  $('#heroSubmissions').textContent=all.length;$('#heroPending').textContent=pending;$('#heroApproved').textContent=ap.filter(x=>x.decision==='APPROVED'||x.decision==='APPROVED WITH CONDITIONS').length;
+  $('#kpiAll').textContent=all.length;$('#kpiSent').textContent=all.filter(r=>r.sourceStatus==='SENT').length;$('#kpiPending').textContent=pending;$('#kpiRisk').textContent=all.filter(isRisk).length;
+  $('#recordsSaved').textContent=cto.length;$('#recordsSent').textContent=sent.length;
+}
+function renderDashboard(){
+  updateDashboard();
+  const cards=HEAD_UNITS.map(u=>{const rows=unitRecords(u),pending=rows.filter(r=>getDecision(r).decision==='PENDING').length,risk=rows.filter(isRisk).length,cls=risk?'risk':pending?'attention':'ok';return `<div class="head-card ${cls}"><h4>${esc(u.name)}</h4><small>${esc(u.id)} executive records</small><div class="nums"><div><b>${rows.length}</b><span>RECORDS</span></div><div><b>${pending}</b><span>PENDING</span></div><div><b>${risk}</b><span>RISK</span></div></div></div>`});
+  $('#headGrid').innerHTML=cards.join('');
+  const all=allHeadRecords(),pending=all.filter(r=>getDecision(r).decision==='PENDING').length,risk=all.filter(isRisk).length,returned=approvals().filter(x=>x.decision==='RETURNED'||x.decision==='REJECTED').length,alerts=[];
+  if(risk)alerts.push(`<div class="exec-alert critical"><strong>${risk} critical / fault / outage / incident / escalation signal(s)</strong>Review technical impact, interim controls, owners and permanent corrective actions.</div>`);
+  if(pending)alerts.push(`<div class="exec-alert warn"><strong>${pending} head-unit record(s) have no CTO decision</strong>Use the CTO Approval Queue to approve, conditionally approve, return or reject submissions.</div>`);
+  if(returned)alerts.push(`<div class="exec-alert warn"><strong>${returned} returned / rejected CTO decision(s)</strong>Confirm the responsible head has addressed comments and resubmitted where required.</div>`);
+  if(!all.length)alerts.push(`<div class="exec-alert warn"><strong>No head-unit data visible on this browser origin</strong>The five head dashboards must be hosted on the same website/origin for browser-local records to appear here.</div>`);
+  if(!alerts.length)alerts.push(`<div class="exec-alert ok"><strong>No automatic CTO alert generated</strong>Available local records show no pending or critical technical signal.</div>`);
+  $('#executiveAlerts').innerHTML=alerts.join('');
+}
+function renderTable(sel,rows,approvalMode=false){
+  $(sel).innerHTML=rows.length?`<thead><tr><th>Head Unit</th><th>Reference / Form</th><th>Region / Site</th><th>Source Status</th><th>CTO Decision</th><th>Saved</th><th>Action</th></tr></thead><tbody>${rows.sort((a,b)=>new Date(b.savedAt||0)-new Date(a.savedAt||0)).map(r=>{const d=getDecision(r).decision;return `<tr><td><b>${esc(r.headUnitName)}</b></td><td>${esc(r.id||'—')}<br><small>${esc(r.name||r.type||'Record')}</small></td><td>${esc(r.region||r.data?.region||'—')}<br><small>${esc(r.station||r.data?.station||r.data?.projectTitle||r.data?.subject||'—')}</small></td><td>${esc(r.sourceStatus||'SAVED')}</td><td><span class="status-chip ${statusClass(d)}">${esc(d)}</span></td><td>${r.savedAt?new Date(r.savedAt).toLocaleString():'—'}</td><td><div class="approval-actions"><button class="btn ghost" data-review="${esc(approvalKey(r))}">Review</button>${approvalMode?`<button class="btn primary" data-decision="APPROVED" data-key="${esc(approvalKey(r))}">Approve</button><button class="btn ghost" data-decision="APPROVED WITH CONDITIONS" data-key="${esc(approvalKey(r))}">Conditional</button><button class="btn ghost" data-decision="RETURNED" data-key="${esc(approvalKey(r))}">Return</button><button class="btn danger" data-decision="REJECTED" data-key="${esc(approvalKey(r))}">Reject</button>`:''}</div></td></tr>`}).join('')}</tbody>`:`<tbody><tr><td>No matching head-unit records.</td></tr></tbody>`;
+  $$('[data-review]').forEach(b=>b.onclick=()=>{const r=allHeadRecords().find(x=>approvalKey(x)===b.dataset.review);if(r)openForm('submissionApproval',r)});
+  $$('[data-decision]').forEach(b=>b.onclick=()=>{const r=allHeadRecords().find(x=>approvalKey(x)===b.dataset.key);if(!r)return;let comment='';if(b.dataset.decision!=='APPROVED')comment=prompt('Enter CTO comment / condition / reason:','')||'';saveDecision(r,b.dataset.decision,comment);renderApprovals();renderHeads()});
+}
+function renderHeads(){
+  let rows=allHeadRecords(),unit=$('#headUnitFilter').value,status=$('#headStatusFilter').value,dec=$('#headDecisionFilter').value,q=$('#headSearch').value.toLowerCase();
+  if(unit)rows=rows.filter(r=>r.headUnit===unit);if(status)rows=rows.filter(r=>r.sourceStatus===status);if(dec)rows=rows.filter(r=>getDecision(r).decision===dec);if(q)rows=rows.filter(r=>recText(r).includes(q));
+  $('#headsVisible').textContent=rows.length;$('#headsCovered').textContent=uniq(rows.map(r=>r.headUnit)).length+'/5';renderTable('#headsTable',rows,false)
+}
+function renderApprovals(){
+  let rows=allHeadRecords(),unit=$('#approvalUnit').value,dec=$('#approvalDecision').value,q=$('#approvalSearch').value.toLowerCase();
+  if(unit)rows=rows.filter(r=>r.headUnit===unit);if(dec)rows=rows.filter(r=>getDecision(r).decision===dec);if(q)rows=rows.filter(r=>recText(r).includes(q));
+  $('#approvalPending').textContent=allHeadRecords().filter(r=>getDecision(r).decision==='PENDING').length;$('#approvalCompleted').textContent=approvals().length;renderTable('#approvalTable',rows,true)
+}
+function renderRisks(){
+  let rows=allHeadRecords().filter(isRisk),unit=$('#riskUnit').value,dec=$('#riskDecision').value,q=$('#riskSearch').value.toLowerCase();
+  if(unit)rows=rows.filter(r=>r.headUnit===unit);if(dec)rows=rows.filter(r=>getDecision(r).decision===dec);if(q)rows=rows.filter(r=>recText(r).includes(q));
+  $('#riskCount').textContent=rows.length;$('#riskUnits').textContent=uniq(rows.map(r=>r.headUnit)).length;renderTable('#riskTable',rows,false)
+}
+function renderPerformance(){
+  const rows=HEAD_UNITS.map(u=>{const all=unitRecords(u),ap=all.map(getDecision);return {u,records:all.length,sent:all.filter(r=>r.sourceStatus==='SENT').length,pending:ap.filter(a=>a.decision==='PENDING').length,approved:ap.filter(a=>a.decision==='APPROVED'||a.decision==='APPROVED WITH CONDITIONS').length,returned:ap.filter(a=>a.decision==='RETURNED'||a.decision==='REJECTED').length,risk:all.filter(isRisk).length}});
+  $('#perfRecords').textContent=rows.reduce((s,x)=>s+x.records,0);$('#perfDecisions').textContent=approvals().length;
+  $('#performanceTable').innerHTML=`<thead><tr><th>Head Unit</th><th>Total Records</th><th>Sent / Routed</th><th>Pending CTO</th><th>Approved</th><th>Returned / Rejected</th><th>Risk Signals</th><th>Dashboard</th></tr></thead><tbody>${rows.map(x=>`<tr><td><b>${esc(x.u.name)}</b></td><td>${x.records}</td><td>${x.sent}</td><td>${x.pending}</td><td>${x.approved}</td><td>${x.returned}</td><td>${x.risk}</td><td><a class="btn ghost" href="${esc(x.u.page)}">Open</a></td></tr>`).join('')}</tbody>`
+}
+function renderRecords(){
+  updateDashboard();let rows=safeLoad(STORE_KEY),q=$('#recordSearch').value.toLowerCase();if(q)rows=rows.filter(r=>recText(r).includes(q));
+  $('#recordsTable').innerHTML=rows.length?`<thead><tr><th>Reference</th><th>CTO Form</th><th>Head Unit</th><th>Region / Site</th><th>Decision</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${esc(r.id)}</b></td><td>${esc(r.name)}</td><td>${esc(r.headUnit||'—')}</td><td>${esc(r.region||'—')}<br><small>${esc(r.station||r.subject||'—')}</small></td><td>${esc(r.decision||'—')}</td><td><span class="badge ${r.status==='SENT'?'green':'blue'}">${r.status}</span></td><td><button class="btn ghost" data-open-record="${esc(r.id)}">Open</button></td></tr>`).join('')}</tbody>`:`<tbody><tr><td class="empty">No CTO records saved yet.</td></tr></tbody>`;
+  $$('[data-open-record]').forEach(b=>b.onclick=()=>{const r=safeLoad(STORE_KEY).find(x=>x.id===b.dataset.openRecord);if(!r)return;selectedSubmission=null;openForm(r.type);setTimeout(()=>restoreData($('.pcm-form'),r.data),0)})
+}
+
+let CTO_NETWORK={loaded:false,source:'Not connected',sources:[],feeders33:[],stations:[],feeders11:[],responsibilities:[],profiles:[],rows:[]};
+const ctoNorm=v=>String(v??'').trim();
+const ctoUpper=v=>ctoNorm(v).toUpperCase();
+function ctoRelationName(v,key){if(!v)return'';if(Array.isArray(v))return v.map(x=>x&&x[key]).filter(Boolean).join(' / ');return v[key]||''}
+function ctoSetText(id,v){const el=$('#'+id);if(el)el.textContent=v}
+function ctoNetOption(values,label){return `<option value="">${label}</option>`+uniq(values.filter(Boolean)).sort((a,b)=>String(a).localeCompare(String(b))).map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}
+function buildCtoNetworkRows(){
+  const resp33=new Map(),resp11=new Map();
+  CTO_NETWORK.responsibilities.forEach(r=>{
+    const key=r.voltage_level==='33KV'?r.feeder_33kv_id:r.feeder_11kv_id;if(!key)return;
+    const map=r.voltage_level==='33KV'?resp33:resp11;if(!map.has(key))map.set(key,[]);map.get(key).push(r)
+  });
+  const rows=[];
+  CTO_NETWORK.feeders33.filter(f=>f.active!==false).forEach(f=>{
+    const rr=resp33.get(f.id)||[];
+    rows.push({voltage:'33KV',id:f.id,state:f.state_code||'',region:ctoRelationName(f.regions,'name'),source:ctoRelationName(f.source_stations,'name'),station:'',feeder:f.feeder_name||'',band:f.band||'',re:uniq(rr.filter(x=>x.officer_type==='RE').map(x=>x.office_name)).join(' / '),te:'',reportingRE:'',assigned:rr.some(x=>x.officer_type==='RE')})
+  });
+  CTO_NETWORK.feeders11.filter(f=>f.active!==false).forEach(f=>{
+    const rr=resp11.get(f.id)||[];
+    rows.push({voltage:'11KV',id:f.id,state:f.state_code||'',region:ctoRelationName(f.regions,'name'),source:'',station:ctoRelationName(f.injection_substations,'station_name'),feeder:f.feeder_name||'',band:f.band||'',re:'',te:uniq(rr.filter(x=>x.officer_type==='TE').map(x=>x.office_name)).join(' / '),reportingRE:uniq(rr.filter(x=>x.officer_type==='TE').map(x=>x.reporting_re_office).filter(Boolean)).join(' / '),assigned:rr.some(x=>x.officer_type==='TE')})
+  });
+  CTO_NETWORK.rows=rows
+}
+async function loadCtoNetworkFromSupabase(){
+  const sb=window.kedcoSupabase;
+  if(!sb||typeof sb.from!=='function')return false;
+  const query=async(table,select='*')=>{const {data,error}=await sb.from(table).select(select);if(error)throw error;return data||[]};
+  const [sources,f33,stations,f11,resp,profiles]=await Promise.all([
+    query('source_stations','id,name,state_code,source_type,active'),
+    query('feeders_33kv','id,feeder_name,state_code,region_id,source_station_id,band,active,regions(name),source_stations(name)'),
+    query('injection_substations','id,station_name,state_code,region_id,source_station_id,supply_33kv_feeder_id,active,regions(name),source_stations(name)'),
+    query('feeders_11kv','id,feeder_name,state_code,region_id,injection_substation_id,band,transformer_rating,active,regions(name),injection_substations(station_name)'),
+    query('feeder_responsibilities','id,state_code,region_id,officer_type,office_name,reporting_re_office,voltage_level,feeder_33kv_id,feeder_11kv_id,source_feeder_name,regions(name)'),
+    query('profiles','id,email,full_name,designation,role_code,state_code,region_id,account_status,regions(name)')
+  ]);
+  if(window.KEDCO_LOCAL_MODE && ![sources,f33,stations,f11,resp,profiles].some(rows=>rows.length))return false;
+  CTO_NETWORK={loaded:true,source:window.KEDCO_LOCAL_MODE?'Local Cloud database':'Live Supabase database',sources,feeders33:f33,stations,feeders11:f11,responsibilities:resp,profiles,rows:[]};buildCtoNetworkRows();return true
+}
+function loadCtoNetworkFallback(){
+  const local=safeLoad('KEDCO_TECH_FEEDER_RESPONSIBILITY_V2');
+  if(!Array.isArray(local)||!local.length)return false;
+  const rows=local.map(x=>{const a=Array.isArray(x.responsibilityAssignments)?x.responsibilityAssignments:[];const v=ctoUpper(x.voltage).includes('33')?'33KV':'11KV';return {voltage:v,id:x.sn,state:x.state||'',region:x.region||'',source:'',station:'',feeder:String(x.feeder||'').replace(/^33KV\s+|^11KV\s+/i,''),band:'',re:uniq(a.filter(r=>ctoUpper(r.officerType)==='RE').map(r=>r.office)).join(' / '),te:uniq(a.filter(r=>ctoUpper(r.officerType)==='TE').map(r=>r.office)).join(' / '),reportingRE:uniq(a.filter(r=>ctoUpper(r.officerType)==='TE').map(r=>r.reportingRE).filter(Boolean)).join(' / '),assigned:a.length>0}});
+  CTO_NETWORK={loaded:true,source:'Browser-local responsibility cache (fallback)',sources:[],feeders33:rows.filter(x=>x.voltage==='33KV'),stations:[],feeders11:rows.filter(x=>x.voltage==='11KV'),responsibilities:[],profiles:[],rows};return true
+}
+async function ensureCtoNetworkLoaded(force=false){
+  if(CTO_NETWORK.loaded&&!force)return;
+  ctoSetText('netDataSource',window.KEDCO_LOCAL_MODE?'Connecting to Local Cloud…':'Connecting to live Supabase…');
+  try{if(await loadCtoNetworkFromSupabase())return}catch(e){console.warn('CTO network data load failed:',e);ctoSetText('netDataSource',(window.KEDCO_LOCAL_MODE?'Local Cloud':'Supabase')+' unavailable: '+(e.message||e))}
+  if(!loadCtoNetworkFallback())CTO_NETWORK={loaded:true,source:'No live network source connected',sources:[],feeders33:[],stations:[],feeders11:[],responsibilities:[],profiles:[],rows:[]}
+}
+function renderCtoNetworkSummary(){
+  const rows=CTO_NETWORK.rows, r33=rows.filter(x=>x.voltage==='33KV'), r11=rows.filter(x=>x.voltage==='11KV'), a33=r33.filter(x=>x.assigned).length,a11=r11.filter(x=>x.assigned).length,gaps=rows.filter(x=>!x.assigned).length;
+  const values={netSources:CTO_NETWORK.sources.filter(x=>x.active!==false).length||'—',net33:r33.length||'—',netStations:CTO_NETWORK.stations.filter(x=>x.active!==false).length||'—',net11:r11.length||'—',net33Assigned:a33||'0',net11Assigned:a11||'0',netUnassigned:gaps||'0',netHero33:r33.length||'—',netHero11:r11.length||'—',netHeroUnassigned:gaps||'0'};Object.entries(values).forEach(([k,v])=>ctoSetText(k,v));
+  ctoSetText('netDataSource',CTO_NETWORK.source);ctoSetText('netLastRefresh',new Date().toLocaleString('en-GB',{hour12:false}));
+  const states=uniq(rows.map(x=>x.state).filter(Boolean));$('#netStateFilter').innerHTML=ctoNetOption(states,'All States');$('#netRegionFilter').innerHTML=ctoNetOption(rows.map(x=>x.region).filter(Boolean),'All Regions');
+  const summary=states.sort().map(state=>{const sr=rows.filter(x=>x.state===state),s33=sr.filter(x=>x.voltage==='33KV'),s11=sr.filter(x=>x.voltage==='11KV'),g=sr.filter(x=>!x.assigned);return `<div class="net-summary-card"><h4>${esc(state)}</h4><p><strong>${s33.length}</strong> × 33 kV feeders</p><p><strong>${s11.length}</strong> × 11 kV feeders</p><p><strong>${sr.filter(x=>x.assigned).length}</strong> assigned • <strong>${g.length}</strong> gaps</p></div>`}).join('');$('#netStateSummary').innerHTML=summary||'<div class="personnel-empty">No network data loaded.</div>'
+}
+function filteredCtoNetworkRows(){let rows=CTO_NETWORK.rows.slice();const v=$('#netVoltageFilter').value,s=$('#netStateFilter').value,r=$('#netRegionFilter').value,a=$('#netAssignmentFilter').value,q=ctoUpper($('#netSearch').value);if(v)rows=rows.filter(x=>x.voltage===v);if(s)rows=rows.filter(x=>x.state===s);if(r)rows=rows.filter(x=>x.region===r);if(a)rows=rows.filter(x=>a==='ASSIGNED'?x.assigned:!x.assigned);if(q)rows=rows.filter(x=>ctoUpper([x.voltage,x.state,x.region,x.source,x.station,x.feeder,x.band,x.re,x.te,x.reportingRE].join(' ')).includes(q));return rows}
+function renderCtoFeederMatrix(){
+  const rows=filteredCtoNetworkRows();ctoSetText('netVisibleCount',rows.length+' rows');
+  $('#netFeederTable').innerHTML=`<thead><tr><th>Voltage</th><th>State</th><th>Region</th><th>Source / Injection Station</th><th>Feeder</th><th>Band</th><th>Responsible RE</th><th>Responsible TE</th><th>TE Reports To RE</th><th>Status</th></tr></thead><tbody>${rows.map(x=>`<tr><td><b>${esc(x.voltage)}</b></td><td>${esc(x.state||'—')}</td><td>${esc(x.region||'—')}</td><td>${esc(x.source||x.station||'—')}</td><td class="net-feeder">${esc(x.feeder)}</td><td>${esc(x.band||'—')}</td><td class="net-office">${esc(x.re||'—')}</td><td class="net-office">${esc(x.te||'—')}</td><td class="net-report">${esc(x.reportingRE||'—')}</td><td class="${x.assigned?'net-assigned':'net-unassigned'}">${x.assigned?'ASSIGNED':'UNASSIGNED'}</td></tr>`).join('')||'<tr><td colspan="10" class="personnel-empty">No matching feeder records.</td></tr>'}</tbody>`
+}
+function renderCtoOfficeSummary(){
+  let groups=[];
+  if(CTO_NETWORK.responsibilities.length){const m=new Map();CTO_NETWORK.responsibilities.forEach(r=>{const k=[r.officer_type,r.office_name,r.reporting_re_office||'',r.state_code||'',ctoRelationName(r.regions,'name')].join('|');if(!m.has(k))m.set(k,{type:r.officer_type,office:r.office_name,report:r.reporting_re_office||'',state:r.state_code||'',region:ctoRelationName(r.regions,'name'),count:0});m.get(k).count++});groups=[...m.values()]}
+  else{const m=new Map();CTO_NETWORK.rows.filter(x=>x.assigned).forEach(x=>{if(x.voltage==='33KV'&&x.re){const k='RE|'+x.re;const g=m.get(k)||{type:'RE',office:x.re,report:'',state:x.state,region:x.region,count:0};g.count++;m.set(k,g)}if(x.voltage==='11KV'&&x.te){x.te.split(' / ').forEach(te=>{const k='TE|'+te+'|'+x.reportingRE;const g=m.get(k)||{type:'TE',office:te,report:x.reportingRE,state:x.state,region:x.region,count:0};g.count++;m.set(k,g)})}});groups=[...m.values()]}
+  groups.sort((a,b)=>[a.state,a.region,a.type,a.office].join('|').localeCompare([b.state,b.region,b.type,b.office].join('|')));ctoSetText('netOfficeCount',groups.length+' offices');$('#netOfficeTable').innerHTML=`<thead><tr><th>State</th><th>Region</th><th>Officer</th><th>Responsible Office</th><th>Reports To RE</th><th>Feeder Assignments</th></tr></thead><tbody>${groups.map(g=>`<tr><td>${esc(g.state||'—')}</td><td>${esc(g.region||'—')}</td><td><b>${esc(g.type)}</b></td><td class="net-office">${esc(g.office||'—')}</td><td>${esc(g.report||'—')}</td><td><b>${g.count}</b></td></tr>`).join('')||'<tr><td colspan="6" class="personnel-empty">No responsibility data loaded.</td></tr>'}</tbody>`
+}
+function renderCtoGaps(){const rows=CTO_NETWORK.rows.filter(x=>!x.assigned).sort((a,b)=>[a.voltage,a.state,a.feeder].join('|').localeCompare([b.voltage,b.state,b.feeder].join('|')));ctoSetText('netGapCount',rows.length+' gaps');$('#netGapTable').innerHTML=`<thead><tr><th>Voltage</th><th>State</th><th>Region</th><th>Feeder</th><th>Required</th></tr></thead><tbody>${rows.map(x=>`<tr><td><b>${esc(x.voltage)}</b></td><td>${esc(x.state||'—')}</td><td>${esc(x.region||'—')}</td><td class="net-feeder">${esc(x.feeder)}</td><td class="net-unassigned">${x.voltage==='33KV'?'RE':'TE'} CONFIRMATION</td></tr>`).join('')||'<tr><td colspan="5" class="personnel-empty">No responsibility gaps detected.</td></tr>'}</tbody>`}
+function renderCtoPersonnel(){const rows=CTO_NETWORK.profiles.filter(p=>['RE','TE'].includes(p.role_code)).sort((a,b)=>[a.role_code,a.state_code,a.full_name].join('|').localeCompare([b.role_code,b.state_code,b.full_name].join('|')));ctoSetText('netPersonnelCount',rows.length+' users');$('#netPersonnelTable').innerHTML=`<thead><tr><th>Role</th><th>Name</th><th>State</th><th>Region</th><th>Designation</th><th>Status</th></tr></thead><tbody>${rows.map(p=>`<tr><td><b>${esc(p.role_code)}</b></td><td class="net-office">${esc(p.full_name||p.email||'—')}</td><td>${esc(p.state_code||'—')}</td><td>${esc(ctoRelationName(p.regions,'name')||'—')}</td><td>${esc(p.designation||'—')}</td><td>${esc(p.account_status||'—')}</td></tr>`).join('')||'<tr><td colspan="6" class="personnel-empty">No named RE/TE user accounts have been created in the active KEDCO data store yet. Feeder responsibility offices are shown separately above.</td></tr>'}</tbody>`}
+async function renderNetworkGovernance(force=false){await ensureCtoNetworkLoaded(force);renderCtoNetworkSummary();renderCtoFeederMatrix();renderCtoOfficeSummary();renderCtoGaps();renderCtoPersonnel()}
+function initCtoNetworkControls(){
+  ['netVoltageFilter','netStateFilter','netRegionFilter','netAssignmentFilter','netSearch'].forEach(id=>{const el=$('#'+id);if(el)el.oninput=renderCtoFeederMatrix});
+  $('#netReset').onclick=()=>{['netVoltageFilter','netStateFilter','netRegionFilter','netAssignmentFilter','netSearch'].forEach(id=>$('#'+id).value='');renderCtoFeederMatrix()};
+  $('#netRefresh').onclick=()=>renderNetworkGovernance(true)
+}
+
+const refs=[
+['Head-of-Unit Oversight','The CTO executive layer consolidates records from Head System Operations, Head O&M, Head PC&M, Head Planning & Investment and Head HSE.','Review each submission in its technical context and preserve the originating head unit’s accountability.'],
+['CTO Approval','CTO approval should record a clear decision, conditions, evidence considered and any further approval required.','An approval here does not replace separate financial, procurement, safety, switching or statutory authority.'],
+['Cross-Functional Governance','Major outages, commissioning, projects and technical risks may require System Ops, O&M, PC&M, Planning & Investment and HSE to act together.','Document the lead unit, interfaces, owners, deadlines and final verification.'],
+['Critical Risk','Critical technical risks should include verified condition, impact, interim control, permanent action, owner and due date.','Do not close an escalation solely because a temporary repair exists.'],
+['Commissioning / Energisation','CTO governance should confirm that technical, O&M, PC&M, System Operations and HSE readiness evidence is complete.','Actual energisation remains under authorised operating and switching procedures.'],
+['Projects / Investment','Technical approval should be based on verified need, scope, design basis, interfaces, risks and delivery readiness.','Budget or commercial approval remains separate where required.'],
+['Technical Records','Maintain traceable references, revisions, tests, settings, drawings, decisions, signatures and close-out evidence.','Browser-local storage is suitable for standalone testing; authoritative multi-user deployment requires a shared backend and access control.'],
+['Executive Escalation','Issues beyond CTO authority or requiring corporate resources should be escalated clearly to MD/CEO or relevant executive offices.','State the decision required, urgency, technical consequence and recommended action.']
+];
+function renderReference(){$('#referenceCards').innerHTML=refs.map(x=>`<div class="ref-card"><h4>${x[0]}</h4><p>${x[1]}<br><br><b>Control:</b> ${x[2]}</p></div>`).join('')}
+function userInit(){const i=$('#userName');i.value=localStorage.getItem(USER_KEY)||'';function s(){const v=i.value.trim();localStorage.setItem(USER_KEY,v);$('#avatar').textContent=(v||'CT').split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase().slice(0,2)||'CT'}i.oninput=s;s();setInterval(()=>{const d=new Date();$('#nowTime').textContent=d.toLocaleTimeString('en-GB',{hour12:false});$('#nowDate').textContent=d.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})},1000)}
+function initFilters(){
+  const unitOptions=HEAD_UNITS.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');
+  ['headUnitFilter','approvalUnit','riskUnit'].forEach(id=>$('#'+id).innerHTML=($('#'+id).innerHTML.split('</option>')[0]+'</option>')+unitOptions);
+  ['headUnitFilter','headStatusFilter','headDecisionFilter','headSearch'].forEach(id=>$('#'+id).oninput=renderHeads);
+  ['approvalUnit','approvalDecision','approvalSearch'].forEach(id=>$('#'+id).oninput=renderApprovals);
+  ['riskUnit','riskDecision','riskSearch'].forEach(id=>$('#'+id).oninput=renderRisks);
+  $('#headReset').onclick=()=>{$('#headUnitFilter').value='';$('#headStatusFilter').value='';$('#headDecisionFilter').value='';$('#headSearch').value='';renderHeads()}
+}
+document.querySelectorAll("[data-reload-dispatch-overview=cto]").forEach(b=>b.onclick=()=>reloadCtoDispatchOverview());
+document.querySelectorAll("[data-fullscreen-dispatch-overview=cto]").forEach(b=>b.onclick=()=>fullscreenCtoDispatchOverview());
+$$('.nav button').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
+$$('[data-go-view]').forEach(b=>b.onclick=()=>switchView(b.dataset.goView));
+$$('[data-open-form-direct]').forEach(b=>b.onclick=()=>{selectedSubmission=null;openForm(b.dataset.openFormDirect)});
+$('#mobileMenu').onclick=()=>$('#sidebar').classList.toggle('open');
+$('#recordSearch').oninput=renderRecords;
+$('#clearRecords').onclick=()=>{if(confirm('Clear all locally saved CTO records and CTO approval decisions? Head-of-unit source records will not be deleted.')){localStorage.removeItem(STORE_KEY);localStorage.removeItem(SENT_KEY);localStorage.removeItem(APPROVAL_KEY);renderRecords();renderDashboard()}};
+renderCards();renderPicker();renderReference();userInit();initFilters();initCtoNetworkControls();updateDashboard();openForm('submissionApproval');switchView(ctoInitialRoute||'dashboard');
+</script>
+
+<script src="/frontend/kedco-account-controls.js?v=20260912-system-v5" defer></script>
+</body></html>

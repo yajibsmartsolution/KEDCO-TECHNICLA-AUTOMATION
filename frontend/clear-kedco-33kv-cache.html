@@ -1,0 +1,322 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KEDCO 33 kV Cache Cleaner</title>
+
+<style>
+body{
+    margin:0;
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    font-family:Segoe UI,Arial,sans-serif;
+    background:linear-gradient(135deg,#04142d,#0b3c78);
+    color:#172033;
+}
+.card{
+    width:min(720px,90%);
+    padding:32px;
+    background:#fff;
+    border-radius:22px;
+    box-shadow:0 30px 80px rgba(0,0,0,.35);
+}
+h1{color:#092c60;margin-top:0}
+.ok{color:#087a45;font-weight:800}
+.warn{color:#9a6300;font-weight:700}
+small{color:#667085}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h1>KEDCO 33 kV Browser Data Cleaner</h1>
+
+<p id="status">
+Cleaning old 33 kV browser data...
+</p>
+
+</div>
+
+<script>
+(async () => {
+
+const output = document.getElementById("status");
+
+try {
+
+    let removed = [];
+
+    // ========================================================
+    // LOCAL STORAGE
+    // ========================================================
+
+    const localKeys = [];
+
+    for(let i=0;i<localStorage.length;i++){
+        const key = localStorage.key(i);
+        if(key) localKeys.push(key);
+    }
+
+    for(const key of localKeys){
+
+        // Preserve local authentication
+        if(
+            key === "KEDCO_AUTH_ROLE" ||
+            key.startsWith("sb-")
+        ){
+            continue;
+        }
+
+        const upper = key.toUpperCase();
+
+        if(
+            key.endsWith(":load33") ||
+            upper.includes("LF33") ||
+            upper.includes("LOAD33") ||
+            upper.includes("33KV_HISTORY") ||
+            upper.includes("LOADFLOW_HISTORY_LOAD33")
+        ){
+            localStorage.removeItem(key);
+            removed.push("LocalStorage: " + key);
+        }
+    }
+
+
+    // ========================================================
+    // REMOVE ONLY 33kV FROM OLD ANALYZER BROWSER BRIDGE
+    // Do NOT remove 11kV.
+    // ========================================================
+
+    try{
+
+        const bridgeKey = "KEDCO_ANALYZER_DISPATCH_DATA_V1";
+        const raw = localStorage.getItem(bridgeKey);
+
+        if(raw){
+
+            const bridge = JSON.parse(raw);
+
+            if(bridge?.datasets){
+
+                delete bridge.datasets["33kV"];
+                delete bridge.datasets["33KV"];
+                delete bridge.datasets["33kv"];
+
+                localStorage.setItem(
+                    bridgeKey,
+                    JSON.stringify(bridge)
+                );
+
+                removed.push(
+                    "Analyzer local bridge: 33kV dataset"
+                );
+            }
+        }
+
+    }catch(error){
+        console.warn(error);
+    }
+
+
+    // ========================================================
+    // SESSION STORAGE
+    // ========================================================
+
+    const sessionKeys = [];
+
+    for(let i=0;i<sessionStorage.length;i++){
+        const key = sessionStorage.key(i);
+        if(key) sessionKeys.push(key);
+    }
+
+    for(const key of sessionKeys){
+
+        const upper = key.toUpperCase();
+
+        if(
+            upper.includes("LF33") ||
+            upper.includes("LOAD33") ||
+            upper.includes("33KV")
+        ){
+            sessionStorage.removeItem(key);
+            removed.push("SessionStorage: " + key);
+        }
+    }
+
+
+    // Remove old selected live-flow date.
+    sessionStorage.removeItem(
+        "KEDCO_SELECTED_LOADFLOW_DATE"
+    );
+
+
+    // ========================================================
+    // INDEXEDDB
+    // Delete only LOAD33 records.
+    // Preserve LOAD11 records.
+    // ========================================================
+
+    await new Promise((resolve) => {
+
+        const request =
+            indexedDB.open(
+                "KEDCO_LOADFLOW_HISTORY_V1",
+                1
+            );
+
+        request.onerror = () => resolve();
+
+        request.onupgradeneeded = () => {
+            // Database did not previously exist.
+        };
+
+        request.onsuccess = () => {
+
+            const db = request.result;
+
+            if(!db.objectStoreNames.contains("sheets")){
+                db.close();
+                resolve();
+                return;
+            }
+
+            const tx =
+                db.transaction(
+                    "sheets",
+                    "readwrite"
+                );
+
+            const store =
+                tx.objectStore("sheets");
+
+            const cursor =
+                store.openCursor();
+
+            cursor.onsuccess = event => {
+
+                const item =
+                    event.target.result;
+
+                if(!item) return;
+
+                const value =
+                    item.value || {};
+
+                const key =
+                    String(item.key || "");
+
+                if(
+                    value.form === "load33" ||
+                    key.startsWith("load33:")
+                ){
+                    item.delete();
+
+                    removed.push(
+                        "IndexedDB: " + key
+                    );
+                }
+
+                item.continue();
+            };
+
+            tx.oncomplete = () => {
+                db.close();
+                resolve();
+            };
+
+            tx.onerror = () => {
+                db.close();
+                resolve();
+            };
+        };
+    });
+
+
+    // ========================================================
+    // CACHE STORAGE
+    // ========================================================
+
+    if("caches" in window){
+
+        const names =
+            await caches.keys();
+
+        for(const name of names){
+
+            if(
+                /kedco|loadflow|dispatch/i.test(name)
+            ){
+                await caches.delete(name);
+            }
+        }
+    }
+
+
+    // ========================================================
+    // IMPORTANT:
+    // Start with Daily Log so load33 isn't rendered automatically.
+    // ========================================================
+
+    localStorage.setItem(
+        "currentForm",
+        "daily"
+    );
+
+
+    output.innerHTML = `
+        <span class="ok">
+        ✓ 33 kV browser data has been cleaned.
+        </span>
+
+        <br><br>
+
+        Removed ${removed.length} cached
+        33 kV item(s).
+
+        <br><br>
+
+        <span class="ok">
+        ✓ 11 kV browser data preserved.
+        </span>
+
+        <br>
+
+        <span class="ok">
+        ✓ Local authentication preserved.
+        </span>
+
+        <br>
+
+        <span class="ok">
+        ✓ Login/session preserved where available.
+        </span>
+
+        <br><br>
+
+        <span class="warn">
+        Close this page and reopen Central Dispatch.
+        </span>
+
+        <br><br>
+
+        <small>
+        The 33 kV Overview will remain blank until
+        actual 33 kV live/Supabase data is loaded.
+        </small>
+    `;
+
+}
+catch(error){
+
+    output.innerHTML =
+        "<b>Cleaning failed:</b> " +
+        String(error.message || error);
+}
+
+})();
+</script>
+
+</body>
+</html>

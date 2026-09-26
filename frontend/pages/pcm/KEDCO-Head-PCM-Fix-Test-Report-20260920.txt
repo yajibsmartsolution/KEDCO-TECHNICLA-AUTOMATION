@@ -1,0 +1,41 @@
+KEDCO HEAD PC&M — LIVE OPERATIONS / TROUBLE REPORT CORRECTION REPORT
+Date: 2026-09-20
+Build: headpcm-liveops-modal-workflow-2026-09-20-v4
+
+ROOT CAUSES FOUND
+1. Live Operations > Trouble Reports > New Report was a visual button with no explicit action binding.
+2. The professional Critical Trouble / Repair Escalation eForm was rendered as a long page workspace with no Close / Return control in its dispatch action bar.
+3. The eForm paper workspace had no viewport height limit, so long trouble forms could visually take over the page.
+4. The current headpcm page embedded an older workflow enhancer (v2-standalone) instead of loading the separate newer enhancer file.
+5. The validation report stated that enhancer v3 was linked, but the inspected page did not contain that external enhancer link.
+
+CORRECTIONS APPLIED
+PASS  Live Operations redesigned with professional green/gold status hero.
+PASS  Live Operations tables constrained to a scrollable working area.
+PASS  New Trouble Report now opens the controlled Critical Trouble / Repair Escalation eForm.
+PASS  Existing Trouble Report Open / Assign buttons now open prefilled controlled eForms.
+PASS  E-form workspace constrained to viewport height with internal scrolling.
+PASS  Sticky e-form workspace header added.
+PASS  Top Close / Return button added to e-form workspace.
+PASS  Bottom Close / Return button added to every professional e-form action bar.
+PASS  Close / Return safely saves the working draft before leaving the form.
+PASS  Close / Return returns the operator to the originating Live Operations section when applicable.
+PASS  Workflow modal header/footer made sticky so Close remains visible on long records.
+PASS  Workflow modal retains both top X and bottom Close controls.
+PASS  Body scroll locking/restoration hardened for workflow overlays.
+PASS  Stale embedded workflow enhancer removed from headpcm.html.
+PASS  Single external workflow enhancer v4 link installed.
+PASS  Fallback form-close control added in the enhancer for compatible pages.
+PASS  HTML contains no duplicate static IDs after correction.
+PASS  Node syntax validation passed for the corrected workflow enhancer.
+PASS  Node syntax validation passed for all inline JavaScript blocks in corrected headpcm.html.
+
+DEPLOYMENT
+Place these two files in the SAME frontend directory:
+- headpcm.html
+- kedco-pcm-eform-workflow-enhancer.js
+
+The corrected headpcm.html loads:
+./kedco-pcm-eform-workflow-enhancer.js?v=20260920-v4
+
+Keep your existing kedco-account-controls.js in its current configured path.

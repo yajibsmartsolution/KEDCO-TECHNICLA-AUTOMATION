@@ -1,0 +1,187 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>KEDCO Browser Data Cleaner</title>
+<style>
+body{
+  font-family:Segoe UI,Arial,sans-serif;
+  background:#071b3b;
+  color:white;
+  display:grid;
+  place-items:center;
+  min-height:100vh;
+  margin:0
+}
+.box{
+  width:min(680px,90%);
+  background:white;
+  color:#172033;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35)
+}
+h1{color:#0d2c5f}
+.ok{color:#087a45;font-weight:800}
+.warn{color:#b36b00}
+</style>
+</head>
+
+<body>
+<div class="box">
+<h1>KEDCO Browser Data Cleaner</h1>
+<p id="status">Cleaning cached KEDCO operational data...</p>
+</div>
+
+<script>
+(async () => {
+
+  const status = document.getElementById("status");
+
+  try {
+
+    // --------------------------------------------------------
+    // Preserve local login information
+    // --------------------------------------------------------
+
+    const preserve = {};
+
+    for (let i = 0; i < localStorage.length; i++) {
+
+      const key = localStorage.key(i);
+
+      if (
+        key === "KEDCO_AUTH_ROLE" ||
+        key.startsWith("sb-")
+      ) {
+        preserve[key] = localStorage.getItem(key);
+      }
+    }
+
+
+    // --------------------------------------------------------
+    // Clear Local Storage
+    // --------------------------------------------------------
+
+    localStorage.clear();
+
+
+    // --------------------------------------------------------
+    // Restore local authentication settings
+    // --------------------------------------------------------
+
+    Object.entries(preserve).forEach(([key,value]) => {
+      if (value !== null) {
+        localStorage.setItem(key,value);
+      }
+    });
+
+
+    // --------------------------------------------------------
+    // Clear Session Storage
+    // --------------------------------------------------------
+
+    sessionStorage.clear();
+
+
+    // --------------------------------------------------------
+    // Clear IndexedDB
+    // Includes old load-flow histories / analyzer caches
+    // --------------------------------------------------------
+
+    if (indexedDB.databases) {
+
+      const databases = await indexedDB.databases();
+
+      for (const db of databases) {
+
+        if (!db.name) continue;
+
+        await new Promise(resolve => {
+
+          const request = indexedDB.deleteDatabase(db.name);
+
+          request.onsuccess = resolve;
+          request.onerror = resolve;
+          request.onblocked = resolve;
+
+        });
+
+      }
+
+    }
+
+
+    // --------------------------------------------------------
+    // Clear browser Cache Storage
+    // --------------------------------------------------------
+
+    if ("caches" in window) {
+
+      const names = await caches.keys();
+
+      for (const name of names) {
+        await caches.delete(name);
+      }
+
+    }
+
+
+    // --------------------------------------------------------
+    // Remove Service Workers
+    // --------------------------------------------------------
+
+    if ("serviceWorker" in navigator) {
+
+      const registrations =
+        await navigator.serviceWorker.getRegistrations();
+
+      for (const registration of registrations) {
+        await registration.unregister();
+      }
+
+    }
+
+
+    // --------------------------------------------------------
+    // Remove known KEDCO in-memory/browser values
+    // --------------------------------------------------------
+
+    const obsoleteKeys = [
+      "opsEvents",
+      "opsLogs",
+      "feederStates",
+      "formSubmissions",
+      "currentForm",
+      "KEDCO_SELECTED_LOADFLOW_DATE",
+      "KEDCO_LOADFLOW_HISTORY",
+      "KEDCO_ANALYZER_DATA",
+      "KEDCO_ANALYZER_ARCHIVE",
+      "KEDCO_33KV_HISTORY",
+      "KEDCO_11KV_HISTORY"
+    ];
+
+    obsoleteKeys.forEach(key => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
+
+
+    status.innerHTML =
+      '<span class="ok">✓ KEDCO browser operational cache cleared successfully.</span>' +
+      '<br><br>' +
+      'Local authentication settings were preserved where available.' +
+      '<br><br>' +
+      '<span class="warn">You can now close this page and reopen Dispatch.</span>';
+
+  } catch(error) {
+
+    status.textContent =
+      "Cleaning failed: " + error.message;
+
+  }
+
+})();
+</script>
+</body>
+</html>

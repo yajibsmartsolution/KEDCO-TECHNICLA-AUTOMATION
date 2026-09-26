@@ -1,0 +1,2061 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KEDCO Live Inventory Control Centre</title>
+<style>
+:root{
+  --g:#0a326f;--g2:#0f5db7;--g3:#1779d8;--gold:#d7a72b;--gold2:#f1cf63;
+  --cream:#f3f7fc;--paper:#ffffff;--ink:#172033;--muted:#65758a;
+  --red:#c7423c;--red2:#e8544c;--green:#0a714a;--green2:#14a36b;
+  --line:#d9e3ef;--line2:#c7d6e8;
+  --shadow-sm:0 2px 8px rgba(7,36,78,.06);
+  --shadow:0 9px 25px rgba(7,36,78,.08);
+  --shadow-lg:0 20px 50px rgba(7,36,78,.15);
+  --shadow-gold:0 10px 30px rgba(215,167,43,.25);
+  --radius:12px;--radius-sm:8px;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--cream);color:var(--ink);
+  font:14px/1.5 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(circle at 10% 20%,rgba(23,121,216,.05) 0%,transparent 40%),
+    radial-gradient(circle at 90% 80%,rgba(215,167,43,.04) 0%,transparent 40%);
+  min-height:100vh;
+}
+::selection{background:var(--gold);color:var(--g)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+
+.top{
+  height:70px;position:fixed;z-index:20;inset:0 0 auto;
+  display:flex;align-items:center;
+  background:linear-gradient(100deg,#061b3d 0%,#0f5db7 100%);
+  color:#fff;border-bottom:3px solid var(--gold);
+  box-shadow:0 5px 20px rgba(0,0,0,.15);
+  backdrop-filter:blur(10px);
+}
+.logo{
+  width:270px;height:100%;display:flex;align-items:center;gap:11px;
+  padding:0 20px;border-right:1px solid rgba(255,255,255,.1);
+}
+.bolt{
+  width:42px;height:42px;border-radius:11px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#f0ce65,#c79518);
+  color:var(--g);font-size:26px;font-weight:900;
+  box-shadow:0 4px 12px rgba(214,169,44,.4),inset 0 1px 2px rgba(255,255,255,.3);
+  animation:boltPulse 3s ease-in-out infinite;
+}
+@keyframes boltPulse{
+  0%,100%{box-shadow:0 4px 12px rgba(214,169,44,.4),inset 0 1px 2px rgba(255,255,255,.3)}
+  50%{box-shadow:0 4px 20px rgba(214,169,44,.7),inset 0 1px 2px rgba(255,255,255,.5)}
+}
+.logo b{font-size:19px;letter-spacing:.14em;font-weight:800}
+.logo small{display:block;font-size:8px;letter-spacing:.13em;margin-top:3px;color:#cfe0d7;font-weight:600}
+
+.live{
+  flex:1;text-align:center;font-size:11px;font-weight:800;
+  letter-spacing:.16em;display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.live-pulse{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border-radius:999px;
+  background:rgba(98,226,155,.1);border:1px solid rgba(98,226,155,.3);
+}
+.live-pulse i{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:#62e29b;box-shadow:0 0 0 0 rgba(98,226,155,.7);
+  animation:livePulse 2s ease-out infinite;
+}
+@keyframes livePulse{
+  0%{box-shadow:0 0 0 0 rgba(98,226,155,.7)}
+  70%{box-shadow:0 0 0 10px rgba(98,226,155,0)}
+  100%{box-shadow:0 0 0 0 rgba(98,226,155,0)}
+}
+.live-count{
+  font-size:10px;padding:3px 8px;border-radius:6px;
+  background:rgba(255,255,255,.1);font-weight:700;
+}
+
+.time{padding-right:22px;text-align:right}
+.time b{font-family:'SF Mono','Monaco','Consolas',monospace;font-size:14px;font-weight:700}
+.time small{display:block;font-size:8px;margin-top:3px;color:#cfe0d7;letter-spacing:.1em;font-weight:600}
+
+.save-indicator{
+  padding:4px 10px;border-radius:6px;font-size:9px;font-weight:700;
+  background:rgba(98,226,155,.15);color:#62e29b;margin-right:14px;
+  display:flex;align-items:center;gap:5px;
+  transition:all .3s var(--ease);
+}
+.save-indicator.saving{background:rgba(214,169,44,.2);color:#f1cf63}
+
+.side{
+  position:fixed;top:70px;bottom:0;width:270px;
+  background:linear-gradient(180deg,#061b3d 0%,#082757 100%);
+  padding:18px 14px;color:#fff;overflow:auto;
+  box-shadow:4px 0 20px rgba(0,0,0,.1);
+  transition:transform .3s var(--ease);
+}
+.cap{
+  font-size:8px;font-weight:800;letter-spacing:.2em;color:#809c8f;
+  padding:12px 4px 8px;text-transform:uppercase;
+}
+.nav{display:grid;gap:3px}
+.nav button{
+  position:relative;border:0;border-radius:10px;background:none;
+  color:#d9e4df;text-align:left;padding:12px 14px;font-weight:700;
+  cursor:pointer;font-size:13px;transition:all .2s var(--ease);
+  display:flex;align-items:center;gap:10px;
+}
+.nav button::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:0;background:var(--gold);border-radius:0 3px 3px 0;
+  transition:height .2s var(--ease);
+}
+.nav button:hover{background:rgba(214,169,44,.08);color:#ffe187;transform:translateX(2px)}
+.nav button.active{background:linear-gradient(90deg,rgba(214,169,44,.15),transparent);color:#ffe187}
+.nav button.active::before{height:60%}
+.nav em{
+  margin-left:auto;min-width:22px;text-align:center;
+  background:linear-gradient(135deg,#e8544c,#c7423c);color:#fff;
+  border-radius:10px;padding:2px 7px;font-size:9px;font-style:normal;font-weight:800;
+  box-shadow:0 2px 6px rgba(200,50,50,.3);
+}
+.nav em.pulse{animation:badgePulse 1s ease-in-out infinite}
+@keyframes badgePulse{
+  0%,100%{transform:scale(1)}50%{transform:scale(1.15)}
+}
+
+.control{
+  width:100%;margin-top:7px;border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;padding:12px;background:rgba(8,28,21,.6);
+  color:#dce9e2;text-align:left;cursor:pointer;
+  transition:all .2s var(--ease);
+}
+.control:hover{background:rgba(8,28,21,.9);border-color:rgba(214,169,44,.3);transform:translateY(-1px)}
+.control b,.control small{display:block}
+.control b{font-weight:700}
+.control small{font-size:9px;color:#89a297;margin-top:3px}
+.control span{float:right;color:#6bf0a6;font-size:9px;font-weight:800}
+
+.demo{
+  border:1px dashed rgba(231,196,80,.4);
+  background:linear-gradient(135deg,rgba(214,169,44,.08),rgba(214,169,44,.04));
+  color:#f4d66f;text-align:center;font-weight:800;font-size:11px;
+  padding:14px;
+}
+.demo:hover{background:linear-gradient(135deg,rgba(214,169,44,.15),rgba(214,169,44,.08));border-style:solid}
+
+.auto-sim{
+  margin-top:8px;border:1px solid rgba(98,226,155,.2);
+  background:rgba(98,226,155,.05);color:#6bf0a6;
+  text-align:center;font-weight:800;font-size:10px;padding:10px;
+  border-radius:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.auto-sim.active{background:rgba(98,226,155,.15);border-style:solid}
+.auto-sim i{width:6px;height:6px;border-radius:50%;background:#6bf0a6}
+.auto-sim.active i{animation:livePulse 1.5s ease-out infinite}
+
+.online{
+  margin-top:18px;padding:14px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
+  border:1px solid rgba(255,255,255,.06);font-size:10px;
+}
+.online i{color:#62e29b}
+.online small{display:block;margin-top:4px;color:#89a297;font-size:9px}
+
+.user{
+  display:flex;gap:10px;align-items:center;margin-top:15px;
+  border-top:1px solid rgba(255,255,255,.08);padding:16px 6px 4px;
+}
+.user>span{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:var(--g);display:grid;place-items:center;font-weight:900;font-size:13px;
+  box-shadow:0 3px 10px rgba(214,169,44,.3);
+}
+.user b,.user small{display:block}
+.user b{font-size:12px;font-weight:700}
+.user small{font-size:8px;color:#8da499;margin-top:3px;letter-spacing:.05em}
+
+.main{margin-left:270px;padding:94px 24px 25px;min-height:100vh}
+.head{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px;flex-wrap:wrap;gap:14px}
+.head p{
+  font-size:9px;color:#96771d;font-weight:800;letter-spacing:.2em;
+  margin:0;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.head p::before{content:'';width:20px;height:2px;background:var(--gold)}
+.head h1{
+  font:800 30px/1.1 'Georgia',serif;margin:6px 0 4px;
+  background:linear-gradient(135deg,var(--ink) 0%,var(--g) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.head span{color:var(--muted);font-size:11px;font-weight:500}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.btn{
+  border:0;border-radius:var(--radius-sm);padding:11px 16px;
+  font-size:11px;font-weight:800;cursor:pointer;
+  transition:all .2s var(--ease);letter-spacing:.02em;
+  display:inline-flex;align-items:center;gap:6px;
+  text-transform:uppercase;position:relative;overflow:hidden;
+}
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  transform:translateX(-100%);transition:transform .6s;
+}
+.btn:hover::after{transform:translateX(100%)}
+.gold{
+  background:linear-gradient(135deg,#f1cf63,#d0a123);
+  color:var(--g);box-shadow:0 4px 14px rgba(214,169,44,.3);
+}
+.gold:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(214,169,44,.4)}
+.ghost{background:#fff;color:var(--g);border:1px solid var(--line2);box-shadow:var(--shadow-sm)}
+.ghost:hover{background:#f7f9f6;border-color:var(--g)}
+.danger{background:linear-gradient(135deg,#e8544c,#c7423c);color:#fff;box-shadow:0 4px 14px rgba(200,50,50,.25)}
+.danger:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(200,50,50,.35)}
+
+.hero{
+  display:flex;justify-content:space-between;align-items:center;gap:30px;
+  padding:35px 40px;border-radius:18px;
+  background:linear-gradient(110deg,#061b3d 0%,#0a326f 60%,#1779d8 100%);
+  color:#fff;box-shadow:var(--shadow-lg);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;
+  background:radial-gradient(circle,rgba(214,169,44,.15) 0%,transparent 70%);
+  animation:heroGlow 8s ease-in-out infinite;
+}
+@keyframes heroGlow{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-30px,30px) scale(1.1)}
+}
+.hero>*{position:relative;z-index:1}
+.hero small{
+  font-size:9px;letter-spacing:.22em;color:#f1d168;font-weight:800;
+  display:flex;align-items:center;gap:8px;
+}
+.hero small::before{content:'';width:24px;height:1px;background:var(--gold)}
+.hero h2{font:800 36px/1.15 'Georgia',serif;margin:12px 0 10px;max-width:600px}
+.hero h2 em{
+  color:#f0cc5c;font-style:normal;
+  background:linear-gradient(90deg,#f1cf63,#fff3c5,#f1cf63);
+  background-size:200% auto;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:textShine 3s linear infinite;
+}
+@keyframes textShine{to{background-position:200% center}}
+.hero p{max-width:670px;color:#d6e6de;line-height:1.6;font-size:13px}
+.hero-stats{display:flex;gap:24px;margin-top:18px}
+.hero-stat{padding:10px 14px;background:rgba(255,255,255,.08);border-radius:10px;border:1px solid rgba(255,255,255,.1)}
+.hero-stat b{display:block;font:800 20px 'Georgia',serif;color:var(--gold2)}
+.hero-stat span{font-size:9px;letter-spacing:.1em;color:#cfe0d7}
+
+.ring{
+  width:150px;height:150px;border-radius:50%;
+  background:conic-gradient(var(--gold) var(--score),rgba(255,255,255,.1) 0);
+  padding:12px;transition:all .8s var(--ease);
+  box-shadow:0 10px 30px rgba(0,0,0,.2),inset 0 0 0 2px rgba(255,255,255,.05);
+}
+.ring div{
+  width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#0a326f,#061b3d);
+  display:grid;place-content:center;text-align:center;
+}
+.ring b{font:800 32px 'Georgia',serif;color:var(--gold2)}
+.ring span{font-size:8px;letter-spacing:.15em;color:#cfe0d7;font-weight:700}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}
+.kpi{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow);transition:all .3s var(--ease);
+  position:relative;overflow:hidden;
+}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--g),var(--gold));
+  transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease);
+}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.kpi:hover::before{transform:scaleX(1)}
+.kpi small,.kpi b,.kpi span{display:block}
+.kpi small{font-size:9px;letter-spacing:.15em;color:#78857e;font-weight:800;text-transform:uppercase}
+.kpi b{font:800 24px 'Georgia',serif;margin:8px 0 4px;color:var(--g);transition:all .4s var(--ease)}
+.kpi b.counting{color:var(--gold)}
+.kpi span{font-size:10px;color:#87928d;font-weight:500}
+.kpi-icon{
+  position:absolute;top:16px;right:16px;
+  width:32px;height:32px;border-radius:8px;
+  background:rgba(23,121,216,.08);color:var(--g);
+  display:grid;place-items:center;font-size:14px;
+}
+
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px}
+.panel{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.pt{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.pt h2{font:700 18px 'Georgia',serif;margin:0;color:var(--ink);display:flex;align-items:center;gap:8px}
+.pt h2::before{content:'';width:4px;height:18px;background:var(--gold);border-radius:2px}
+.pt p{font-size:10px;color:var(--muted);margin:3px 0 0}
+.pt-actions{display:flex;gap:6px}
+
+.req{
+  padding:16px 20px;border-bottom:1px solid var(--line);
+  display:grid;grid-template-columns:4px 1fr auto;gap:14px;
+  transition:background .2s var(--ease);cursor:pointer;
+  animation:slideIn .4s var(--ease);
+}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(-10px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.req:hover{background:rgba(214,169,44,.03)}
+.req.new{animation:newReq .6s var(--ease)}
+@keyframes newReq{
+  0%{opacity:0;transform:translateY(-20px);background:rgba(214,169,44,.2)}
+  100%{opacity:1;transform:translateY(0);background:transparent}
+}
+.req>i{border-radius:3px;background:linear-gradient(180deg,var(--red2),var(--red))}
+.req.priority-high>i{background:linear-gradient(180deg,#ff8c42,#d45a00)}
+.req.priority-emergency>i{background:linear-gradient(180deg,#e8544c,#a8281f);box-shadow:0 0 10px rgba(200,50,50,.3)}
+.req h3{font-size:12px;margin:4px 0;font-weight:700}
+.req p{font-size:10px;color:var(--muted);margin:0}
+.req code{
+  font-size:9px;background:#edf2ee;padding:3px 6px;margin-right:4px;
+  border-radius:4px;color:var(--g);font-weight:600;margin-top:4px;display:inline-block;
+}
+.req time{font-size:9px;color:#888;display:block;margin-top:4px}
+.req button{display:block;margin-top:10px}
+.req-meta{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+.req-meta span{
+  font-size:8px;padding:2px 6px;border-radius:4px;
+  background:rgba(23,121,216,.08);color:var(--g);font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+
+.bar{padding:18px 20px}
+.bar div{margin-bottom:14px}
+.bar p{display:flex;justify-content:space-between;font-size:10px;margin:0 0 6px;font-weight:600}
+.bar p b{color:var(--ink)}
+.bar p span{color:var(--g);font-weight:700}
+.bar i{display:block;height:8px;border-radius:5px;background:#e5e9e5;overflow:hidden;position:relative}
+.bar i b{
+  display:block;height:100%;
+  background:linear-gradient(90deg,var(--g2),var(--gold));
+  border-radius:5px;transition:width 1s var(--ease);
+  position:relative;
+}
+.bar i b::after{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  animation:barShine 2s linear infinite;
+}
+@keyframes barShine{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}
+}
+
+.tools{
+  display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;
+  background:linear-gradient(180deg,#f8fbff,#eef4fa);
+  border-bottom:1px solid var(--line);align-items:center;
+}
+.tools input{flex:1;min-width:240px}
+.tools input,.tools select,.modal input,.modal select,.modal textarea{
+  padding:10px 12px;border:1px solid var(--line2);border-radius:var(--radius-sm);
+  background:#fff;outline:0;font-size:12px;font-family:inherit;
+  transition:all .2s var(--ease);
+}
+.tools input:focus,.tools select:focus,.modal input:focus,.modal select:focus,.modal textarea:focus{
+  border-color:var(--g2);box-shadow:0 0 0 3px rgba(23,121,216,.12);
+}
+
+.table{overflow:auto;max-height:70vh}
+.table table{width:100%;min-width:1100px;border-collapse:collapse}
+.table th{
+  background:linear-gradient(180deg,#0a326f,#061b3d);
+  color:#deebe4;padding:12px 14px;text-align:left;
+  font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;
+  position:sticky;top:0;z-index:2;
+}
+.table td{padding:14px 14px;border-bottom:1px solid #e9ebe5;font-size:10px;transition:background .2s}
+.table tr:hover td{background:rgba(214,169,44,.03)}
+.table td b,.table td span{display:block}
+.table td b{font-weight:700;color:var(--ink)}
+.table td span{color:#7e8a84;font-size:9px;margin-top:3px}
+.table code{background:#eaf3ff;padding:3px 6px;border-radius:4px;font-size:9px;font-weight:600}
+
+.qty{font:800 18px 'Georgia',serif!important;color:var(--g)}
+.qty.low{color:#b87508}
+.qty.out{color:var(--red)}
+
+.stock-gauge{
+  display:flex;align-items:center;gap:8px;margin-top:4px;
+}
+.stock-bar{
+  flex:1;height:6px;background:#e5e9e5;border-radius:3px;overflow:hidden;
+  max-width:80px;
+}
+.stock-bar b{
+  display:block;height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--g2),var(--g3));
+  transition:width .5s var(--ease);
+}
+.stock-bar b.low{background:linear-gradient(90deg,#d4a017,#b87508)}
+.stock-bar b.out{background:linear-gradient(90deg,var(--red),var(--red2))}
+
+.status{
+  display:inline-block!important;width:max-content;
+  padding:4px 9px;border-radius:999px;
+  font-size:9px!important;font-weight:800;text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.healthy{background:linear-gradient(135deg,#dff2e8,#c8ebd6);color:var(--green);box-shadow:inset 0 0 0 1px rgba(10,113,74,.15)}
+.low{background:linear-gradient(135deg,#fff0c9,#ffe5a0);color:#9b6608;box-shadow:inset 0 0 0 1px rgba(155,102,8,.15)}
+.out{background:linear-gradient(135deg,#ffe1df,#ffcfc9);color:#a9302b;box-shadow:inset 0 0 0 1px rgba(169,48,43,.15)}
+.approved,.receipt,.return{background:#dff2e8;color:var(--green)}
+.pending{background:#fff0c9;color:#9b6608}
+.rejected,.issue{background:#ffe1df;color:#a9302b}
+
+.actions{display:flex;gap:5px;flex-wrap:wrap}
+.actions button{
+  border:1px solid var(--line2);background:#fff;color:var(--g);
+  border-radius:6px;padding:6px 10px;font-size:9px;font-weight:800;
+  cursor:pointer;transition:all .2s var(--ease);text-transform:uppercase;
+  letter-spacing:.03em;
+}
+.actions button:hover{background:var(--g);color:#fff;border-color:var(--g);transform:translateY(-1px)}
+.actions button.quick{background:linear-gradient(135deg,#f1cf63,#d0a123);color:var(--g);border:0}
+.actions button.quick:hover{box-shadow:var(--shadow-gold)}
+
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:18px}
+.card{
+  border:1px solid #dedfd8;border-top:3px solid var(--gold);
+  border-radius:var(--radius);padding:18px;
+  background:#fff;box-shadow:var(--shadow-sm);
+  transition:all .3s var(--ease);
+}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.card.status-approved{border-top-color:var(--green);background:linear-gradient(180deg,#f5fbf8,#fff)}
+.card.status-rejected{border-top-color:var(--red);background:linear-gradient(180deg,#fbf5f4,#fff);opacity:.85}
+.card h3{font:700 16px 'Georgia',serif;margin:4px 0 10px}
+.meta{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  background:linear-gradient(135deg,#f4f8fd,#eef4fa);
+  padding:10px;border-radius:8px;font-size:9px;
+}
+.meta b{display:block;color:var(--g);font-size:8px;letter-spacing:.1em;margin-bottom:2px}
+.lines{margin:12px 0}
+.lines div{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 10px;border-bottom:1px solid #e6e8e2;font-size:10px;
+}
+.lines div:last-child{border:0}
+.card footer{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:9px;color:#7d8983;padding-top:10px;
+  border-top:1px solid var(--line);margin-top:10px;
+}
+.decision-note{margin-top:10px;padding:11px 12px;border-radius:8px;background:#eef4fa;border-left:3px solid var(--g2);font-size:10px;line-height:1.55;color:#31506f}
+.decision-note.rejection{background:#fff3f2;border-left-color:var(--red);color:#7f2d29}
+.decision-note b{display:block;font-size:8px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.availability{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 9px;border-radius:7px;background:#f3f8ff;margin:5px 0;font-size:9px}
+.availability.short{background:#fff0ee;color:#a9302b}
+.modal-alert{grid-column:1/-1;padding:11px 13px;border-radius:8px;background:#fff7dc;border:1px solid #ead28a;color:#74520a;font-size:10px;line-height:1.5}
+.moveplus{color:var(--green);font-weight:800}
+.moveminus{color:var(--red);font-weight:800}
+
+.report{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.report .panel{padding:22px}
+.report h3{font:800 22px 'Georgia',serif;margin:8px 0 4px;color:var(--g)}
+.report p{font-size:10px;color:var(--muted)}
+.report small{
+  font-size:9px;font-weight:800;letter-spacing:.15em;
+  color:var(--gold);text-transform:uppercase;
+}
+
+.hide{display:none!important}
+
+.modal-bg{
+  position:fixed;z-index:50;inset:0;
+  background:rgba(2,27,19,.7);backdrop-filter:blur(8px);
+  display:grid;place-items:center;padding:15px;
+  animation:fadeIn .2s var(--ease);
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  width:min(700px,100%);max-height:90vh;overflow:auto;
+  background:var(--paper);border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);
+  animation:modalIn .3s var(--ease);
+}
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(20px) scale(.97)}
+  to{opacity:1;transform:none}
+}
+.mh{
+  background:linear-gradient(110deg,#061b3d,#0a326f);
+  color:#fff;border-bottom:3px solid var(--gold);
+  padding:20px 24px;display:flex;justify-content:space-between;align-items:center;
+}
+.mh h2{font:700 20px 'Georgia',serif;margin:0}
+.mh button{
+  border:0;background:rgba(255,255,255,.1);color:#fff;
+  width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;
+  transition:all .2s;
+}
+.mh button:hover{background:rgba(255,255,255,.2)}
+.form{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form label span{
+  display:block;font-size:9px;font-weight:800;
+  color:#65736c;margin-bottom:6px;letter-spacing:.1em;text-transform:uppercase;
+}
+.form input,.form select,.form textarea{width:100%}
+.form textarea{min-height:85px;resize:vertical}
+.full{grid-column:1/-1}
+.mf{
+  padding:16px 22px;border-top:1px solid var(--line);
+  display:flex;justify-content:flex-end;gap:8px;
+  background:linear-gradient(180deg,#faf9f5,#f5f4ef);
+}
+
+.toast{
+  position:fixed;z-index:70;right:20px;bottom:20px;
+  background:linear-gradient(135deg,#0f5db7,#1779d8);
+  color:#fff;padding:14px 20px;border-radius:10px;
+  box-shadow:var(--shadow-lg);font-weight:700;font-size:12px;
+  display:flex;align-items:center;gap:10px;min-width:280px;
+  animation:toastIn .3s var(--ease);
+}
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(100%)}
+  to{opacity:1;transform:none}
+}
+.toast.error{background:linear-gradient(135deg,#c7423c,#a8281f)}
+.toast.warning{background:linear-gradient(135deg,#d4a017,#b87508)}
+.toast-icon{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:14px;
+}
+
+.menu{
+  display:none;margin-left:12px;border:0;background:none;
+  color:#fff;font-size:22px;cursor:pointer;padding:8px;
+  border-radius:8px;transition:background .2s;
+}
+.menu:hover{background:rgba(255,255,255,.1)}
+
+.empty{
+  text-align:center;padding:50px 20px;color:#718079;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.empty::before{
+  content:'✓';font-size:32px;color:var(--g);
+  width:60px;height:60px;border-radius:50%;
+  background:rgba(23,121,216,.08);display:grid;place-items:center;margin-bottom:8px;
+}
+
+.activity-feed{
+  margin-top:16px;padding:18px 20px;
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.activity-feed h3{
+  font:700 15px 'Georgia',serif;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.activity-feed h3::before{content:'';width:4px;height:14px;background:var(--gold);border-radius:2px}
+.activity-item{
+  display:flex;gap:10px;padding:8px 0;
+  border-bottom:1px solid var(--line);font-size:10px;
+  animation:slideIn .3s var(--ease);
+}
+.activity-item:last-child{border:0}
+.activity-dot{
+  width:8px;height:8px;border-radius:50%;margin-top:5px;flex:none;
+}
+.activity-dot.issue{background:var(--red)}
+.activity-dot.receipt{background:var(--green)}
+.activity-dot.request{background:var(--gold)}
+
+@media(max-width:980px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:1fr}
+  .side{transform:translateX(-105%);z-index:30}
+  .side.open{transform:none}
+  .main{margin-left:0}
+  .menu{display:block}
+  .logo{width:auto}
+  .logo small,.live{display:none}
+  .cards{grid-template-columns:1fr}
+  .hero{padding:25px;flex-direction:column;align-items:flex-start}
+  .ring{margin:20px auto 0}
+}
+@media(max-width:580px){
+  .main{padding:87px 12px}
+  .head{display:block}
+  .head>div:last-child{margin-top:10px}
+  .hero h2{font-size:26px}
+  .kpis{grid-template-columns:1fr}
+  .form{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .report{grid-template-columns:1fr}
+  .time,.save-indicator{display:none}
+}
+@media print{
+  .top,.side,.tools,.head .btn,.actions,.activity-feed{display:none!important}
+  .main{margin:0;padding:15px}
+  .panel{box-shadow:none;break-inside:avoid}
+}
+</style>
+<!-- KEDCO FONT SIZE UPGRADE START -->
+<style id="kedco-font-size-upgrade">
+/* Main application typography */
+html {
+    font-size: 16px !important;
+}
+
+body {
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+}
+
+/* Header */
+.logo b {
+    font-size: 23px !important;
+}
+
+.logo small {
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+}
+
+.live {
+    font-size: 13px !important;
+}
+
+.time b {
+    font-size: 17px !important;
+}
+
+.time small {
+    font-size: 10px !important;
+}
+
+/* Sidebar */
+.cap {
+    font-size: 10px !important;
+}
+
+.nav button {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+}
+
+.nav em {
+    font-size: 10px !important;
+}
+
+.control b {
+    font-size: 13px !important;
+}
+
+.control small,
+.online small,
+.user small {
+    font-size: 10px !important;
+}
+
+.online,
+.user b {
+    font-size: 12px !important;
+}
+
+/* Page heading */
+.head p {
+    font-size: 10px !important;
+}
+
+.head h1 {
+    font-size: 36px !important;
+}
+
+.head span {
+    font-size: 13px !important;
+}
+
+/* Buttons */
+.btn {
+    font-size: 12px !important;
+    padding: 11px 15px !important;
+}
+
+/* Hero section */
+.hero small {
+    font-size: 10px !important;
+}
+
+.hero h2 {
+    font-size: 42px !important;
+}
+
+.hero p {
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+}
+
+.ring b {
+    font-size: 31px !important;
+}
+
+.ring span {
+    font-size: 9px !important;
+}
+
+/* KPI cards */
+.kpi small {
+    font-size: 10px !important;
+}
+
+.kpi b {
+    font-size: 27px !important;
+}
+
+.kpi span {
+    font-size: 11px !important;
+}
+
+/* Panel headings */
+.pt h2 {
+    font-size: 21px !important;
+}
+
+.pt p {
+    font-size: 12px !important;
+}
+
+/* Booking queue */
+.req > div > b {
+    font-size: 13px !important;
+}
+
+.req h3 {
+    font-size: 14px !important;
+}
+
+.req p {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+}
+
+.req code,
+.req time {
+    font-size: 10px !important;
+}
+
+/* Charts */
+.bar p {
+    font-size: 12px !important;
+}
+
+/* Search and filters */
+.tools input,
+.tools select {
+    font-size: 13px !important;
+}
+
+/* Inventory and movement tables */
+.table th {
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+    padding: 12px !important;
+}
+
+.table td {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    padding: 13px 11px !important;
+}
+
+.table td > b {
+    font-size: 13px !important;
+}
+
+.table td > span {
+    font-size: 10px !important;
+}
+
+.table code {
+    font-size: 10px !important;
+}
+
+.qty {
+    font-size: 21px !important;
+}
+
+.status {
+    font-size: 10px !important;
+}
+
+.actions button {
+    font-size: 10px !important;
+    padding: 8px !important;
+}
+
+/* Request cards */
+.card > div > b {
+    font-size: 13px !important;
+}
+
+.card h3 {
+    font-size: 20px !important;
+    line-height: 1.4 !important;
+}
+
+.meta {
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+}
+
+.lines {
+    font-size: 12px !important;
+}
+
+.card footer {
+    font-size: 10px !important;
+}
+
+/* Reports */
+.report small {
+    font-size: 10px !important;
+}
+
+.report h3 {
+    font-size: 24px !important;
+}
+
+.report p {
+    font-size: 12px !important;
+}
+
+/* Modal forms */
+.mh h2 {
+    font-size: 24px !important;
+}
+
+.form label span {
+    font-size: 10px !important;
+}
+
+.modal input,
+.modal select,
+.modal textarea {
+    font-size: 14px !important;
+}
+
+.form small {
+    font-size: 11px !important;
+}
+
+/* Notifications */
+.toast {
+    font-size: 13px !important;
+}
+
+/* Mobile typography */
+@media (max-width: 580px) {
+    body {
+        font-size: 15px !important;
+    }
+
+    .head h1 {
+        font-size: 29px !important;
+    }
+
+    .hero h2 {
+        font-size: 32px !important;
+    }
+
+    .hero p {
+        font-size: 14px !important;
+    }
+
+    .table td {
+        font-size: 12px !important;
+    }
+}
+</style>
+<!-- KEDCO FONT SIZE UPGRADE END -->
+<!-- KEDCO LOGOUT CSS START -->
+<style id="kedco-logout-style">
+.kedco-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 39px;
+    margin-right: 18px;
+    padding: 9px 16px;
+    border: 1px solid #f1cf63;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #9f2525, #6f1010);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 5px 15px rgba(60, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kedco-logout:hover {
+    color: #fff4bd;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(60, 0, 0, 0.4);
+}
+
+.kedco-logout:focus-visible {
+    outline: 3px solid rgba(241, 207, 99, 0.45);
+    outline-offset: 2px;
+}
+
+.kedco-logout-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+@media (max-width: 580px) {
+    .kedco-logout {
+        min-height: 35px;
+        margin-left: auto;
+        margin-right: 10px;
+        padding: 8px 11px;
+        font-size: 10px;
+    }
+
+    .kedco-logout-text {
+        display: none;
+    }
+}
+
+@media print {
+    .kedco-logout {
+        display: none !important;
+    }
+}
+</style>
+<!-- KEDCO LOGOUT CSS END -->
+
+<!-- KEDCO Local Storage shared bootstrap v3 -->
+<script src="../../supabase-config.js"></script>
+<script src="../../assets/supabase.js"></script>
+<script src="/frontend/kedco-central-eform-workflow.js?v=20260920-global-region-routing-v1"></script>
+<script src="../../kedco-page-routes.js"></script>
+<script src="../../kedco-cloud-backup.js"></script>
+<script src="../../kedco-global-ui.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <button class="menu" onclick="side.classList.toggle('open')" aria-label="Toggle menu">☰</button>
+  <div class="logo">
+    <div class="bolt">ÏŸ</div>
+    <div><b>KEDCO</b><small>POWER DISTRIBUTION • TECHNICAL STORES</small></div>
+  </div>
+  <div class="live">
+    <span class="live-pulse"><i></i> LIVE INVENTORY CONTROL CENTRE</span>
+    <span class="live-count" id="liveCount">● 0 active</span>
+  </div>
+  <div class="save-indicator" id="saveStatus">● SYNCED</div>
+  <div class="time">
+    <b id="clock"></b>
+    <small id="day"></small>
+  </div>
+<!-- KEDCO LOGOUT BUTTON START -->
+<a href="../../../index.html"
+   class="kedco-logout"
+   title="Logout and return to login page"
+   aria-label="Logout and return to login page">
+    <span class="kedco-logout-icon" aria-hidden="true">↪</span>
+    <span class="kedco-logout-text">LOGOUT</span>
+</a>
+<!-- KEDCO LOGOUT BUTTON END -->
+</header>
+
+<aside class="side" id="side">
+  <div class="cap">CONTROL WORKSPACE</div>
+  <nav class="nav">
+    <button data-page="overview" class="active">⌂ Command Overview</button>
+    <button data-page="inventory">▦ Live Inventory</button>
+    <button data-page="requests">⇞ Booking Requests <em id="navPending">0</em></button>
+    <button data-page="movements">↔ Stock Movements</button>
+    <button data-page="reports">▤ Reports & Reorder</button>
+  </nav>
+  <div class="cap">LIVE CONTROLS</div>
+  <button class="control" onclick="toggleVoice()">
+    <span id="voiceState">ON</span>
+    <b>◓)) Voice announcer</b>
+    <small>Incoming booking and stock alerts</small>
+  </button>
+  <button class="control demo" onclick="demoRequest()">+ Simulate live request</button>
+  <button class="auto-sim" id="autoSim" onclick="toggleAutoSim()">
+    <i></i> <span id="autoSimLabel">AUTO-SIMULATION OFF</span>
+  </button>
+  <button class="control" onclick="resetDemo()" style="margin-top:7px">
+    <b>↺ Reset demo data</b>
+    <small>Restore initial inventory state</small>
+  </button>
+  <div class="online">
+    <i>●</i> Operations online<br>
+    <small>Browser-local live ledger • Auto-saving</small>
+  </div>
+  <div class="user">
+    <span>SC</span>
+    <div>
+      <b>Store Controller</b>
+      <small>HEADQUARTERS • AUTHORISED</small>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="head">
+    <div>
+      <p>KEDCO • SUPPLY CHAIN & TECHNICAL SERVICES</p>
+      <h1 id="pageTitle">Command Overview</h1>
+      <span>Traceable materials control across Kano, Katsina and Jigawa operations.</span>
+    </div>
+    <div class="head-actions">
+      <button class="btn ghost" onclick="print()">🖨 Print</button>
+      <button class="btn ghost" onclick="exportCSV('inventory')">⬇ Export</button>
+      <button class="btn gold" onclick="openRequest()">+ New booking</button>
+    </div>
+  </div>
+
+  <section id="overview" class="page">
+    <div class="hero">
+      <div>
+        <small>CENTRAL STORE • LIVE POSITION</small>
+        <h2>Every item. Every request.<br><em>One source of truth.</em></h2>
+        <p>Approve field bookings with automatic stock deduction, post receipts and returns, and preserve a complete movement trail.</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><b id="heroItems">0</b><span>STOCK LINES</span></div>
+          <div class="hero-stat"><b id="heroValue">₦0</b><span>TOTAL VALUE</span></div>
+          <div class="hero-stat"><b id="heroPending">0</b><span>PENDING</span></div>
+        </div>
+      </div>
+      <div class="ring" id="healthRing">
+        <div><b id="health">100%</b><span>STOCK HEALTH</span></div>
+      </div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="pt">
+          <div>
+            <h2>Incoming booking queue</h2>
+            <p>Live requests awaiting approval</p>
+          </div>
+          <div class="pt-actions">
+            <button class="btn ghost" onclick="approveAll()">✓ Approve all</button>
+          </div>
+        </div>
+        <div id="queue"></div>
+      </section>
+      <section class="panel">
+        <div class="pt">
+          <div>
+            <h2>Stock value by category</h2>
+            <p>Value concentration and exception count</p>
+          </div>
+        </div>
+        <div class="bar" id="bars"></div>
+      </section>
+    </div>
+
+    <div class="activity-feed">
+      <h3>Live activity feed</h3>
+      <div id="activityFeed">
+        <div class="empty" style="padding:30px">System initialised • Waiting for activity</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="inventory" class="page hide">
+    <div class="panel">
+      <div class="tools">
+        <input id="search" placeholder="🔍 Search code, material, category or location…">
+        <select id="cat"></select>
+        <select id="stock">
+          <option>All status</option>
+          <option>Healthy</option>
+          <option>Low</option>
+          <option>Out</option>
+        </select>
+        <button class="btn ghost" onclick="exportCSV('inventory')">⬇ Export CSV</button>
+        <button class="btn gold" onclick="openRequest()">+ New booking</button>
+      </div>
+      <div class="table">
+        <table>
+          <thead>
+            <tr>
+              <th>Material / equipment</th>
+              <th>Category</th>
+              <th>Location</th>
+              <th>Available</th>
+              <th>Minimum</th>
+              <th>Status</th>
+              <th>Unit value</th>
+              <th>Quick Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inventoryRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="requests" class="page hide">
+    <div class="panel">
+      <div class="pt">
+        <div>
+          <h2>Material booking control</h2>
+          <p>Approval validates and deducts every requested line</p>
+        </div>
+        <div class="pt-actions">
+          <button class="btn ghost" onclick="clearOldRequests()">🗑 Clear decided</button>
+          <button class="btn gold" onclick="openRequest()">+ Capture booking</button>
+        </div>
+      </div>
+      <div class="tools">
+        <input id="requestSearch" placeholder="Search request, requester, work order or purpose…">
+        <select id="requestStatus"><option>All decisions</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
+        <select id="requestPriority"><option>All priorities</option><option>Emergency</option><option>High</option><option>Normal</option></select>
+        <button class="btn ghost" onclick="resetRequestFilters()">Reset filters</button>
+      </div>
+      <div class="cards" id="requestCards"></div>
+    </div>
+  </section>
+
+  <section id="movements" class="page hide">
+    <div class="panel">
+      <div class="pt">
+        <div>
+          <h2>Stock movement audit ledger</h2>
+          <p>Receipts, approved issues and field returns with before/after balances</p>
+        </div>
+        <div class="pt-actions">
+          <button class="btn ghost" onclick="exportCSV('movements')">⬇ Export ledger</button>
+        </div>
+      </div>
+      <div class="table">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Item</th>
+              <th>Movement</th>
+              <th>Balance</th>
+              <th>Reference</th>
+              <th>Authorised by</th>
+            </tr>
+          </thead>
+          <tbody id="movementRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="reports" class="page hide">
+    <div class="report" id="reportCards"></div>
+    <div class="panel" style="margin-top:14px">
+      <div class="pt">
+        <div>
+          <h2>Automated reorder schedule</h2>
+          <p>Items at or below approved minimum stock level</p>
+        </div>
+        <div class="pt-actions">
+          <button class="btn ghost" onclick="exportCSV('inventory')">⬇ Download stock register</button>
+        </div>
+      </div>
+      <div class="table">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Material</th>
+              <th>Available</th>
+              <th>Minimum</th>
+              <th>Recommended order</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody id="reorderRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="modal"></div>
+<div id="toast" class="toast hide"></div>
+
+<script>
+/* ==================== DATA ==================== */
+const RAW=`TRF-050|50 kVA 11/0.415 kV Distribution Transformer|Transformers & Spares|No.|18|6|8|TS-A01|4950000
+TRF-100|100 kVA 11/0.415 kV Distribution Transformer|Transformers & Spares|No.|24|8|10|TS-A02|6350000
+TRF-200|200 kVA 11/0.415 kV Distribution Transformer|Transformers & Spares|No.|13|5|8|TS-A03|8900000
+TRF-300|300 kVA 11/0.415 kV Distribution Transformer|Transformers & Spares|No.|8|4|6|TS-A04|11200000
+TRF-500|500 kVA 11/0.415 kV Distribution Transformer|Transformers & Spares|No.|5|3|4|TS-A05|16500000
+PTR-5MVA|5 MVA 33/11 kV Power Transformer|Transformers & Spares|No.|2|1|1|HV-YARD|165000000
+TOIL-DRM|IEC 60296 Transformer Oil, 210 L Drum|Transformers & Spares|Drum|46|18|24|CHEM-B01|485000
+BUSH-11|11 kV Porcelain Transformer Bushing|Transformers & Spares|No.|31|12|24|TS-B11|95000
+BUSH-LV|LV Transformer Bushing Assembly|Transformers & Spares|No.|52|20|30|TS-B12|48000
+SILICA-1|Blue Silica Gel Breather Charge 1 kg|Transformers & Spares|Pack|84|30|50|TS-B13|14500
+VCB-11|11 kV Indoor Vacuum Circuit Breaker Panel|Switchgear & Protection|No.|7|3|4|SW-C01|12400000
+VCB-33|33 kV Outdoor Vacuum Circuit Breaker|Switchgear & Protection|No.|3|2|2|SW-C02|28750000
+RMU-11|11 kV 3-Way Ring Main Unit|Switchgear & Protection|No.|6|2|3|SW-C03|19500000
+REC-11|11 kV Automatic Circuit Recloser|Switchgear & Protection|No.|4|2|2|SW-C04|14200000
+LBS-11|11 kV Outdoor Load Break Switch|Switchgear & Protection|No.|9|3|5|SW-C05|3250000
+ISO-33|33 kV Centre-Break Isolator|Switchgear & Protection|Set|5|2|3|SW-C06|3850000
+DOF-11|11 kV Drop-Out Fuse Assembly|Switchgear & Protection|Set|42|15|25|SW-C07|178000
+FUSE-100|100 A Drop-Out Fuse Link|Switchgear & Protection|No.|186|60|100|SW-C08|6200
+LA-11|11 kV 10 kA Polymer Lightning Arrester|Switchgear & Protection|No.|57|20|36|SW-C09|89000
+REL-OC|Numerical Overcurrent & Earth-Fault Relay|Switchgear & Protection|No.|16|6|8|PROT-D01|1250000
+CT-11|11 kV 200/5 A Metering CT Class 0.5|Switchgear & Protection|No.|24|9|12|PROT-D02|325000
+VT-11|11 kV/110 V Voltage Transformer|Switchgear & Protection|No.|11|4|6|PROT-D03|690000
+ACSR-50|ACSR Rabbit Conductor 50 mm²|Conductors & Cables|m|16800|5000|8000|DRUM-E01|3050
+ACSR-100|ACSR Dog Conductor 100 mm²|Conductors & Cables|m|9200|3500|6000|DRUM-E02|6650
+AAAC-150|AAAC Conductor 150 mm²|Conductors & Cables|m|6400|2500|5000|DRUM-E03|8750
+XLPE11-240|11 kV XLPE 3C x 240 mm² Cable|Conductors & Cables|m|2150|800|1200|DRUM-E04|68500
+XLPE33-300|33 kV XLPE 1C x 300 mm² Cable|Conductors & Cables|m|760|400|600|DRUM-E05|112000
+PVC4-95|LV PVC 4C x 95 mm² Armoured Cable|Conductors & Cables|m|1840|600|1000|DRUM-E06|24500
+SVC-16|16 mm² Duplex Service Cable|Conductors & Cables|m|12600|4000|6000|DRUM-E07|1850
+TERM11-240|11 kV Heat-Shrink Termination Kit 240 mm²|Conductors & Cables|Kit|28|10|18|CAB-F01|265000
+JOINT11-240|11 kV Straight-Through Joint Kit 240 mm²|Conductors & Cables|Kit|17|8|12|CAB-F02|395000
+LUG-240|240 mm² Copper Compression Cable Lug|Conductors & Cables|No.|136|50|100|CAB-F03|14500
+POLE9C|9 m Reinforced Concrete Pole|Poles & Line Hardware|No.|148|50|80|YARD-G01|285000
+POLE12C|12 m Reinforced Concrete Pole|Poles & Line Hardware|No.|62|25|40|YARD-G02|465000
+XARM-H|Galvanised Steel HT Cross-Arm|Poles & Line Hardware|No.|119|40|70|LINE-G03|56000
+INS-PIN11|11 kV Porcelain Pin Insulator|Poles & Line Hardware|No.|325|100|180|LINE-G04|16500
+INS-DISC|70 kN Porcelain Disc Insulator|Poles & Line Hardware|No.|288|100|180|LINE-G05|24500
+STAY-SET|Complete Stay Set with 2.4 m Rod|Poles & Line Hardware|Set|76|30|50|LINE-G06|48500
+PG-CLAMP|Bimetallic Parallel Groove Clamp|Poles & Line Hardware|No.|221|75|150|LINE-G07|11800
+EARTH-ROD|16 mm x 1.5 m Copper-Bonded Earth Rod|Poles & Line Hardware|No.|93|30|60|LINE-G08|18500
+MTR-1P|STS Smart Prepaid Meter, Single Phase|Metering & AMI|No.|680|250|400|MTR-H01|68500
+MTR-3P|STS Smart Prepaid Meter, Three Phase|Metering & AMI|No.|214|80|150|MTR-H02|186000
+MTR-CT|CT-Operated Smart Meter, Class 0.5S|Metering & AMI|No.|48|20|30|MTR-H03|485000
+BOX-1P|Single-Phase UV Meter Box|Metering & AMI|No.|725|250|400|MTR-H04|16500
+CIU-STS|Customer Interface Unit, STS|Metering & AMI|No.|472|150|250|MTR-H05|28500
+SEAL-QR|Numbered Tamper-Evident Meter Seal|Metering & AMI|No.|4850|1500|2500|MTR-H06|680
+AMI-GW|AMI Data Concentrator / Gateway|Metering & AMI|No.|21|8|12|MTR-H07|890000
+HELMET-E|Electrical Safety Helmet, Class E|Safety & PPE|No.|96|30|50|PPE-J01|28500
+GLOVE11|11 kV Insulating Rubber Gloves Class 2|Safety & PPE|Pair|38|15|24|PPE-J02|118000
+ARC40|40 cal/cm² Arc-Flash Suit Set|Safety & PPE|Set|12|6|8|PPE-J03|985000
+HARNESS|Full-Body Fall-Arrest Harness|Safety & PPE|No.|44|15|25|PPE-J04|86000
+VDET33|Non-Contact HV Voltage Detector 1–36 kV|Safety & PPE|No.|19|8|12|PPE-J05|265000
+EARTHSET|Portable 33 kV Earthing & Short-Circuit Set|Safety & PPE|Set|8|4|6|PPE-J06|720000
+LOTO-KIT|Electrical Lockout/Tagout Kit|Safety & PPE|Kit|31|12|20|PPE-J07|145000
+EXT-CO2|5 kg CO₂ Fire Extinguisher|Safety & PPE|No.|27|10|15|PPE-J08|76500
+MIT-5K|5 kV Digital Insulation Resistance Tester|Test Equipment & Tools|No.|9|4|5|LAB-K01|1850000
+TTR-3P|Automatic Three-Phase Transformer Turns-Ratio Tester|Test Equipment & Tools|No.|4|2|2|LAB-K02|6950000
+MICRO-OHM|100 A Digital Micro-Ohmmeter|Test Equipment & Tools|No.|5|2|3|LAB-K03|4850000
+REL-TEST|Six-Phase Secondary Injection Relay Test Set|Test Equipment & Tools|No.|3|2|2|LAB-K04|24500000
+PRI-INJ|Primary Current Injection Test Set 2000 A|Test Equipment & Tools|No.|2|2|2|LAB-K05|18800000
+THERM-CAM|Industrial Thermal Imaging Camera|Test Equipment & Tools|No.|8|3|5|LAB-K06|2450000
+CLAMP-1K|1000 A True-RMS Clamp Meter|Test Equipment & Tools|No.|23|8|12|TOOL-K07|185000
+CFL-11|11/33 kV Cable Fault Locator Set|Test Equipment & Tools|No.|2|1|1|LAB-K08|32500000
+CRIMP-400|Hydraulic Cable Crimper 16–400 mm²|Test Equipment & Tools|No.|14|5|8|TOOL-K09|385000
+CUT-85|Hydraulic Cable Cutter up to 85 mm|Test Equipment & Tools|No.|11|4|6|TOOL-K10|325000
+TWR-340|Calibrated Torque Wrench 40–340 Nm|Test Equipment & Tools|No.|17|6|10|TOOL-K11|195000
+CHAIN-3T|3-Tonne Chain Block|Test Equipment & Tools|No.|13|5|8|TOOL-K12|285000
+LAD-FRP|6 m FRP Insulated Extension Ladder|Test Equipment & Tools|No.|10|4|6|YARD-K13|465000
+GEN-15K|15 kVA Silent Diesel Generator|Plant & Logistics|No.|6|2|3|PLANT-L01|4850000
+SLING-5T|5-Tonne Certified Web Lifting Sling|Plant & Logistics|No.|24|8|14|PLANT-L02|68500
+BAT-110|110 V DC 200 Ah Substation Battery Bank|Plant & Logistics|Set|4|2|2|PLANT-L03|6950000
+BCH-110|110 V DC 30 A Battery Charger|Plant & Logistics|No.|5|2|3|PLANT-L04|3850000`;
+
+const REGIONS = ['Kano Central','Kano North','Kano South','Katsina','Jigawa'];
+const DEPARTMENTS = ['Network Operations','Distribution Maintenance','Metering Services','Protection, Control & Metering','Emergency Response'];
+const PRIORITIES = ['Normal','Normal','High','High','Emergency']; // weighted
+const NAMES = ['Engr. Aisha Bello','Ibrahim Musa','Sani Garba','Fatima Abdullahi','Usman Danjuma','Hauwa Sani','Bashir Yakubu','Zainab Mohammed','Aminu Lawal','Khadija Bello'];
+const PURPOSES = [
+  'Emergency feeder restoration after lightning strike',
+  'Planned 11 kV line rehabilitation',
+  'MD customer smart-meter installation programme',
+  'Transformer failure at residential district',
+  'New estate connection infrastructure',
+  'Storm damage recovery operations',
+  'Preventive maintenance schedule',
+  'New customer connection rollout',
+  'Fault isolation and network reconfiguration',
+  'Capital upgrade project phase 2',
+  'Rural electrification extension',
+  'Substation annual maintenance'
+];
+const REJECTION_REASONS = [
+  'Insufficient stock / quantity unavailable',
+  'Item specification is incomplete or incorrect',
+  'Invalid or missing work order / approval reference',
+  'Duplicate material booking',
+  'Requested quantity exceeds authorised requirement',
+  'Item is reserved for emergency or critical work',
+  'Alternative material requires technical confirmation',
+  'Request is outside the store / department scope',
+  'Budget or procurement approval is outstanding',
+  'Requester must provide further clarification',
+  'Request cancelled by originating unit',
+  'Other — specify in remarks'
+];
+const REJECTION_ACTIONS = ['Return to requester for correction','Escalate to unit head','Refer to Procurement','Offer approved alternative','Close request — no further action'];
+
+const seedItems = () => RAW.split('\n').map((r,n) => {
+  const [code,name,category,unit,on,min,reorder,location,value] = r.split('|');
+  return {id:'I'+(n+1),code,name,category,unit,on:+on,min:+min,reorder:+reorder,location,value:+value};
+});
+
+const seedRequests = () => [
+  {id:'REQ-2026-0841',requester:'Engr. Aisha Bello',department:'Network Operations',region:'Kano Central',workOrder:'WO-KC-260809-18',priority:'Emergency',purpose:'Restore failed transformer at Murtala feeder',status:'Pending',date:new Date(Date.now()-3600000).toISOString(),items:[{id:'I2',qty:1},{id:'I19',qty:3}]},
+  {id:'REQ-2026-0840',requester:'Ibrahim Musa',department:'Metering Services',region:'Katsina',workOrder:'WO-KT-260809-07',priority:'High',purpose:'MD customer smart-meter installation programme',status:'Pending',date:new Date(Date.now()-7200000).toISOString(),items:[{id:'I43',qty:4},{id:'I46',qty:20}]},
+  {id:'REQ-2026-0839',requester:'Sani Garba',department:'Distribution Maintenance',region:'Jigawa',workOrder:'WO-JG-260808-23',priority:'Normal',purpose:'Planned 11 kV line rehabilitation',status:'Pending',date:new Date(Date.now()-10800000).toISOString(),items:[{id:'I33',qty:12},{id:'I36',qty:36}]}
+];
+
+let items = JSON.parse(localStorage.getItem('kedco_items')||'null') || seedItems();
+let requests = JSON.parse(localStorage.getItem('kedco_requests')||'null') || seedRequests();
+let movements = JSON.parse(localStorage.getItem('kedco_moves')||'[]');
+let voice = localStorage.getItem('kedco_voice') !== 'false';
+let autoSim = localStorage.getItem('kedco_autosim') === 'true';
+let activityLog = JSON.parse(localStorage.getItem('kedco_activity')||'[]');
+let autoSimInterval = null;
+
+/* ==================== HELPERS ==================== */
+const N = n => new Intl.NumberFormat('en-NG').format(n);
+const M = n => new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN',maximumFractionDigits:0}).format(n);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+function save(silent=false){
+  if(!silent){
+    const s = $('#saveStatus');
+    s.textContent = '● SAVING...';
+    s.classList.add('saving');
+    setTimeout(()=>{s.textContent='● SYNCED';s.classList.remove('saving')},600);
+  }
+  localStorage.setItem('kedco_items',JSON.stringify(items));
+  localStorage.setItem('kedco_requests',JSON.stringify(requests));
+  localStorage.setItem('kedco_moves',JSON.stringify(movements));
+  localStorage.setItem('kedco_activity',JSON.stringify(activityLog.slice(0,50)));
+}
+
+function status(i){return i.on===0?'Out':i.on<=i.min?'Low':'Healthy'}
+
+function say(t){
+  if(voice && speechSynthesis){
+    speechSynthesis.cancel();
+    let u = new SpeechSynthesisUtterance(t);
+    u.rate = .94;
+    speechSynthesis.speak(u);
+  }
+}
+
+function toast(t,type='success'){
+  const icons = {success:'✓',error:'✕',warning:'⚠'};
+  let e = $('#toast');
+  e.className = 'toast ' + type;
+  e.innerHTML = `<div class="toast-icon">${icons[type]||'✓'}</div><div>${t}</div>`;
+  setTimeout(()=>e.classList.add('hide'),4000);
+}
+
+function addActivity(type,text){
+  activityLog.unshift({type,text,date:new Date().toISOString()});
+  activityLog = activityLog.slice(0,50);
+  renderActivity();
+}
+
+function animateCount(el,from,to){
+  const duration = 600;
+  const start = performance.now();
+  function step(now){
+    const p = Math.min((now-start)/duration,1);
+    const eased = 1-Math.pow(1-p,3);
+    el.textContent = Math.round(from+(to-from)*eased);
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ==================== RENDER ==================== */
+function render(){
+  const pending = requests.filter(r=>r.status==='Pending');
+  const low = items.filter(i=>i.on<=i.min);
+  const value = items.reduce((a,i)=>a+i.on*i.value,0);
+  const units = items.reduce((a,i)=>a+i.on,0);
+  const health = Math.round(100 - low.length/items.length*100);
+
+  // Navigation badge
+  const badge = $('#navPending');
+  badge.textContent = pending.length;
+  badge.classList.toggle('pulse',pending.length>0);
+
+  // Live counter
+  $('#liveCount').textContent = `● ${items.length} items • ${pending.length} pending`;
+
+  // Health ring
+  $('#healthRing').style.setProperty('--score',health*3.6+'deg');
+  $('#health').textContent = health+'%';
+
+  // Hero stats
+  $('#heroItems').textContent = items.length;
+  $('#heroValue').textContent = M(value);
+  $('#heroPending').textContent = pending.length;
+
+  // KPIs with animated counters
+  const kpiData = [
+    ['ACTIVE STOCK LINES',items.length,N(units)+' total units','▦'],
+    ['INVENTORY VALUE',M(value),'Current available valuation','₦'],
+    ['PENDING BOOKINGS',pending.length,'Awaiting store decision','⇞'],
+    ['REORDER ALERTS',low.length,items.filter(i=>i.on===0).length+' out of stock','⚠']
+  ];
+
+  const kpiHTML = kpiData.map(x=>`
+    <div class="kpi">
+      <div class="kpi-icon">${x[3]}</div>
+      <small>${x[0]}</small>
+      <b>${x[1]}</b>
+      <span>${x[2]}</span>
+    </div>
+  `).join('');
+  $('#kpis').innerHTML = kpiHTML;
+
+  renderQueue();
+  renderBars();
+  renderInventory();
+  renderRequests();
+  renderMovements();
+  renderReports();
+  renderActivity();
+}
+
+function line(r){
+  return r.items.map(x=>{
+    const i = items.find(z=>z.id===x.id);
+    return i ? `<code>${N(x.qty)} ${esc(i.unit)} ${esc(i.code)}</code>` : '';
+  }).join('');
+}
+
+function renderQueue(){
+  const p = requests.filter(r=>r.status==='Pending');
+  $('#queue').innerHTML = p.length
+    ? p.slice(0,6).map(r=>`
+      <div class="req priority-${r.priority.toLowerCase()}">
+        <i></i>
+        <div>
+          <b>${esc(r.id)}</b>
+          <h3>${esc(r.requester)} • ${esc(r.region)}</h3>
+          <p>${esc(r.purpose)}</p>
+          <div class="req-meta">
+            <span>${esc(r.department)}</span>
+            <span>${esc(r.priority)}</span>
+          </div>
+          <div style="margin-top:7px">${line(r)}</div>
+        </div>
+        <div>
+          <time>${new Date(r.date).toLocaleString()}</time>
+          <button class="btn gold" onclick="approve('${r.id}')">✓ Approve & issue</button>
+          <button class="btn ghost" onclick="rejectReq('${r.id}')" style="margin-top:4px;width:100%">✕ Reject</button>
+        </div>
+      </div>
+    `).join('')
+    : '<div class="empty">No pending material bookings</div>';
+}
+
+function renderBars(){
+  const cats = [...new Set(items.map(i=>i.category))]
+    .map(c=>({c,v:items.filter(i=>i.category===c).reduce((a,i)=>a+i.on*i.value,0)}))
+    .sort((a,b)=>b.v-a.v);
+  const max = Math.max(...cats.map(c=>c.v));
+  $('#bars').innerHTML = cats.map(x=>`
+    <div>
+      <p><b>${esc(x.c)}</b><span>${M(x.v)}</span></p>
+      <i><b style="width:${x.v/max*100}%"></b></i>
+    </div>
+  `).join('');
+}
+
+function renderInventory(){
+  const q = $('#search').value.toLowerCase();
+  const c = $('#cat').value || 'All categories';
+  const s = $('#stock').value || 'All status';
+  const list = items.filter(i=>
+    (!q || (i.code+' '+i.name+' '+i.category+' '+i.location).toLowerCase().includes(q))
+    && (c==='All categories' || i.category===c)
+    && (s==='All status' || status(i)===s)
+  );
+
+  $('#inventoryRows').innerHTML = list.length
+    ? list.map(i=>{
+        const s = status(i);
+        const pct = i.min>0 ? Math.min(100,(i.on/(i.min*3))*100) : 100;
+        const barClass = s==='Out'?'out':s==='Low'?'low':'';
+        return `
+        <tr>
+          <td><b>${esc(i.name)}</b><span>${esc(i.code)}</span></td>
+          <td>${esc(i.category)}</td>
+          <td><code>${esc(i.location)}</code></td>
+          <td>
+            <b class="qty ${s.toLowerCase()}">${N(i.on)}</b>
+            <span>${esc(i.unit)}</span>
+            <div class="stock-gauge">
+              <div class="stock-bar"><b class="${barClass}" style="width:${pct}%"></b></div>
+              <span style="font-size:8px">${Math.round(pct)}%</span>
+            </div>
+          </td>
+          <td>${N(i.min)} ${esc(i.unit)}</td>
+          <td><span class="status ${s.toLowerCase()}">${s}</span></td>
+          <td>${M(i.value)}</td>
+          <td>
+            <div class="actions">
+              <button class="quick" onclick="quickRefill('${i.id}',10)">+10</button>
+              <button class="quick" onclick="quickRefill('${i.id}',50)">+50</button>
+              <button onclick="stockModal('refill','${i.id}')">+ Refill</button>
+              <button onclick="stockModal('return','${i.id}')">↩ Return</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="8" class="empty">No items match your filters</td></tr>';
+}
+
+function renderRequests(){
+  const search = ($('#requestSearch')?.value||'').trim().toLowerCase();
+  const statusFilter = $('#requestStatus')?.value||'All decisions';
+  const priorityFilter = $('#requestPriority')?.value||'All priorities';
+  const list = requests.filter(r=>(!search||[r.id,r.requester,r.workOrder,r.purpose,r.department,r.region,r.rejectionReason].join(' ').toLowerCase().includes(search))&&(statusFilter==='All decisions'||r.status===statusFilter)&&(priorityFilter==='All priorities'||r.priority===priorityFilter));
+  $('#requestCards').innerHTML = list.length
+    ? list.map(r=>`
+      <article class="card status-${r.status.toLowerCase()}">
+        <div>
+          <b>${esc(r.id)}</b>
+          <span class="status ${r.status.toLowerCase()}" style="float:right">${r.status}</span>
+        </div>
+        <h3>${esc(r.purpose)}</h3>
+        <div class="meta">
+          <span><b>REQUESTER</b>${esc(r.requester)}</span>
+          <span><b>REGION</b>${esc(r.region)}</span>
+          <span><b>DEPARTMENT</b>${esc(r.department)}</span>
+          <span><b>WORK ORDER</b>${esc(r.workOrder)}</span>
+        </div>
+        <div class="lines">
+          ${r.items.map(x=>{
+            const i = items.find(z=>z.id===x.id);
+            const short = !i || i.on<x.qty;
+            return `<div class="availability ${short?'short':''}"><span>${i?esc(i.code+' — '+i.name):'Unknown stock item'}</span><b>${N(x.qty)} ${i?esc(i.unit):''} requested · ${i?N(i.on):0} available ${short?'⚠':''}</b></div>`;
+          }).join('')}
+        </div>
+        ${r.status==='Rejected'?`<div class="decision-note rejection"><b>Rejection decision</b>${esc(r.rejectionReason||'Reason not recorded')}<br>${r.rejectionRemarks?esc(r.rejectionRemarks)+'<br>':''}<strong>Follow-up:</strong> ${esc(r.followUpAction||'Not specified')}<br><small>${esc(r.decision||'Store Controller')}</small></div>`:''}
+        ${r.status==='Approved'?`<div class="decision-note"><b>Issue authorisation</b>Stock validated and issued against this booking.<br><small>${esc(r.decision||'Store Controller')}</small></div>`:''}
+        <footer>
+          <span>${new Date(r.date).toLocaleString()} • ${esc(r.priority)}</span>
+          ${r.status==='Pending'
+            ? `<span>
+                <button class="btn ghost" onclick="rejectReq('${r.id}')">✕ Reject</button>
+                <button class="btn gold" onclick="approve('${r.id}')">✓ Approve</button>
+              </span>`
+            : `<b>${r.decision||'Store Controller'}</b>`}
+        </footer>
+      </article>
+    `).join('')
+    : '<div class="empty">No booking requests match the selected filters</div>';
+}
+
+function renderMovements(){
+  $('#movementRows').innerHTML = movements.length
+    ? movements.map(m=>`
+      <tr>
+        <td><b>${new Date(m.date).toLocaleString()}</b><span>${esc(m.id)}</span></td>
+        <td><span class="status ${m.type.toLowerCase()}">${m.type}</span></td>
+        <td><b>${esc(m.name)}</b><span>${esc(m.code)}</span></td>
+        <td class="${m.type==='ISSUE'?'moveminus':'moveplus'}">${m.type==='ISSUE'?'−':'+'}${N(m.qty)}</td>
+        <td>${N(m.before)} → <b>${N(m.after)}</b></td>
+        <td><code>${esc(m.ref)}</code></td>
+        <td>${esc(m.actor)}</td>
+      </tr>
+    `).join('')
+    : '<tr><td colspan="7" class="empty">No movements yet. Approve, refill or return stock.</td></tr>';
+}
+
+function renderReports(){
+  const low = items.filter(i=>i.on<=i.min);
+  const value = items.reduce((a,i)=>a+i.on*i.value,0);
+  const issued = movements.filter(m=>m.type==='ISSUE').reduce((a,m)=>a+m.qty,0);
+  const received = movements.filter(m=>m.type==='RECEIPT').reduce((a,m)=>a+m.qty,0);
+
+  $('#reportCards').innerHTML = [
+    ['Stock valuation',M(value),'Current available inventory','₦'],
+    ['Units issued',N(issued),'Approved issue ledger','↓'],
+    ['Units received',N(received),'Stock receipts logged','↑'],
+    ['Reorder lines',low.length,'At or below minimum','⚠']
+  ].map(x=>`
+    <section class="panel">
+      <small>${x[3]} ${x[0].toUpperCase()}</small>
+      <h3>${x[1]}</h3>
+      <p>${x[2]}</p>
+    </section>
+  `).join('');
+
+  $('#reorderRows').innerHTML = low.length
+    ? low.map(i=>`
+      <tr>
+        <td><b>${i.code}</b></td>
+        <td>${i.name}</td>
+        <td class="qty low">${N(i.on)} ${i.unit}</td>
+        <td>${N(i.min)} ${i.unit}</td>
+        <td><b style="color:var(--gold)">${N(Math.max(i.reorder,i.min*2-i.on))} ${i.unit}</b></td>
+        <td><code>${i.location}</code></td>
+      </tr>
+    `).join('')
+    : '<tr><td colspan="6" class="empty">All stock lines are above minimum.</td></tr>';
+}
+
+function renderActivity(){
+  if(!activityLog.length){
+    $('#activityFeed').innerHTML = '<div class="empty" style="padding:30px">System initialised • Waiting for activity</div>';
+    return;
+  }
+  $('#activityFeed').innerHTML = activityLog.slice(0,10).map(a=>`
+    <div class="activity-item">
+      <div class="activity-dot ${a.type}"></div>
+      <div style="flex:1">
+        <div>${esc(a.text)}</div>
+        <small style="color:var(--muted);font-size:9px">${new Date(a.date).toLocaleString()}</small>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ==================== ACTIONS ==================== */
+function approve(id){
+  const r = requests.find(x=>x.id===id);
+  if(!r || r.status!=='Pending') return;
+
+  for(const l of r.items){
+    const i = items.find(x=>x.id===l.id);
+    if(!i || i.on < l.qty){
+      toast('Insufficient stock for '+(i?.name||l.id),'error');
+      say('Approval blocked because available stock is insufficient.');
+      return;
+    }
+  }
+
+  r.items.forEach(l=>{
+    const i = items.find(x=>x.id===l.id);
+    const before = i.on;
+    i.on -= l.qty;
+    movements.unshift({
+      id:'MOV-'+Date.now()+'-'+i.code,
+      type:'ISSUE',qty:l.qty,before,after:i.on,
+      ref:r.id,actor:'Store Controller',
+      date:new Date().toISOString(),
+      code:i.code,name:i.name
+    });
+    addActivity('issue',`Issued ${N(l.qty)} ${i.unit} of ${i.code} for ${r.id}`);
+  });
+
+  r.status = 'Approved';
+  r.decision = 'Store Controller • '+new Date().toLocaleString();
+  save();
+  render();
+  toast(r.id+' approved; available stock reduced');
+  say('Booking approved. Available stock has been reduced and the issue recorded.');
+}
+
+function approveAll(){
+  const pending = requests.filter(r=>r.status==='Pending');
+  if(!pending.length){toast('No pending requests','warning');return}
+  if(!confirm(`Approve all ${pending.length} pending requests?`)) return;
+  pending.forEach(r=>approve(r.id));
+}
+
+function rejectReq(id){
+  const r = requests.find(x=>x.id===id);
+  if(!r || r.status!=='Pending') return;
+  $('#modal').innerHTML = `
+    <div class="modal-bg"><form class="modal" onsubmit="submitRejection(event,'${esc(id)}')">
+      <div class="mh"><h2>Reject material booking — ${esc(id)}</h2><button type="button" onclick="modal.innerHTML=''">×</button></div>
+      <div class="form">
+        <div class="modal-alert"><b>Controlled store decision:</b> rejection does not alter stock. The reason, officer and required follow-up will remain in the request audit record.</div>
+        <div class="full"><b>${esc(r.requester)} · ${esc(r.region)}</b><br><small>${esc(r.workOrder)} · ${esc(r.purpose)}</small></div>
+        <label class="full"><span>Reason for rejection</span><select name="reason" required><option value="">— Select an authorised reason —</option>${REJECTION_REASONS.map(x=>`<option>${esc(x)}</option>`).join('')}</select></label>
+        <label><span>Store officer</span><input name="officer" required value="Store Controller" placeholder="Full name / staff ID"></label>
+        <label><span>Required follow-up</span><select name="action" required>${REJECTION_ACTIONS.map(x=>`<option>${esc(x)}</option>`).join('')}</select></label>
+        <label class="full"><span>Decision remarks / corrective requirement</span><textarea name="remarks" required minlength="8" placeholder="State the specific issue and what the requester must correct or provide…"></textarea></label>
+        <label><span>Decision reference</span><input name="reference" value="DEC-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}" required></label>
+        <label><span>Review date</span><input name="reviewDate" type="date" value="${new Date().toISOString().slice(0,10)}" required></label>
+      </div>
+      <div class="mf"><button type="button" class="btn ghost" onclick="modal.innerHTML=''">Cancel</button><button type="submit" class="btn" style="background:var(--red);color:#fff">Reject & notify requester</button></div>
+    </form></div>`;
+}
+
+function submitRejection(e,id){
+  e.preventDefault();
+  const r=requests.find(x=>x.id===id),f=new FormData(e.target);
+  if(!r || r.status!=='Pending') return;
+  r.status='Rejected'; r.rejectionReason=f.get('reason'); r.rejectionRemarks=f.get('remarks').trim();
+  r.followUpAction=f.get('action'); r.decisionReference=f.get('reference'); r.reviewDate=f.get('reviewDate');
+  r.decision=`${f.get('officer')} · ${new Date().toLocaleString()} · ${r.decisionReference}`;
+  addActivity('request',`Rejected ${id}: ${r.rejectionReason} — ${r.followUpAction}`);
+  save(); render(); $('#modal').innerHTML='';
+  toast(id+' rejected with reason recorded','warning');
+  say('Material booking rejected. The reason and required follow-up have been recorded.');
+}
+
+function resetRequestFilters(){
+  $('#requestSearch').value=''; $('#requestStatus').value='All decisions'; $('#requestPriority').value='All priorities'; renderRequests();
+}
+
+function clearOldRequests(){
+  const decided = requests.filter(r=>r.status!=='Pending');
+  if(!decided.length){toast('No decided requests to clear','warning');return}
+  if(!confirm(`Clear ${decided.length} decided requests?`)) return;
+  requests = requests.filter(r=>r.status==='Pending');
+  save();
+  render();
+  toast('Cleared decided requests');
+}
+
+function quickRefill(id,qty){
+  const i = items.find(x=>x.id===id);
+  if(!i) return;
+  const before = i.on;
+  i.on += qty;
+  movements.unshift({
+    id:'MOV-'+Date.now(),
+    type:'RECEIPT',qty,before,after:i.on,
+    ref:'QUICK-'+Date.now(),actor:'Store Controller',
+    date:new Date().toISOString(),
+    code:i.code,name:i.name
+  });
+  addActivity('receipt',`Quick refill: +${qty} ${i.unit} of ${i.code}`);
+  save();
+  render();
+  toast(`+${qty} ${i.unit} added to ${i.code}`);
+}
+
+function stockModal(type,id){
+  const i = items.find(x=>x.id===id);
+  $('#modal').innerHTML = `
+    <div class="modal-bg">
+      <form class="modal" onsubmit="postStock(event,'${type}','${id}')">
+        <div class="mh">
+          <h2>${type==='refill'?'Goods receipt / refill':'Field return'} — ${esc(i.code)}</h2>
+          <button type="button" onclick="modal.innerHTML=''">×</button>
+        </div>
+        <div class="form">
+          <div class="full">
+            <b>${esc(i.name)}</b><br>
+            <small style="color:var(--muted);font-size:10px">
+              Available <b style="color:var(--g)">${N(i.on)} ${esc(i.unit)}</b> • ${esc(i.location)}
+            </small>
+          </div>
+          <label>
+            <span>Quantity (${esc(i.unit)})</span>
+            <input name="qty" type="number" min="1" required autofocus value="${i.reorder||10}">
+          </label>
+          <label>
+            <span>GRN / return reference</span>
+            <input name="ref" required placeholder="GRN-2026-0001" value="GRN-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}">
+          </label>
+          <label>
+            <span>Supplier (optional)</span>
+            <select name="supplier">
+              <option value="">— Select supplier —</option>
+              <option>Local Store</option>
+              <option>Regional Depot</option>
+              <option>Direct Vendor</option>
+              <option>Inter-Store Transfer</option>
+            </select>
+          </label>
+          <label>
+            <span>Batch / condition</span>
+            <input name="batch" placeholder="Batch number or condition note">
+          </label>
+          <label class="full">
+            <span>Additional notes</span>
+            <textarea name="note" placeholder="Delivery notes, quality observations..."></textarea>
+          </label>
+        </div>
+        <div class="mf">
+          <button type="button" class="btn ghost" onclick="modal.innerHTML=''">Cancel</button>
+          <button type="submit" class="btn gold">✓ Post & increase stock</button>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function postStock(e,type,id){
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const i = items.find(x=>x.id===id);
+  const qty = +f.get('qty');
+  const before = i.on;
+  i.on += qty;
+  movements.unshift({
+    id:'MOV-'+Date.now(),
+    type:type==='refill'?'RECEIPT':'RETURN',qty,
+    before,after:i.on,
+    ref:f.get('ref'),
+    actor:'Store Controller',
+    date:new Date().toISOString(),
+    code:i.code,name:i.name,
+    supplier:f.get('supplier'),
+    batch:f.get('batch'),
+    note:f.get('note')
+  });
+  addActivity('receipt',`${type==='refill'?'Receipt':'Return'}: +${qty} ${i.unit} of ${i.code}`);
+  save();
+  render();
+  $('#modal').innerHTML = '';
+  toast(`${qty} ${i.unit} added to ${i.code}`);
+  say(`Stock ${type==='refill'?'receipt':'return'} posted. Available quantity increased.`);
+}
+
+function openRequest(){
+  $('#modal').innerHTML = `
+    <div class="modal-bg">
+      <form class="modal" onsubmit="newRequest(event)">
+        <div class="mh">
+          <h2>Capture new material booking</h2>
+          <button type="button" onclick="modal.innerHTML=''">×</button>
+        </div>
+        <div class="form">
+          <label>
+            <span>Requester</span>
+            <input name="requester" required placeholder="Full name">
+          </label>
+          <label>
+            <span>Department</span>
+            <select name="department">
+              ${DEPARTMENTS.map(d=>`<option>${d}</option>`).join('')}
+            </select>
+          </label>
+          <label>
+            <span>Region</span>
+            <select name="region">
+              ${REGIONS.map(r=>`<option>${r}</option>`).join('')}
+            </select>
+          </label>
+          <label>
+            <span>Work order</span>
+            <input name="workOrder" required value="WO-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}">
+          </label>
+          <label>
+            <span>Priority</span>
+            <select name="priority">
+              <option>Normal</option>
+              <option>High</option>
+              <option>Emergency</option>
+            </select>
+          </label>
+          <label>
+            <span>Material / equipment</span>
+            <select name="item">
+              ${items.map(i=>`<option value="${i.id}">${esc(i.code)} — ${esc(i.name)} (${N(i.on)} available)</option>`).join('')}
+            </select>
+          </label>
+          <label>
+            <span>Quantity</span>
+            <input name="qty" type="number" min="1" value="1" required>
+          </label>
+          <label>
+            <span>Urgency reason</span>
+            <input name="reason" placeholder="Why is this needed now?">
+          </label>
+          <label class="full">
+            <span>Purpose / work description</span>
+            <textarea name="purpose" required placeholder="Describe the work, location and justification..."></textarea>
+          </label>
+        </div>
+        <div class="mf">
+          <button type="button" class="btn ghost" onclick="modal.innerHTML=''">Cancel</button>
+          <button type="submit" class="btn gold">✓ Submit booking</button>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function newRequest(e){
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const id = 'REQ-'+new Date().getFullYear()+'-'+String(Date.now()).slice(-6);
+  requests.unshift({
+    id,
+    requester:f.get('requester'),
+    department:f.get('department'),
+    region:f.get('region'),
+    workOrder:f.get('workOrder'),
+    priority:f.get('priority'),
+    purpose:f.get('purpose'),
+    status:'Pending',
+    date:new Date().toISOString(),
+    items:[{id:f.get('item'),qty:+f.get('qty')}]
+  });
+  const i = items.find(x=>x.id===f.get('item'));
+  addActivity('request',`New ${f.get('priority')} booking ${id} from ${f.get('requester')} for ${f.get('qty')} ${i?.unit||''} ${i?.code||''}`);
+  save();
+  render();
+  $('#modal').innerHTML = '';
+  toast(`${id} received`);
+  say(`Attention stores control. New ${f.get('priority')} material booking from ${f.get('requester')}, ${f.get('region')}.`);
+}
+
+function demoRequest(){
+  const i = items[Math.floor(Math.random()*items.length)];
+  const id = 'REQ-LIVE-'+String(Date.now()).slice(-5);
+  const qty = Math.max(1,Math.floor(Math.random()*5)+1);
+  requests.unshift({
+    id,
+    requester:NAMES[Math.floor(Math.random()*NAMES.length)],
+    department:DEPARTMENTS[Math.floor(Math.random()*DEPARTMENTS.length)],
+    region:REGIONS[Math.floor(Math.random()*REGIONS.length)],
+    workOrder:'WO-'+Date.now(),
+    priority:PRIORITIES[Math.floor(Math.random()*PRIORITIES.length)],
+    purpose:PURPOSES[Math.floor(Math.random()*PURPOSES.length)],
+    status:'Pending',
+    date:new Date().toISOString(),
+    items:[{id:i.id,qty}]
+  });
+  addActivity('request',`Live booking ${id} received for ${qty} ${i.unit} of ${i.code}`);
+  save();
+  render();
+  toast('Live booking '+id+' received','warning');
+  say('Attention stores control. New material booking received. Please review the booking queue.');
+}
+
+/* ==================== AUTO-SIMULATION ==================== */
+function toggleAutoSim(){
+  autoSim = !autoSim;
+  localStorage.setItem('kedco_autosim',autoSim);
+  $('#autoSim').classList.toggle('active',autoSim);
+  $('#autoSimLabel').textContent = autoSim ? 'AUTO-SIMULATION ON' : 'AUTO-SIMULATION OFF';
+  if(autoSim) startAutoSim();
+  else stopAutoSim();
+  toast(autoSim ? 'Auto-simulation enabled' : 'Auto-simulation disabled', autoSim?'success':'warning');
+}
+
+function startAutoSim(){
+  if(autoSimInterval) clearInterval(autoSimInterval);
+  // Generate a request every 45-90 seconds
+  const schedule = () => {
+    const delay = 45000 + Math.random()*45000;
+    autoSimInterval = setTimeout(()=>{
+      if(!autoSim) return;
+      demoRequest();
+      schedule();
+    },delay);
+  };
+  schedule();
+}
+
+function stopAutoSim(){
+  if(autoSimInterval){
+    clearTimeout(autoSimInterval);
+    autoSimInterval = null;
+  }
+}
+
+function resetDemo(){
+  if(!confirm('Reset all inventory data to initial state? This cannot be undone.')) return;
+  ['kedco_items','kedco_requests','kedco_moves','kedco_activity'].forEach(key=>localStorage.removeItem(key));
+  items = seedItems();
+  requests = seedRequests();
+  movements = [];
+  activityLog = [];
+  save();
+  render();
+  toast('System reset to initial state');
+  say('Inventory system reset to initial state.');
+}
+
+/* ==================== CONTROLS ==================== */
+function toggleVoice(){
+  voice = !voice;
+  localStorage.setItem('kedco_voice',voice);
+  $('#voiceState').textContent = voice ? 'ON' : 'OFF';
+  if(voice) setTimeout(()=>say('KEDCO inventory voice alerts activated'),100);
+  else toast('Voice alerts disabled');
+}
+
+function exportCSV(type){
+  const rows = type==='inventory' ? items : movements;
+  if(!rows.length){toast('No data to export','warning');return}
+  const keys = Object.keys(rows[0]);
+  const csv = [keys.join(','),...rows.map(r=>keys.map(k=>'"'+String(r[k]??'').replaceAll('"','""')+'"').join(','))].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = 'KEDCO-'+type+'-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast(`Exported ${rows.length} records`);
+}
+
+/* ==================== NAVIGATION ==================== */
+$$('.nav button').forEach(b=>b.onclick=()=>{
+  $$('.nav button').forEach(x=>x.classList.toggle('active',x===b));
+  $$('.page').forEach(p=>p.classList.toggle('hide',p.id!==b.dataset.page));
+  $('#pageTitle').textContent = b.textContent.replace(/^[^A-Za-z]+/,'').replace(/\d+$/,'').trim();
+  $('#side').classList.remove('open');
+});
+
+/* ==================== FILTERS ==================== */
+$('#cat').innerHTML = '<option>All categories</option>'+[...new Set(items.map(i=>i.category))].map(c=>`<option>${c}</option>`).join('');
+$('#search').oninput = $('#cat').onchange = $('#stock').onchange = renderInventory;
+$('#requestSearch').oninput = $('#requestStatus').onchange = $('#requestPriority').onchange = renderRequests;
+
+/* ==================== CLOCK ==================== */
+setInterval(()=>{
+  const d = new Date();
+  $('#clock').textContent = d.toLocaleTimeString('en-NG',{hour12:false});
+  $('#day').textContent = d.toLocaleDateString('en-NG',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+},1000);
+
+/* ==================== KEYBOARD SHORTCUTS ==================== */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){$('#modal').innerHTML='';$('#side').classList.remove('open');return}
+  if(e.target.tagName==='INPUT' || e.target.tagName==='TEXTAREA') return;
+  if(e.key==='n' || e.key==='N'){e.preventDefault();openRequest()}
+  if(e.key==='/'){e.preventDefault();$('#search')?.focus()}
+});
+
+/* ==================== INIT ==================== */
+$('#voiceState').textContent = voice ? 'ON' : 'OFF';
+$('#autoSim').classList.toggle('active',autoSim);
+$('#autoSimLabel').textContent = autoSim ? 'AUTO-SIMULATION ON' : 'AUTO-SIMULATION OFF';
+
+if(autoSim) startAutoSim();
+render();
+</script>
+
+<script src="/frontend/kedco-account-controls.js?v=20260912-system-v5" defer></script>
+</body>
+</html>

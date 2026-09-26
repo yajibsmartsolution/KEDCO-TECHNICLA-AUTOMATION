@@ -1,0 +1,3 @@
+KEDCO Technical Automation
+Edition: LOCAL STORAGE
+Storage: cloud data/ filesystem

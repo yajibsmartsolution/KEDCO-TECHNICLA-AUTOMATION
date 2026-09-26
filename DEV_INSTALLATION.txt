@@ -1,0 +1,17 @@
+KEDCO TECHNICAL AUTOMATION ? LOCAL INSTALLATION
+
+This build uses local storage only. The backend stores records and uploaded evidence in the project cloud data folder. The browser stores local session and page preferences in browser local storage.
+
+Start the app from PowerShell:
+
+  powershell.exe -ExecutionPolicy Bypass -File ".\Start-KEDCO-Local.ps1"
+
+Restart it after code changes:
+
+  powershell.exe -ExecutionPolicy Bypass -File ".\Restart-KEDCO-Local.ps1"
+
+Open http://localhost:3000. Check http://localhost:3000/health for storage_mode: local.
+
+For a backend TypeScript build, run npm.cmd run build from the backend folder. Do not delete cloud data; it contains application records, uploads, and logs.
+
+No hosted database URL, public key, or remote synchronization is required. The compatibility browser client maps older page calls to the local JSON backend.
