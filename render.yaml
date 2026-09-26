@@ -1,26 +1,23 @@
-services:
+﻿services:
   - type: web
     name: kedco-local-backend
     runtime: node
     plan: free
+
     rootDir: backend
+
     buildCommand: npm install && npm run build
+
     startCommand: npm start
+
     healthCheckPath: /health
+
     envVars:
       - key: NODE_ENV
         value: production
+
       - key: NODE_VERSION
         value: 22.12.0
-      # Set this to the origin(s) of whatever site calls this API (scheme +
-      # host only, no path), e.g. https://yajibsmartsolution.github.io if the
-      # frontend is hosted separately on GitHub Pages. Not needed if you only
-      # ever open this same Render URL directly (same-origin requests skip
-      # CORS entirely). Comma-separated values are supported.
+
       - key: CORS_ORIGIN
         sync: false
-      # Render free-tier disks are ephemeral: anything written under
-      # KEDCO_LOCAL_DATA_ROOT ("cloud data/") is wiped on every redeploy/restart.
-      # Treat this deployment as a demo/staging API, not durable storage.
-      - key: KEDCO_LOCAL_DATA_ROOT
-        value: ../cloud data

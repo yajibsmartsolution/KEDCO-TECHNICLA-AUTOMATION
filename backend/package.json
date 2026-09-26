@@ -1,33 +1,33 @@
-{
-  "name": "kedco-local-backend",
-  "version": "1.0.0",
-  "description": "KEDCO Technical Automation local file-backed backend",
-  "main": "dist/server.js",
-  "engines": {
-    "node": ">=20"
-  },
-  "scripts": {
-    "prebuild": "node scripts/clean-dist.cjs",
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "typecheck": "tsc --noEmit",
-    "local": "tsx watch src/server.ts",
-    "local:start": "node dist/server.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "helmet": "^8.1.0",
-    "morgan": "^1.10.1"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/morgan": "^1.9.10",
-    "@types/node": "^24.3.0",
-    "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
-  }
+﻿{
+    "name":  "kedco-local-backend",
+    "version":  "1.0.0",
+    "description":  "KEDCO Technical Automation local file-backed backend",
+    "main":  "dist/server.js",
+    "engines":  {
+                    "node":  ">=22.12.0"
+                },
+    "scripts":  {
+                    "prebuild":  "node scripts/clean-dist.cjs",
+                    "dev":  "tsx watch src/server.ts",
+                    "build":  "tsc",
+                    "start":  "node dist/server.js",
+                    "typecheck":  "tsc --noEmit",
+                    "local":  "tsx watch src/server.ts",
+                    "local:start":  "node dist/server.js"
+                },
+    "dependencies":  {
+                         "cors":  "^2.8.5",
+                         "dotenv":  "^17.2.1",
+                         "express":  "^5.1.0",
+                         "helmet":  "^8.1.0",
+                         "morgan":  "^1.10.1"
+                     },
+    "devDependencies":  {
+                            "@types/cors":  "^2.8.19",
+                            "@types/express":  "^5.0.3",
+                            "@types/morgan":  "^1.9.10",
+                            "@types/node":  "^24.3.0",
+                            "tsx":  "^4.20.5",
+                            "typescript":  "^5.9.2"
+                        }
 }
